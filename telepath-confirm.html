@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TELEPATH — Order Confirmed</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --gold:       #C9A84C;
+    --gold-light: #E2C06A;
+    --gold-dim:   #8A6E2F;
+    --gold-glow:  rgba(201,168,76,0.18);
+    --bg:         #0A0A0A;
+    --bg2:        #111111;
+    --bg3:        #181818;
+    --surface:    #141414;
+    --border:     rgba(201,168,76,0.18);
+    --text:       #E8E0D0;
+    --text-muted: #7A7060;
+    --green:      #4ECCA3;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.6;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 72px;
+    background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.80) 100%);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 0.12em;
+    color: var(--gold); text-decoration: none;
+    text-shadow: 0 0 24px rgba(201,168,76,0.4);
+  }
+  .nav-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .bird-logo {
+    width: 38px; height: 38px; opacity: 0.85;
+    filter: drop-shadow(0 0 6px rgba(201,168,76,0.3));
+  }
+  .brand-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.35em;
+    color: var(--gold-dim); text-transform: uppercase; margin-top: 2px;
+  }
+
+  /* ─── PROGRESS ─── */
+  .checkout-progress {
+    margin-top: 72px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 48px;
+    display: flex; align-items: stretch; height: 52px;
+  }
+  .progress-step {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 28px 0 0; position: relative;
+  }
+  .progress-step:not(:last-child)::after {
+    content: '›'; position: absolute; right: 8px;
+    color: var(--gold-dim); font-size: 0.7rem;
+  }
+  .step-num {
+    width: 20px; height: 20px;
+    border: 1px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem; color: var(--gold-dim); flex-shrink: 0;
+  }
+  .progress-step.done .step-num {
+    border-color: var(--green); color: var(--green);
+    background: rgba(78,204,163,0.08);
+  }
+  .progress-step.active .step-num {
+    border-color: var(--gold); color: var(--gold);
+    background: rgba(201,168,76,0.08);
+    box-shadow: 0 0 12px rgba(201,168,76,0.2);
+  }
+  .step-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .progress-step.done .step-label  { color: var(--green); opacity: 0.6; }
+  .progress-step.active .step-label { color: var(--gold); }
+
+  /* ─── HERO CONFIRM ─── */
+  .confirm-hero {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 64px 48px 48px;
+    text-align: center;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  /* Animated checkmark */
+  .check-ring {
+    position: relative; width: 80px; height: 80px; margin-bottom: 28px;
+  }
+  .check-ring svg { width: 80px; height: 80px; }
+  .ring-bg { stroke: rgba(201,168,76,0.1); }
+  .ring-fill {
+    stroke: var(--gold);
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    animation: drawRing 0.8s 0.2s ease forwards;
+    filter: drop-shadow(0 0 6px rgba(201,168,76,0.5));
+  }
+  .check-mark {
+    stroke: var(--green);
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: drawCheck 0.4s 0.9s ease forwards;
+    filter: drop-shadow(0 0 4px rgba(78,204,163,0.6));
+  }
+  @keyframes drawRing {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+  }
+
+  .confirm-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.5em;
+    color: var(--green); text-transform: uppercase;
+    margin-bottom: 12px;
+    animation: fadeUp 0.5s 0.6s ease both; opacity: 0;
+  }
+  .confirm-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    letter-spacing: 0.06em; line-height: 0.95;
+    color: var(--text);
+    animation: fadeUp 0.5s 0.7s ease both; opacity: 0;
+  }
+  .confirm-title em { color: var(--gold); font-style: normal; }
+  .confirm-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 300; font-size: 1rem;
+    letter-spacing: 0.15em; color: var(--text-muted);
+    margin-top: 12px; max-width: 460px;
+    animation: fadeUp 0.5s 0.8s ease both; opacity: 0;
+  }
+
+  /* Order number badge */
+  .order-badge {
+    display: inline-flex; align-items: center; gap: 12px;
+    margin-top: 28px;
+    padding: 12px 24px;
+    background: var(--surface); border: 1px solid var(--border);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    animation: fadeUp 0.5s 0.9s ease both; opacity: 0;
+  }
+  .order-badge-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem; letter-spacing: 0.35em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .order-badge-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem; letter-spacing: 0.12em; color: var(--gold);
+  }
+
+  /* ─── MAIN LAYOUT ─── */
+  .confirm-wrap {
+    max-width: 960px; margin: 0 auto;
+    padding: 0 48px 80px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 40px; align-items: start;
+  }
+
+  /* ─── PANELS ─── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px; margin-bottom: 20px;
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+  }
+  .panel:last-child { margin-bottom: 0; }
+  .panel::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 28px; height: 28px;
+    border-top: 1px solid var(--gold); border-left: 1px solid var(--gold);
+    opacity: 0.4; pointer-events: none;
+  }
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem; letter-spacing: 0.08em;
+    color: var(--text); margin-bottom: 20px;
+  }
+  .panel-title em { color: var(--gold); font-style: normal; }
+
+  /* Order items */
+  .order-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.07);
+  }
+  .order-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .order-thumb {
+    width: 48px; height: 48px; flex-shrink: 0;
+    background: var(--bg3); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .order-thumb svg { width: 22px; height: 22px; opacity: 0.35; }
+  .order-info { flex: 1; min-width: 0; }
+  .order-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: 0.9rem; letter-spacing: 0.06em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .order-variant {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.5rem; letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase; margin-top: 3px;
+  }
+  .order-qty {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem; letter-spacing: 0.2em;
+    color: var(--text-muted); white-space: nowrap;
+  }
+  .order-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 0.05em; color: var(--gold);
+    white-space: nowrap;
+  }
+  .order-price sup {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.65rem; vertical-align: super;
+  }
+
+  /* Details grid */
+  .details-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  .detail-block {}
+  .detail-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.52rem; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .detail-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500; font-size: 0.9rem;
+    letter-spacing: 0.05em; color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* Tracking timeline */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-step {
+    display: flex; gap: 16px; position: relative;
+    padding-bottom: 20px;
+  }
+  .tl-step:last-child { padding-bottom: 0; }
+  .tl-step:not(:last-child) .tl-dot::after {
+    content: '';
+    position: absolute; left: 6px; top: 14px;
+    width: 1px; bottom: 0;
+    background: var(--border);
+  }
+  .tl-dot {
+    position: relative; flex-shrink: 0;
+    width: 13px; height: 13px; margin-top: 3px;
+    border-radius: 50%; border: 1px solid var(--gold-dim);
+    background: var(--bg);
+  }
+  .tl-dot.done {
+    border-color: var(--green);
+    background: rgba(78,204,163,0.15);
+  }
+  .tl-dot.active {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.15);
+    box-shadow: 0 0 10px rgba(201,168,76,0.3);
+  }
+  .tl-content {}
+  .tl-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: 0.88rem;
+    letter-spacing: 0.08em; color: var(--text);
+  }
+  .tl-step:not(.done):not(.active) .tl-title { color: var(--text-muted); }
+  .tl-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.5rem; letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase; margin-top: 3px;
+  }
+
+  /* ─── RIGHT COLUMN ─── */
+  .right-col { display: flex; flex-direction: column; gap: 20px; }
+
+  /* Totals panel */
+  .totals-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    position: relative;
+    animation: fadeUp 0.5s 0.15s ease both;
+  }
+  .totals-panel::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 24px; height: 24px;
+    border-top: 1px solid var(--gold); border-right: 1px solid var(--gold);
+    opacity: 0.4; pointer-events: none;
+  }
+  .t-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .t-row-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .t-row-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: 0.9rem; color: var(--text);
+  }
+  .t-row-val.free { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 0.58rem; }
+  .t-divider { height: 1px; background: var(--border); margin: 16px 0; }
+  .t-total {
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .t-total-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 0.12em;
+  }
+  .t-total-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 0.06em; color: var(--gold);
+    text-shadow: 0 0 20px rgba(201,168,76,0.2);
+  }
+  .t-total-val sup {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.85rem; vertical-align: super;
+  }
+
+  /* Actions */
+  .action-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    animation: fadeUp 0.5s 0.2s ease both;
+  }
+  .btn-primary {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.8rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    padding: 16px; text-align: center;
+    background: var(--gold); color: #0A0A0A;
+    border: none; cursor: pointer; text-decoration: none; display: block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    box-shadow: 0 0 30px rgba(201,168,76,0.4);
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase;
+    padding: 14px; text-align: center;
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border); cursor: pointer; text-decoration: none; display: block;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+  /* Email note */
+  .email-note {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 14px 16px;
+    background: rgba(78,204,163,0.04);
+    border: 1px solid rgba(78,204,163,0.15);
+    animation: fadeUp 0.5s 0.25s ease both;
+  }
+  .email-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(78,204,163,0.6);
+    flex-shrink: 0; margin-top: 3px;
+  }
+  .email-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.52rem; letter-spacing: 0.22em;
+    color: var(--text-muted); text-transform: uppercase; line-height: 1.6;
+  }
+  .email-text strong { color: var(--green); font-weight: normal; }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 0.12em; color: var(--gold-dim);
+  }
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1100px) {
+    nav { padding: 0 32px; }
+    .checkout-progress { padding: 0 32px; }
+    .confirm-wrap { padding: 0 32px 64px; }
+    .confirm-hero { padding: 56px 32px 40px; }
+  }
+
+  @media (max-width: 860px) {
+    nav { padding: 0 24px; }
+    .nav-center { display: none; }
+    .checkout-progress { padding: 0 24px; }
+    .confirm-hero { padding: 48px 24px 32px; }
+    .confirm-wrap {
+      grid-template-columns: 1fr;
+      max-width: 620px;
+      padding: 0 24px 56px;
+      gap: 0;
+    }
+    .right-col { margin-top: 20px; }
+    .details-grid { grid-template-columns: 1fr; gap: 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .checkout-progress { gap: 0; }
+    .progress-step { padding: 0 16px 0 0; }
+    .step-label { display: none; }
+    .confirm-wrap { padding: 0 14px 48px; }
+    .panel { padding: 18px 14px; }
+    .confirm-hero { padding: 40px 14px 24px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 16px; }
+  }
+
+  .nav-right {
+    display: flex;
+    gap: 36px;
+  }
+  .nav-right a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.25s;
+  }
+  .nav-right a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width 0.3s;
+  }
+  .nav-right a:hover { color: var(--gold); }
+  .nav-right a:hover::after { width: 100%; }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="telepath-store.html" class="nav-logo">TELEPATH</a>
+  <div class="nav-center">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <svg class="bird-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M40 18 L14 38 L24 38 L20 62 L40 48 L60 62 L56 38 L66 38 Z" fill="#C9A84C" opacity="0.9"/>
+        <path d="M40 18 L28 32 L40 28 L52 32 Z" fill="#E2C06A"/>
+        <circle cx="14" cy="38" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="66" cy="38" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="20" cy="62" r="3.5" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="60" cy="62" r="3.5" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+      </svg>
+      <span class="brand-sub">Blackbird FPV</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="telepath-store.html#products">Products</a>
+    <a href="#" title="Coming soon">Configurator</a>
+  </div>
+</nav>
+
+<!-- ─── PROGRESS ─── -->
+<div class="checkout-progress">
+  <div class="progress-step done">
+    <div class="step-num">✓</div>
+    <span class="step-label">Cart</span>
+  </div>
+  <div class="progress-step done">
+    <div class="step-num">✓</div>
+    <span class="step-label">Checkout</span>
+  </div>
+  <div class="progress-step active">
+    <div class="step-num">03</div>
+    <span class="step-label">Confirm</span>
+  </div>
+</div>
+
+<!-- ─── HERO ─── -->
+<div class="confirm-hero">
+  <div class="check-ring">
+    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="34" stroke-width="2" class="ring-bg"/>
+      <circle cx="40" cy="40" r="34" stroke-width="2" stroke-linecap="round"
+        transform="rotate(-90 40 40)" class="ring-fill"/>
+      <path d="M26 40 L35 50 L54 30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+        fill="none" class="check-mark"/>
+    </svg>
+  </div>
+  <div class="confirm-eyebrow">Order Confirmed</div>
+  <h1 class="confirm-title">You're <em>Ready</em><br>to Fly.</h1>
+  <p class="confirm-sub">Your build is on its way. We'll keep you updated every step.</p>
+  <div class="order-badge">
+    <span class="order-badge-label">Order</span>
+    <span class="order-badge-num">#TLP-20250307-4821</span>
+  </div>
+</div>
+
+<!-- ─── CONTENT ─── -->
+<div class="confirm-wrap">
+
+  <!-- LEFT -->
+  <div>
+
+    <!-- Items ordered -->
+    <div class="panel" style="animation-delay:0s">
+      <div class="panel-title">Items <em>Ordered</em></div>
+      <div id="order-items"></div>
+
+    <!-- Shipping & billing details -->
+    <div class="panel" style="animation-delay:0.08s">
+      <div class="panel-title">Delivery <em>Details</em></div>
+      <div class="details-grid">
+        <div class="detail-block">
+          <div class="detail-label">Ship To</div>
+          <div class="detail-val">
+            Luca Rossi<br>
+            Via Roma, 42<br>
+            00100 Roma RM<br>
+            Italy
+          </div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Shipping Method</div>
+          <div class="detail-val">Standard Shipping<br>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--text-muted);">5–8 BUSINESS DAYS</span>
+          </div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Payment</div>
+          <div class="detail-val">
+            Visa •••• 4821
+          </div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">Contact</div>
+          <div class="detail-val">
+            <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a7dec8d2e7c2dfc6cad7cbc289c4c8ca">[email&#160;protected]</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tracking timeline -->
+    <div class="panel" style="animation-delay:0.16s">
+      <div class="panel-title">Order <em>Status</em></div>
+      <div class="timeline">
+        <div class="tl-step done">
+          <div class="tl-dot done"></div>
+          <div class="tl-content">
+            <div class="tl-title">Order Received</div>
+            <div class="tl-sub">Today, 07 Mar 2025 — 16:31</div>
+          </div>
+        </div>
+        <div class="tl-step active">
+          <div class="tl-dot active"></div>
+          <div class="tl-content">
+            <div class="tl-title">Processing</div>
+            <div class="tl-sub">Estimated 1–2 business days</div>
+          </div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Dispatched</div>
+            <div class="tl-sub">Tracking number via email</div>
+          </div>
+        </div>
+        <div class="tl-step">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Delivered</div>
+            <div class="tl-sub">Estimated 12–14 Mar 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+
+    <!-- Totals -->
+    <div class="totals-panel">
+      <div class="panel-title" style="margin-bottom:16px;">Total <em>Paid</em></div>
+      <div class="t-row">
+        <span class="t-row-label">Subtotal</span>
+        <span class="t-row-val">€245.40</span>
+      </div>
+      <div class="t-row">
+        <span class="t-row-label">Shipping</span>
+        <span class="t-row-val free">FREE</span>
+      </div>
+      <div class="t-divider"></div>
+      <div class="t-total">
+        <span class="t-total-label">Total</span>
+        <span class="t-total-val"><sup>€</sup><span id="confirm-total">—</span></span>
+      </div>
+    </div>
+
+    <!-- Email confirmation -->
+    <div class="email-note">
+      <div class="email-dot"></div>
+      <div class="email-text">
+        Confirmation sent to<br>
+        <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2b52445e6b4e534a465b474e05484446">[email&#160;protected]</a></strong>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-panel">
+      <a href="telepath-store.html" class="btn-primary">Continue Shopping</a>
+      <a href="#" class="btn-secondary" onclick="window.print(); return false;">Print / Save
+<script>
+  // ═══════════════════════════════════════
+  // TELEPATH CONFIRM — render order summary
+  // ═══════════════════════════════════════
+  const CART_KEY = 'telepath_cart';
+
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function renderOrderItems() {
+    const cart = getCart();
+    const container = document.getElementById('order-items');
+    if (!container) return;
+
+    if (cart.length === 0) {
+      container.innerHTML = '<p style="font-size:0.8rem;color:var(--text-muted);padding:12px 0;">No items found.</p>';
+      return;
+    }
+
+    let total = 0;
+    cart.forEach(item => {
+      const lineTotal = item.price * item.qty;
+      total += lineTotal;
+      const el = document.createElement('div');
+      el.className = 'order-item';
+      el.innerHTML = `
+        <div class="order-item-info" style="flex:1;">
+          <div style="font-family:'Rajdhani',sans-serif;font-weight:600;font-size:0.88rem;letter-spacing:0.05em;">${item.name}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Qty: ${item.qty}</div>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:0.85rem;color:var(--gold);">€${lineTotal.toFixed(2)}</div>
+      `;
+      container.appendChild(el);
+    });
+
+    // Update total
+    const shipping = total >= 100 ? 0 : 8.90;
+    const grandTotal = total + shipping;
+    const totalEl = document.getElementById('confirm-total');
+    if (totalEl) totalEl.textContent = grandTotal.toFixed(2);
+
+    // Clear cart after showing
+    localStorage.removeItem(CART_KEY);
+  }
+
+  renderOrderItems();
+</script>
+</body>
+</html>

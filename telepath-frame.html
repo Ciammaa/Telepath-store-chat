@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TELEPATH — Product Name</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<style>
+
+
+  :root {
+    --gold:       #C9A84C;
+    --gold-light: #E2C06A;
+    --gold-dim:   #8A6E2F;
+    --gold-glow:  rgba(201,168,76,0.18);
+    --bg:         #0A0A0A;
+    --bg2:        #111111;
+    --bg3:        #181818;
+    --surface:    #141414;
+    --border:     rgba(201,168,76,0.18);
+    --text:       #E8E0D0;
+    --text-muted: #7A7060;
+    --red:        #C0392B;
+    --blue:       #2980B9;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.6;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 72px;
+    background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.80) 100%);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 2rem; letter-spacing: 0.12em;
+    color: var(--gold); text-decoration: none;
+    text-shadow: 0 0 24px rgba(201,168,76,0.4);
+    transition: text-shadow 0.3s;
+  }
+  .nav-logo:hover { text-shadow: 0 0 40px rgba(201,168,76,0.8); }
+  .nav-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .bird-logo {
+    width: 38px; height: 38px; opacity: 0.85;
+    transition: opacity 0.3s, filter 0.3s;
+    filter: drop-shadow(0 0 6px rgba(201,168,76,0.3));
+  }
+  .bird-logo:hover { opacity: 1; filter: drop-shadow(0 0 12px rgba(201,168,76,0.6)); }
+  .brand-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.35em;
+    color: var(--gold-dim); text-transform: uppercase; margin-top: 2px;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: 0.85rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-muted); text-decoration: none;
+    position: relative; transition: color 0.25s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px; background: var(--gold); transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ─── BREADCRUMB ─── */
+  .breadcrumb-bar {
+    margin-top: 72px;
+    padding: 18px 48px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg2);
+  }
+  .breadcrumb-bar a, .breadcrumb-bar span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .breadcrumb-bar a:hover { color: var(--gold); }
+  .breadcrumb-sep { color: var(--gold-dim); font-size: 0.55rem; }
+  .breadcrumb-current { color: var(--gold); }
+
+  /* ─── MAIN PRODUCT LAYOUT ─── */
+  .product-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 48px 64px;
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) minmax(280px, 1fr);
+    gap: 56px;
+    align-items: start;
+  }
+
+  /* ─── IMAGE COLUMN ─── */
+  .image-col { position: sticky; top: 88px; }
+
+  .main-image-wrap {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    cursor: zoom-in;
+    transition: border-color 0.3s;
+  }
+  .main-image-wrap:hover { border-color: rgba(201,168,76,0.4); }
+
+  /* Corner accents */
+  .main-image-wrap::before,
+  .main-image-wrap::after {
+    content: '';
+    position: absolute;
+    width: 20px; height: 20px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .main-image-wrap::before {
+    top: 12px; left: 12px;
+    border-top: 1px solid var(--gold);
+    border-left: 1px solid var(--gold);
+    opacity: 0.7;
+  }
+  .main-image-wrap::after {
+    bottom: 12px; right: 12px;
+    border-bottom: 1px solid var(--gold);
+    border-right: 1px solid var(--gold);
+    opacity: 0.7;
+  }
+
+  /* Placeholder image grid */
+  .img-placeholder {
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background:
+      linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    position: relative;
+  }
+  .img-placeholder-icon {
+    width: 72px; height: 72px; opacity: 0.25;
+  }
+  .img-placeholder-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+  }
+
+  /* Active indicator overlay */
+  .image-zoom-hint {
+    position: absolute;
+    bottom: 16px; left: 50%; transform: translateX(-50%);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .main-image-wrap:hover .image-zoom-hint { opacity: 1; }
+
+  /* Thumbnail strip */
+  .thumb-strip {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .thumb {
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .thumb::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--gold-glow);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .thumb:hover { border-color: var(--gold-dim); }
+  .thumb:hover::after { opacity: 1; }
+  .thumb.active {
+    border-color: var(--gold);
+  }
+  .thumb.active::after { opacity: 1; }
+  .thumb-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.25em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    text-align: center;
+    padding: 4px;
+    z-index: 1;
+  }
+
+  /* ─── INFO COLUMN ─── */
+  .info-col { padding-top: 0; }
+
+  .product-category {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.45em;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .product-category::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+
+  .product-name {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    font-style: italic;
+    font-size: 3.2rem;
+    letter-spacing: 0.04em;
+    line-height: 0.95;
+    color: var(--text);
+    margin: 6px 0 0;
+    text-transform: uppercase;
+  }
+  .product-name em {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  .product-tagline {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 300;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* Key specs row */
+  .specs-quick {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-bottom: 20px;
+  }
+  .spec-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 12px;
+    text-align: center;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .spec-chip:hover {
+    border-color: rgba(201,168,76,0.35);
+    background: #161616;
+  }
+  .spec-chip-val {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 1.6rem;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .spec-chip-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .divider-line { height: 1px; background: var(--border); margin: 16px 0; }
+
+  /* Options */
+  .options-section { margin-bottom: 16px; }
+  .options-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.35em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .options-label-value {
+    color: var(--gold);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+  }
+
+  .option-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pill {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    padding: 10px 22px;
+    border: 1px solid rgba(201,168,76,0.2);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.22s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .pill:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .pill.active {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: 0 0 12px rgba(201,168,76,0.15);
+  }
+
+  /* Color pills */
+  .pill-color {
+    width: 40px; height: 40px;
+    border-radius: 0; padding: 0;
+    clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+  }
+  .pill-color.black-pill  { background: #1a1a1a; border-color: rgba(255,255,255,0.15); }
+  .pill-color.red-pill    { background: rgba(192,57,43,0.3); border-color: rgba(192,57,43,0.5); }
+  .pill-color.blue-pill   { background: rgba(41,128,185,0.3); border-color: rgba(41,128,185,0.5); }
+  .pill-color.black-pill.active  { border-color: #aaa; box-shadow: 0 0 10px rgba(255,255,255,0.1); }
+  .pill-color.red-pill.active    { border-color: var(--red); background: rgba(192,57,43,0.5); box-shadow: 0 0 12px rgba(192,57,43,0.3); }
+  .pill-color.blue-pill.active   { border-color: var(--blue); background: rgba(41,128,185,0.5); box-shadow: 0 0 12px rgba(41,128,185,0.3); }
+
+  /* Purchase row */
+  .purchase-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .price-block { flex: 0 0 auto; }
+  .price-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    margin-top: 10px;
+  }
+  .price-main {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 3rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(201,168,76,0.25);
+  }
+  .price-main sup {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    vertical-align: super;
+    letter-spacing: 0.05em;
+  }
+
+  .btn-primary {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 16px 40px;
+    background: var(--gold);
+    color: #0A0A0A;
+    border: none;
+    cursor: pointer;
+    transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    flex: 1;
+    min-width: 160px;
+    text-align: center;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    box-shadow: 0 0 30px rgba(201,168,76,0.5);
+    transform: translateY(-1px);
+  }
+  .btn-primary.added {
+    background: rgba(201,168,76,0.2);
+    color: var(--gold-light);
+    border: 1px solid var(--gold);
+  }
+
+  .btn-outline {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: 0.8rem;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    padding: 15px 28px;
+    background: transparent; color: var(--gold);
+    border: 1px solid var(--gold-dim); cursor: pointer;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    text-decoration: none; display: inline-block;
+  }
+  .btn-outline:hover {
+    border-color: var(--gold); box-shadow: 0 0 20px rgba(201,168,76,0.2);
+    transform: translateY(-1px);
+  }
+
+  /* Stock badge */
+  .stock-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-top: 16px;
+  }
+  .stock-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #4ecca3;
+    box-shadow: 0 0 8px rgba(78,204,163,0.6);
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+  .stock-dot.out { background: var(--red); box-shadow: 0 0 8px rgba(192,57,43,0.6); animation: none; }
+
+  /* ─── DETAILS SECTION ─── */
+  .details-section {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+
+  .details-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  /* Tab nav */
+  .tab-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    gap: 0;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 22px 32px;
+    background: transparent;
+    color: var(--text-muted);
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.25s, border-color 0.25s;
+    white-space: nowrap;
+    position: relative;
+    top: 1px;
+  }
+  .tab-btn:hover { color: var(--gold); }
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .tab-content { display: none; padding: 60px 0 80px; }
+  .tab-content.active { display: block; }
+
+  /* Description tab */
+  .desc-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: start;
+  }
+  .desc-text h3 {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 2.2rem;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+  .desc-text h3 em { color: var(--gold); font-style: italic; }
+  .desc-text p {
+    font-size: 0.97rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .feature-icon {
+    color: var(--gold);
+    font-size: 0.65rem;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .feature-list strong {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  /* Specs tab */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+  .spec-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .spec-row:hover {
+    border-color: rgba(201,168,76,0.3);
+    background: #161616;
+  }
+  .spec-row-key {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .spec-row-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    text-align: right;
+  }
+  .spec-row-val em {
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  /* In The Box tab */
+  .inbox-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .inbox-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .inbox-item::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gold-glow) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .inbox-item:hover { border-color: rgba(201,168,76,0.4); background: #161616; }
+  .inbox-item:hover::before { opacity: 1; }
+  .inbox-qty {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 2.8rem;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  .inbox-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.15em;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .inbox-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  /* ─── PHOTO GALLERY ─── */
+  .gallery-section {
+    background: var(--bg);
+    padding: 80px 48px;
+    border-top: 1px solid var(--border);
+  }
+  .gallery-inner { max-width: 1280px; margin: 0 auto; }
+  .gallery-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.45em;
+    color: var(--gold);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+  .section-title {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: 0.06em;
+    line-height: 1;
+    color: var(--text);
+    margin-top: 8px;
+  }
+  .section-title em { color: var(--gold); font-style: italic; }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 260px 260px;
+    gap: 2px;
+  }
+  .photo-grid-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s;
+  }
+  .photo-grid-item::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gold-glow) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .photo-grid-item:hover { border-color: rgba(201,168,76,0.4); }
+  .photo-grid-item:hover::after { opacity: 1; }
+  .photo-grid-item.wide {
+    grid-column: span 2;
+  }
+  .photo-grid-item.tall {
+    grid-row: span 2;
+  }
+
+  .photo-placeholder {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.35em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    text-align: center;
+    padding: 20px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .photo-placeholder svg {
+    width: 32px; height: 32px; opacity: 0.3;
+  }
+
+  /* ─── RELATED PRODUCTS ─── */
+  .related-section {
+    background: var(--bg2);
+    padding: 80px 48px;
+    border-top: 1px solid var(--border);
+  }
+  .related-inner { max-width: 1280px; margin: 0 auto; }
+  .related-header { margin-bottom: 48px; }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .related-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 36px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, background 0.3s;
+    text-decoration: none;
+    display: block;
+  }
+  .related-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--gold-glow) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .related-card:hover { border-color: rgba(201,168,76,0.45); background: #161616; }
+  .related-card:hover::before { opacity: 1; }
+
+  .related-img {
+    aspect-ratio: 4/3;
+    background: var(--bg3);
+    border: 1px solid rgba(201,168,76,0.08);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .related-img-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+  }
+  .related-cat {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .related-name {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 2rem;
+    letter-spacing: 0.07em;
+    color: var(--text);
+    margin-bottom: 8px;
+    transition: color 0.3s;
+  }
+  .related-card:hover .related-name { color: var(--gold); }
+  .related-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .related-price {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 1.4rem;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 1.4rem; letter-spacing: 0.12em; color: var(--gold-dim);
+  }
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted);
+  }
+
+  /* ─── CART ─── */
+  .cart-float {
+    position: fixed; bottom: 32px; right: 32px; z-index: 200;
+    background: var(--surface); border: 1px solid var(--gold-dim);
+    padding: 14px 22px; display: flex; align-items: center; gap: 12px;
+    cursor: pointer; transition: all 0.3s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+  }
+  .cart-float.visible { transform: translateY(0); opacity: 1; }
+  .cart-float:hover { border-color: var(--gold); box-shadow: 0 4px 40px rgba(201,168,76,0.2); }
+  .cart-icon { color: var(--gold); font-size: 1rem; }
+  .cart-count { font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic; font-size: 1.1rem; color: var(--gold); }
+  .cart-label { font-family: 'Share Tech Mono', monospace; font-size: 0.58rem; letter-spacing: 0.25em; color: var(--text-muted); text-transform: uppercase; }
+  .cart-total { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--gold); border-left: 1px solid var(--border); padding-left: 12px; margin-left: 4px; }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulseDot {
+    0%,100% { box-shadow: 0 0 6px rgba(78,204,163,0.4); }
+    50%      { box-shadow: 0 0 14px rgba(78,204,163,0.9); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
+  .reveal-delay-4 { transition-delay: 0.32s; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .nav-center { display: none; }
+    .breadcrumb-bar { padding: 14px 24px; }
+    .product-main { grid-template-columns: 1fr; gap: 24px; padding: 20px 20px 48px; }
+    .image-col { position: static; }
+    .desc-layout { grid-template-columns: 1fr; gap: 40px; }
+    .inbox-grid { grid-template-columns: repeat(2, 1fr); }
+    .photo-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+    .photo-grid-item.wide, .photo-grid-item.tall { grid-column: auto; grid-row: auto; }
+    .specs-quick { grid-template-columns: repeat(3, 1fr); }
+    .related-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 28px 24px; }
+    .gallery-section, .related-section { padding: 60px 24px; }
+    .details-inner { padding: 0 24px; }
+    .tab-btn { padding: 16px 18px; font-size: 0.72rem; }
+    .specs-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="telepath-store.html" class="nav-logo">TELEPATH</a>
+
+  <div class="nav-center">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <svg class="bird-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M40 18 L14 38 L24 38 L20 62 L40 48 L60 62 L56 38 L66 38 Z" fill="#C9A84C" opacity="0.9"/>
+        <path d="M40 18 L28 32 L40 28 L52 32 Z" fill="#E2C06A"/>
+        <circle cx="14" cy="38" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="66" cy="38" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="20" cy="62" r="3.5" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="60" cy="62" r="3.5" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+      </svg>
+      <span class="brand-sub">BlackBird FPV</span>
+    </div>
+  </div>
+
+  <ul class="nav-links">
+    <li>
+      <a href="telepath-cart.html" class="nav-cart-link" title="Cart" style="display:flex;align-items:center;gap:6px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <line x1="3" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M16 10a4 4 0 01-8 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </a>
+    </li>
+    <li><a href="telepath-store.html#products">Products</a></li>
+    <li><a href="#">Configurator</a></li>
+  </ul>
+</nav>
+
+<!-- ─── BREADCRUMB ─── -->
+<div class="breadcrumb-bar">
+  <a href="telepath-store.html">Store</a>
+  <span class="breadcrumb-sep">›</span>
+  <a href="telepath-store.html#products">Products</a>
+  <span class="breadcrumb-sep">›</span>
+  <span class="breadcrumb-current">BlackBird Frame</span>
+</div>
+
+<!-- ─── MAIN PRODUCT SECTION ─── -->
+<div class="product-main">
+
+  <!-- LEFT: Image -->
+  <div class="image-col reveal">
+
+    <div class="main-image-wrap" id="mainImage">
+      <!-- Replace with <img src="..." alt="..."> -->
+      <div class="img-placeholder">
+        <svg class="img-placeholder-icon" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="14" width="56" height="44" rx="2" stroke="#C9A84C" stroke-width="2" fill="none"/>
+          <circle cx="24" cy="30" r="6" stroke="#C9A84C" stroke-width="2" fill="none"/>
+          <path d="M8 50 L22 36 L32 46 L44 32 L64 58" stroke="#C9A84C" stroke-width="2" fill="none" opacity="0.5"/>
+        </svg>
+        <span class="img-placeholder-label">Product Photo Here</span>
+      </div>
+      <span class="image-zoom-hint">Click to enlarge</span>
+    </div>
+
+    <!-- Thumbnails -->
+    <div class="thumb-strip">
+      <div class="thumb active" onclick="setThumb(this, 0)">
+        <span class="thumb-label">View 1</span>
+      </div>
+      <div class="thumb" onclick="setThumb(this, 1)">
+        <span class="thumb-label">View 2</span>
+      </div>
+      <div class="thumb" onclick="setThumb(this, 2)">
+        <span class="thumb-label">View 3</span>
+      </div>
+      <div class="thumb" onclick="setThumb(this, 3)">
+        <span class="thumb-label">Detail</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: Product Info -->
+  <div class="info-col">
+
+    <div class="product-category reveal">01 / Frame</div>
+
+    <h1 class="product-name reveal reveal-delay-1">
+      BlackBird <em id="prod-name">Frame</em>
+    </h1>
+
+    <!-- PRICE — immediately after the name, always above the fold -->
+    <div class="reveal reveal-delay-1">
+      <div class="price-note" id="price-note">Frame Kit</div>
+      <div class="price-main" id="price-main" style="opacity:0.35; font-size:1.8rem; letter-spacing:0.2em;">COMING SOON</div>
+      <div class="stock-badge" style="margin-top:10px;">
+        <span class="stock-dot"></span>
+        In Stock — Ships within 3–5 business days
+      </div>
+    </div>
+
+    <div class="divider-line reveal reveal-delay-2"></div>
+
+    <p class="product-tagline reveal reveal-delay-2">
+      <span id="prod-tagline">Two arm configurations.<br>4.9" for tight and aggressive. 5.1" for power and range.</span>
+    </p>
+
+    <!-- Quick specs -->
+    <div class="specs-quick reveal reveal-delay-2">
+      <div class="spec-chip">
+        <span class="spec-chip-val" id="chip1-val">4.9"</span>
+        <span class="spec-chip-label" id="chip1-lab">Arm Length</span>
+      </div>
+      <div class="spec-chip">
+        <span class="spec-chip-val" id="chip2-val">—</span>
+        <span class="spec-chip-label" id="chip2-lab">Weight</span>
+      </div>
+      <div class="spec-chip">
+        <span class="spec-chip-val" id="chip3-val">—</span>
+        <span class="spec-chip-label" id="chip3-lab">Carbon</span>
+      </div>
+    </div>
+
+    <div class="divider-line reveal reveal-delay-3"></div>
+
+    <!-- Options: Arm length -->
+    <div class="options-section reveal reveal-delay-3">
+      <div class="options-label">
+        Arm Length
+        <span class="options-label-value" id="bundleLabel">— 4.9"</span>
+      </div>
+      <div class="option-pills" id="stack-bundle">
+        <button class="pill active" onclick="selectBundle(this, '49')">
+          4.9"
+        </button>
+        <button class="pill" onclick="selectBundle(this, '51')">
+          5.1"
+        </button>
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace; font-size:0.55rem; letter-spacing:0.2em; color:var(--text-muted); margin-top:8px; text-transform:uppercase;">
+        <span id="bundleDesc">Tight geometry — snappy, responsive, built for technical flying</span>
+      </div>
+    </div>
+
+
+
+    <!-- CTA buttons -->
+    <div class="purchase-row reveal reveal-delay-4">
+      <button class="btn-primary" id="addBtn" onclick="handleAdd(this)">
+        Add to Cart
+      </button>
+      <a href="telepath-store.html#products" class="btn-outline">View All</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── DETAILS TABS ─── -->
+<div class="details-section">
+  <div class="details-inner">
+
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab(this, 'tab-desc')">Description</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-specs')">Specifications</button>
+      <button class="tab-btn" onclick="switchTab(this, 'tab-inbox')">In The Box</button>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="tab-content active" id="tab-desc">
+      <div class="desc-layout">
+        <div class="desc-text">
+          <h3>One Frame. <em>Two Personalities.</em></h3>
+          <p>
+            The BlackBird Frame is designed around two arm lengths — <strong>4.9"</strong> and <strong>5.1"</strong> —
+            giving you the choice between a snappy, technical geometry and a wider, more planted feel
+            without changing anything else about the build.
+          </p>
+          <p>
+            Full specs — carbon grade, weight, thickness, screw pattern and mounting options — are
+            coming soon. The frame is being finalised and we'll update this page the moment we have numbers.
+          </p>
+        </div>
+        <ul class="feature-list">
+          <li>
+            <span class="feature-icon">◈</span>
+            <span><strong>4.9" arm</strong> — tighter geometry for aggressive, technical flying and snap freestyle</span>
+          </li>
+          <li>
+            <span class="feature-icon">◈</span>
+            <span><strong>5.1" arm</strong> — wider stance for more planted feel, better efficiency and longer range</span>
+          </li>
+          <li>
+            <span class="feature-icon">◈</span>
+            <span><strong>Designed around the BB39 props</strong> — both arm lengths pair directly with the BlackBird prop lineup</span>
+          </li>
+          <li>
+            <span class="feature-icon">◈</span>
+            <span><strong>Full specs coming soon</strong> — carbon type, weight, thickness and hardware details being finalised</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SPECS -->
+    <div class="tab-content" id="tab-specs">
+      <div class="specs-grid">
+        <div id="specs-shared">
+          <div class="spec-row">
+            <span class="spec-row-key">Arm Length</span>
+            <span class="spec-row-val" id="spec-arm"><em>4.9"</em></span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-row-key">Prop Compatibility</span>
+            <span class="spec-row-val" id="spec-prop"><em>4.9"</em> props (e.g. BB39)</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-row-key">Weight</span>
+            <span class="spec-row-val" style="opacity:0.45; font-style:italic;">Coming soon</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-row-key">Carbon Type</span>
+            <span class="spec-row-val" style="opacity:0.45; font-style:italic;">Coming soon</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-row-key">Carbon Thickness</span>
+            <span class="spec-row-val" style="opacity:0.45; font-style:italic;">Coming soon</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-row-key">Screw Pattern</span>
+            <span class="spec-row-val" style="opacity:0.45; font-style:italic;">Coming soon</span>
+          </div>
+          <div class="spec-row">
+            <span class="spec-row-key">Stack Mount</span>
+            <span class="spec-row-val" style="opacity:0.45; font-style:italic;">Coming soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IN THE BOX -->
+    <div class="tab-content" id="tab-inbox">
+      <div class="inbox-grid">
+        <div class="inbox-item">
+          <div class="inbox-qty">1×</div>
+          <div class="inbox-name">Frame Kit</div>
+          <div class="inbox-note">Full hardware<br>details coming soon</div>
+        </div>
+        <div class="inbox-item">
+          <div class="inbox-qty">—</div>
+          <div class="inbox-name">Carbon Parts</div>
+          <div class="inbox-note">Spec &amp; count<br>TBC</div>
+        </div>
+        <div class="inbox-item">
+          <div class="inbox-qty">—</div>
+          <div class="inbox-name">Hardware Pack</div>
+          <div class="inbox-note">Screws &amp; accessories<br>TBC</div>
+        </div>
+        <div id="inbox-fc" style="display:none;">
+          <div class="inbox-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+            <div class="inbox-item">
+              <div class="inbox-qty">1×</div>
+              <div class="inbox-name">H7 Flight Controller</div>
+              <div class="inbox-note">Dual gyro<br>H7 processor</div>
+            </div>
+            <div class="inbox-item">
+              <div class="inbox-qty">—</div>
+              <div class="inbox-name">Mounting Hardware</div>
+              <div class="inbox-note">Screws &amp;<br>standoffs</div>
+            </div>
+          </div>
+        </div>
+        <div id="inbox-esc" style="display:none;">
+          <div class="inbox-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+            <div class="inbox-item">
+              <div class="inbox-qty">1×</div>
+              <div class="inbox-name">AM32 ESC</div>
+              <div class="inbox-note">F4 / 50A<br>4-in-1</div>
+            </div>
+            <div class="inbox-item">
+              <div class="inbox-qty">—</div>
+              <div class="inbox-name">Mounting Hardware</div>
+              <div class="inbox-note">Screws &amp;<br>standoffs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── PHOTO GALLERY ─── -->
+<div class="gallery-section">
+  <div class="gallery-inner">
+    <div class="gallery-header reveal">
+      <div>
+        <div class="section-label">Gallery</div>
+        <h2 class="section-title">Product <em>Photos</em></h2>
+      </div>
+    </div>
+
+    <!-- 3×2 mosaic — replace divs with <img> tags -->
+    <div class="photo-grid reveal">
+      <div class="photo-grid-item wide" style="height:260px;">
+        <div class="photo-placeholder">
+          <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="5" width="28" height="22" rx="1" stroke="#C9A84C" stroke-width="1.5"/><path d="M2 22l8-8 6 6 6-8 10 10" stroke="#C9A84C" stroke-width="1.5" opacity="0.5"/></svg>
+          <span>Hero Shot — Replace with real photo</span>
+        </div>
+      </div>
+      <div class="photo-grid-item" style="height:260px;">
+        <div class="photo-placeholder">
+          <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="5" width="28" height="22" rx="1" stroke="#C9A84C" stroke-width="1.5"/><circle cx="10" cy="14" r="4" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/></svg>
+          <span>Detail Close-up</span>
+        </div>
+      </div>
+      <div class="photo-grid-item" style="height:260px;">
+        <div class="photo-placeholder">
+          <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="5" width="28" height="22" rx="1" stroke="#C9A84C" stroke-width="1.5"/></svg>
+          <span>Side View</span>
+        </div>
+      </div>
+      <div class="photo-grid-item" style="height:260px;">
+        <div class="photo-placeholder">
+          <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="5" width="28" height="22" rx="1" stroke="#C9A84C" stroke-width="1.5"/></svg>
+          <span>On-Drone Shot</span>
+        </div>
+      </div>
+      <div class="photo-grid-item wide" style="height:260px;">
+        <div class="photo-placeholder">
+          <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="5" width="28" height="22" rx="1" stroke="#C9A84C" stroke-width="1.5"/><path d="M2 22l8-8 6 6 6-8 10 10" stroke="#C9A84C" stroke-width="1.5" opacity="0.5"/></svg>
+          <span>Action / Lifestyle — Replace with real photo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── RELATED PRODUCTS ─── -->
+<div class="related-section">
+  <div class="related-inner">
+    <div class="related-header reveal">
+      <div class="section-label">You May Also Like</div>
+      <h2 class="section-title">Related <em>Products</em></h2>
+    </div>
+
+        <div class="related-grid">
+      <!-- Card 1 -->
+      <a href="telepath-executor.html" class="related-card reveal reveal-delay-1">
+        <div class="related-img"><span class="related-img-label">Product Photo</span></div>
+        <div class="related-cat">02 / Stack</div>
+        <div class="related-name">FC + ESC Stack</div>
+        <div class="related-desc">H7 Dual Gyro FC and F4 50A ESC. Full bundle or individual components.</div>
+        <div class="related-price">€ 149</div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="telepath-motors.html" class="related-card reveal reveal-delay-2">
+        <div class="related-img"><span class="related-img-label">Product Photo</span></div>
+        <div class="related-cat">03 / Motors</div>
+        <div class="related-name">Telepath Motors</div>
+        <div class="related-desc">Hand-wound brushless motors. Low-resistance windings, N52H magnets.</div>
+        <div class="related-price">€ 28</div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="telepath-props.html" class="related-card reveal reveal-delay-3">
+        <div class="related-img"><span class="related-img-label">Product Photo</span></div>
+        <div class="related-cat">04 / Props</div>
+        <div class="related-name">Telepath Props</div>
+        <div class="related-desc">Factory-balanced propellers, ultra-resistant reinforced polymer. Set of 4.</div>
+        <div class="related-price">€ 3</div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-logo">TELEPATH</div>
+  <div class="footer-copy">© 2025 BlackBird FPV — All rights reserved</div>
+  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:0.75rem;color:var(--text-muted);">Made for pilots, by pilots.</div>
+</footer>
+
+<!-- ─── CART FLOAT ─── -->
+<div class="cart-float" id="cartFloat" onclick="window.location.href='telepath-cart.html'" style="cursor:pointer;" title="Vai al carrello">
+  <span class="cart-icon">⬡</span>
+  <div>
+    <div class="cart-count" id="cartCount">0</div>
+    <div class="cart-label">items</div>
+  </div>
+  <div class="cart-total" id="cartTotal">€ 0</div>
+</div>
+
+<script>
+  // ─── Pill select ───
+  function selectPill(groupId, el) {
+    document.getElementById(groupId)
+      .querySelectorAll('.pill')
+      .forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function updateLabel(id, val) {
+    document.getElementById(id).textContent = val;
+  }
+
+  const frameData = {
+    '49': {
+      label:   '— 4.9"',
+      tagline: 'Tight geometry — snappy, responsive, built for technical flying',
+      chip1v:  '4.9"', chip1l: 'Arm Length',
+      chip2v:  '—',    chip2l: 'Weight',
+      chip3v:  '—',    chip3l: 'Carbon',
+      arm:     '4.9"',
+      prop:    '4.9" props (e.g. BB39)'
+    },
+    '51': {
+      label:   '— 5.1"',
+      tagline: 'Wider stance — planted, efficient, built for power and range',
+      chip1v:  '5.1"', chip1l: 'Arm Length',
+      chip2v:  '—',    chip2l: 'Weight',
+      chip3v:  '—',    chip3l: 'Carbon',
+      arm:     '5.1"',
+      prop:    '5.1" props'
+    }
+  };
+
+  function selectBundle(el, key) {
+    selectPill('stack-bundle', el);
+    const d = frameData[key];
+    document.getElementById('bundleLabel').textContent  = d.label;
+    document.getElementById('bundleDesc').textContent   = d.tagline;
+    document.getElementById('chip1-val').textContent    = d.chip1v;
+    document.getElementById('chip1-lab').textContent    = d.chip1l;
+    document.getElementById('chip2-val').textContent    = d.chip2v;
+    document.getElementById('chip2-lab').textContent    = d.chip2l;
+    document.getElementById('chip3-val').textContent    = d.chip3v;
+    document.getElementById('chip3-lab').textContent    = d.chip3l;
+    const armEl  = document.getElementById('spec-arm');
+    const propEl = document.getElementById('spec-prop');
+    if (armEl)  armEl.innerHTML  = '<em>' + d.arm + '</em>';
+    if (propEl) propEl.innerHTML = '<em>' + d.arm + '</em> props' + (key === '49' ? ' (e.g. BB39)' : '');
+  }
+
+  // ─── Thumbnails ───
+  function setThumb(el, idx) {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    // When real images: swap main image src here
+  }
+
+  // ─── Tab switching ───
+  function switchTab(btn, contentId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(contentId).classList.add('active');
+  }
+
+  // ─── Cart ───
+
+  // ═══════════════════════════════════════════
+  // TELEPATH CART — shared localStorage engine
+  // ═══════════════════════════════════════════
+  const CART_KEY = 'telepath_cart';
+
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }
+
+  function cartAdd(id, name, price) {
+    const cart = getCart();
+    const idx = cart.findIndex(i => i.id === id);
+    if (idx >= 0) cart[idx].qty += 1;
+    else cart.push({ id, name, price, qty: 1 });
+    saveCart(cart);
+    return cart;
+  }
+
+  function cartTotal(cart) {
+    return cart.reduce((s, i) => s + i.price * i.qty, 0);
+  }
+
+  function syncCartFloat() {
+    const cart = getCart();
+    const count = cart.reduce((s, i) => s + i.qty, 0);
+    const total = cartTotal(cart);
+    const countEl = document.getElementById('cartCount');
+    const totalEl = document.getElementById('cartTotal');
+    if (countEl) countEl.textContent = count;
+    if (totalEl) totalEl.textContent = '€ ' + total.toFixed(0);
+    const floatEl = document.getElementById('cartFloat');
+    if (floatEl) {
+      if (count > 0) floatEl.classList.add('visible');
+      else floatEl.classList.remove('visible');
+    }
+  }
+
+  function handleAdd(btn) {
+    const active = document.querySelector('#stack-bundle .pill.active');
+    const size = active ? active.dataset.value : '49';
+    const sizeLabel = size === '49' ? '4.9"' : '5.1"';
+    const price = size === '49' ? 109 : 119;
+    const id = 'frame-' + size;
+    const name = 'BlackBird Frame — ' + sizeLabel;
+
+    cartAdd(id, name, price);
+    syncCartFloat();
+
+    btn.textContent = '✓ Added';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = 'Add to Cart'; btn.classList.remove('added'); }, 1800);
+
+    const floatEl = document.getElementById('cartFloat');
+    if (floatEl) { floatEl.style.transform = 'translateY(0) scale(1.05)'; setTimeout(() => { floatEl.style.transform = 'translateY(0) scale(1)'; }, 200); }
+  }
+
+  syncCartFloat();
+
+
+  // ─── Scroll reveal ───
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.10 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
