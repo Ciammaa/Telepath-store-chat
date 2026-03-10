@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TELEPATH — Product Name</title>
+<title>TELEPATH — Frame</title>
 <link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
 <style>
 
@@ -25,7 +25,11 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; touch-action: manipulation; }
+  a, button, [onclick], .nav-hamburger {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 
   body {
     background: var(--bg);
@@ -51,11 +55,12 @@
     padding: 0 48px; height: 72px;
     background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.80) 100%);
     border-bottom: 1px solid var(--border);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
   .nav-logo {
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
-    font-size: 2rem; letter-spacing: 0.12em;
+    font-size: clamp(1rem, 3.5vw, 2rem); letter-spacing: 0.08em; white-space: nowrap;
     color: var(--gold); text-decoration: none;
     text-shadow: 0 0 24px rgba(201,168,76,0.4);
     transition: text-shadow 0.3s;
@@ -94,7 +99,7 @@
   /* ─── BREADCRUMB ─── */
   .breadcrumb-bar {
     margin-top: 72px;
-    padding: 18px 48px;
+    padding: 18px 5vw;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -116,12 +121,10 @@
 
   /* ─── MAIN PRODUCT LAYOUT ─── */
   .product-main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 48px 64px;
+    padding: 40px 5vw 80px;
     display: grid;
-    grid-template-columns: minmax(300px, 1fr) minmax(280px, 1fr);
-    gap: 56px;
+    grid-template-columns: minmax(300px, 1fr) minmax(320px, 1fr);
+    gap: clamp(48px, 6vw, 100px);
     align-items: start;
   }
 
@@ -269,7 +272,7 @@
   .product-name {
     font-family: 'Special Gothic Expanded One', sans-serif;
     font-style: italic;
-    font-size: 3.2rem;
+    font-size: clamp(2.2rem, 3.5vw, 3.4rem);
     letter-spacing: 0.04em;
     line-height: 0.95;
     color: var(--text);
@@ -491,9 +494,7 @@
   }
 
   .details-inner {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 48px;
+    padding: 0 5vw;
   }
 
   /* Tab nav */
@@ -672,7 +673,7 @@
   /* ─── PHOTO GALLERY ─── */
   .gallery-section {
     background: var(--bg);
-    padding: 80px 48px;
+    padding: 100px 5vw;
     border-top: 1px solid var(--border);
   }
   .gallery-inner { max-width: 1280px; margin: 0 auto; }
@@ -894,23 +895,92 @@
   .reveal-delay-4 { transition-delay: 0.32s; }
 
   /* ─── RESPONSIVE ─── */
+
+  /* ─── HAMBURGER ─── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px; height: 32px;
+    background: none; border: none;
+    cursor: pointer; padding: 4px; z-index: 200;
+  }
+  .nav-hamburger span {
+    display: block; width: 100%; height: 1.5px;
+    background: var(--gold);
+    transition: transform 0.3s, opacity 0.3s;
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
   @media (max-width: 768px) {
-    nav { padding: 0 24px; }
+    nav { padding: 0 16px; }
     .nav-center { display: none; }
-    .breadcrumb-bar { padding: 14px 24px; }
+    .nav-hamburger { display: flex; }
+    .nav-links {
+      display: none;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(10,10,10,0.98);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      gap: 0; padding: 12px 0 20px;
+      z-index: 99;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links li { list-style: none; }
+    .nav-links a { display: block; padding: 14px 24px; font-size: 1rem; letter-spacing: 0.15em; }
+    .nav-links a::after { display: none; }
+    .breadcrumb-bar { padding: 14px 16px; }
     .product-main { grid-template-columns: 1fr; gap: 24px; padding: 20px 20px 48px; }
     .image-col { position: static; }
     .desc-layout { grid-template-columns: 1fr; gap: 40px; }
-    .inbox-grid { grid-template-columns: repeat(2, 1fr); }
     .photo-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
     .photo-grid-item.wide, .photo-grid-item.tall { grid-column: auto; grid-row: auto; }
     .specs-quick { grid-template-columns: repeat(3, 1fr); }
-    .related-grid { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 16px; text-align: center; padding: 28px 24px; }
-    .gallery-section, .related-section { padding: 60px 24px; }
-    .details-inner { padding: 0 24px; }
-    .tab-btn { padding: 16px 18px; font-size: 0.72rem; }
+    .gallery-section { padding: 60px 24px; }
+    .details-inner { padding: 0 16px; }
+    .tab-btn { font-size: 0.6rem !important; padding: 14px 12px !important; letter-spacing: 0.2em !important; }
     .specs-grid { grid-template-columns: 1fr; }
+    /* Inbox compact rows */
+    .inbox-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 2px !important;
+    }
+    .inbox-item {
+      display: grid !important;
+      grid-template-columns: 48px 1fr auto !important;
+      align-items: center !important;
+      gap: 12px !important;
+      padding: 14px 16px !important;
+      text-align: left !important;
+    }
+    .inbox-qty { font-size: 1.4rem !important; margin-bottom: 0 !important; text-align: center !important; }
+    .inbox-name { font-size: 0.85rem !important; margin-bottom: 2px !important; letter-spacing: 0.08em !important; }
+    .inbox-note { font-size: 0.5rem !important; letter-spacing: 0.15em !important; text-align: right !important; white-space: nowrap !important; }
+    /* Related compact list */
+    .related-section { padding: 40px 16px; }
+    .related-grid { grid-template-columns: 1fr; gap: 2px; }
+    .related-card {
+      padding: 14px 16px !important;
+      display: grid !important;
+      grid-template-columns: 1fr auto !important;
+      grid-template-rows: auto auto !important;
+      align-items: center !important;
+      gap: 0 16px !important;
+    }
+    .related-img { display: none !important; }
+    .related-cat { grid-column: 1; grid-row: 1; margin-bottom: 2px; font-size: 0.48rem; }
+    .related-name { grid-column: 1; grid-row: 2; font-size: 1.1rem !important; margin-bottom: 0 !important; line-height: 1; }
+    .related-desc { display: none !important; }
+    .related-price { grid-column: 2; grid-row: 1 / 3; font-size: 1rem !important; white-space: nowrap; }
+    footer { flex-direction: column; gap: 16px; text-align: center; padding: 28px 24px; }
   }
 </style>
 </head>
@@ -934,7 +1004,10 @@
     </div>
   </div>
 
-  <ul class="nav-links">
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
     <li>
       <a href="telepath-cart.html" class="nav-cart-link" title="Cart" style="display:flex;align-items:center;gap:6px;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -955,7 +1028,7 @@
   <span class="breadcrumb-sep">›</span>
   <a href="telepath-store.html#products">Products</a>
   <span class="breadcrumb-sep">›</span>
-  <span class="breadcrumb-current">BlackBird Frame</span>
+  <span class="breadcrumb-current">Telepath Frame</span>
 </div>
 
 <!-- ─── MAIN PRODUCT SECTION ─── -->
@@ -1001,7 +1074,7 @@
     <div class="product-category reveal">01 / Frame</div>
 
     <h1 class="product-name reveal reveal-delay-1">
-      BlackBird <em id="prod-name">Frame</em>
+      Telepath<br><em id="prod-name">Frame</em>
     </h1>
 
     <!-- PRICE — immediately after the name, always above the fold -->
@@ -1310,9 +1383,8 @@
 <script>
   // ─── Pill select ───
   function selectPill(groupId, el) {
-    document.getElementById(groupId)
-      .querySelectorAll('.pill')
-      .forEach(p => p.classList.remove('active'));
+    var pills = document.getElementById(groupId).querySelectorAll('.pill');
+    for (var i = 0; i < pills.length; i++) pills[i].classList.remove('active');
     el.classList.add('active');
   }
 
@@ -1366,85 +1438,125 @@
   }
 
   // ─── Tab switching ───
-  function switchTab(btn, contentId) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(contentId).classList.add('active');
+  function toggleNav() {
+    try {
+      var nl = document.getElementById('navLinks');
+      var nb = document.getElementById('navHamburger');
+      if (nl) nl.classList.toggle('open');
+      if (nb) nb.classList.toggle('open');
+    } catch(e) {}
   }
 
-  // ─── Cart ───
+  function switchTab(btn, contentId) {
+    try {
+      var tabs = document.querySelectorAll('.tab-btn');
+      var contents = document.querySelectorAll('.tab-content');
+      for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+      for (var j = 0; j < contents.length; j++) contents[j].classList.remove('active');
+      btn.classList.add('active');
+      var el = document.getElementById(contentId);
+      if (el) el.classList.add('active');
+    } catch(e) {}
+  }
 
-  // ═══════════════════════════════════════════
-  // TELEPATH CART — shared localStorage engine
-  // ═══════════════════════════════════════════
-  const CART_KEY = 'telepath_cart';
+  var CART_KEY = 'telepath_cart';
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-    catch { return []; }
+    catch(e) { return []; }
   }
 
   function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+    catch(e) {}
   }
 
   function cartAdd(id, name, price) {
-    const cart = getCart();
-    const idx = cart.findIndex(i => i.id === id);
+    var cart = getCart();
+    var idx = -1;
+    for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
     if (idx >= 0) cart[idx].qty += 1;
-    else cart.push({ id, name, price, qty: 1 });
+    else cart.push({ id: id, name: name, price: price, qty: 1 });
     saveCart(cart);
     return cart;
   }
 
   function cartTotal(cart) {
-    return cart.reduce((s, i) => s + i.price * i.qty, 0);
+    var s = 0;
+    for (var i = 0; i < cart.length; i++) s += cart[i].price * cart[i].qty;
+    return s;
   }
 
   function syncCartFloat() {
-    const cart = getCart();
-    const count = cart.reduce((s, i) => s + i.qty, 0);
-    const total = cartTotal(cart);
-    const countEl = document.getElementById('cartCount');
-    const totalEl = document.getElementById('cartTotal');
-    if (countEl) countEl.textContent = count;
-    if (totalEl) totalEl.textContent = '€ ' + total.toFixed(0);
-    const floatEl = document.getElementById('cartFloat');
-    if (floatEl) {
-      if (count > 0) floatEl.classList.add('visible');
-      else floatEl.classList.remove('visible');
-    }
+    try {
+      var cart = getCart();
+      var count = 0;
+      for (var i = 0; i < cart.length; i++) count += cart[i].qty;
+      var total = cartTotal(cart);
+      var countEl = document.getElementById('cartCount');
+      var totalEl = document.getElementById('cartTotal');
+      if (countEl) countEl.textContent = count;
+      if (totalEl) totalEl.textContent = '€ ' + Math.round(total);
+      var floatEl = document.getElementById('cartFloat');
+      if (floatEl) {
+        if (count > 0) floatEl.classList.add('visible');
+        else floatEl.classList.remove('visible');
+      }
+    } catch(e) {}
   }
 
   function handleAdd(btn) {
-    const active = document.querySelector('#stack-bundle .pill.active');
-    const size = active ? active.dataset.value : '49';
-    const sizeLabel = size === '49' ? '4.9"' : '5.1"';
-    const price = size === '49' ? 109 : 119;
-    const id = 'frame-' + size;
-    const name = 'BlackBird Frame — ' + sizeLabel;
-
-    cartAdd(id, name, price);
-    syncCartFloat();
-
-    btn.textContent = '✓ Added';
-    btn.classList.add('added');
-    setTimeout(() => { btn.textContent = 'Add to Cart'; btn.classList.remove('added'); }, 1800);
-
-    const floatEl = document.getElementById('cartFloat');
-    if (floatEl) { floatEl.style.transform = 'translateY(0) scale(1.05)'; setTimeout(() => { floatEl.style.transform = 'translateY(0) scale(1)'; }, 200); }
+    try {
+      var active = document.querySelector('#stack-bundle .pill.active');
+      var size = active ? active.dataset.value : '49';
+      var sizeLabel = size === '49' ? '4.9"' : '5.1"';
+      var price = size === '49' ? 109 : 119;
+      var id = 'frame-' + size;
+      var name = 'Telepath Frame — ' + sizeLabel;
+      cartAdd(id, name, price);
+      syncCartFloat();
+      btn.textContent = '✓ Added';
+      btn.classList.add('added');
+      setTimeout(function() { btn.textContent = 'Add to Cart'; btn.classList.remove('added'); }, 1800);
+      var floatEl = document.getElementById('cartFloat');
+      if (floatEl) {
+        floatEl.style.transform = 'translateY(0) scale(1.05)';
+        setTimeout(function() { floatEl.style.transform = 'translateY(0) scale(1)'; }, 200);
+      }
+    } catch(e) {}
   }
 
   syncCartFloat();
 
+  try {
+    var navLinks = document.getElementById('navLinks');
+    if (navLinks) {
+      var navAs = navLinks.querySelectorAll('a');
+      for (var ni = 0; ni < navAs.length; ni++) {
+        navAs[ni].addEventListener('click', function() {
+          document.getElementById('navLinks').classList.remove('open');
+          document.getElementById('navHamburger').classList.remove('open');
+        });
+      }
+    }
+  } catch(e) {}
 
-  // ─── Scroll reveal ───
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-  }, { threshold: 0.10 });
-  reveals.forEach(r => observer.observe(r));
+  try {
+    var reveals = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      var revealObs = new IntersectionObserver(function(entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) entries[i].target.classList.add('in');
+        }
+      }, { threshold: 0.08 });
+      for (var ri = 0; ri < reveals.length; ri++) revealObs.observe(reveals[ri]);
+    } else {
+      for (var ri2 = 0; ri2 < reveals.length; ri2++) reveals[ri2].classList.add('in');
+    }
+  } catch(e) {
+    var rFall = document.querySelectorAll('.reveal');
+    for (var rf = 0; rf < rFall.length; rf++) rFall[rf].classList.add('in');
+  }
 </script>
 </body>
 </html>

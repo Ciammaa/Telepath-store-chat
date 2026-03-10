@@ -23,7 +23,14 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+
+  /* iOS tap delay fix */
+  html { touch-action: manipulation; }
+  a, button, [onclick], .nav-hamburger {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 
   body {
     background: var(--bg);
@@ -32,6 +39,8 @@
     font-weight: 400;
     min-height: 100vh;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   body::before {
@@ -48,11 +57,12 @@
     padding: 0 48px; height: 72px;
     background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.80) 100%);
     border-bottom: 1px solid var(--border);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
   .nav-logo {
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
-    font-size: 2rem; letter-spacing: 0.12em;
+    font-size: clamp(1rem, 3.5vw, 2rem); letter-spacing: 0.08em; white-space: nowrap;
     color: var(--gold); text-decoration: none;
     text-shadow: 0 0 24px rgba(201,168,76,0.4);
     transition: text-shadow 0.3s;
@@ -103,7 +113,7 @@
     margin-top: 72px;
     background: var(--bg2);
     border-bottom: 1px solid var(--border);
-    padding: 0 48px;
+    padding: 0 5vw;
     display: flex;
     align-items: stretch;
     height: 52px;
@@ -140,31 +150,29 @@
 
   /* ─── PAGE HEADER ─── */
   .page-header {
-    max-width: 1180px; margin: 0 auto;
-    padding: 40px 48px 0;
+    padding: 48px 5vw 0;
     display: flex; align-items: baseline; justify-content: space-between;
     gap: 24px;
     animation: fadeUp 0.4s ease both;
   }
   .page-title {
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
-    font-size: 2.8rem; letter-spacing: 0.06em;
+    font-size: clamp(2.2rem, 4vw, 5rem); letter-spacing: 0.06em;
     color: var(--text); line-height: 1;
   }
   .page-title em { color: var(--gold); font-style: italic; }
   .item-count {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.35em;
+    font-size: 0.65rem; letter-spacing: 0.35em;
     color: var(--text-muted); text-transform: uppercase;
   }
 
   /* ─── MAIN LAYOUT ─── */
   .cart-wrap {
-    max-width: 1180px; margin: 0 auto;
-    padding: 32px 48px 80px;
+    padding: 40px 5vw 80px;
     display: grid;
-    grid-template-columns: 1fr minmax(0, 340px);
-    gap: 40px;
+    grid-template-columns: 1fr minmax(320px, 36%);
+    gap: clamp(20px, 2.5vw, 48px);
     align-items: start;
   }
 
@@ -202,9 +210,9 @@
   /* Cart row */
   .cart-row {
     display: grid;
-    grid-template-columns: 1fr 100px 120px 48px;
+    grid-template-columns: 1fr 100px 140px 48px;
     gap: 16px;
-    padding: 20px 24px;
+    padding: clamp(16px, 2vw, 28px) clamp(16px, 2vw, 32px);
     border-bottom: 1px solid rgba(201,168,76,0.07);
     align-items: center;
     transition: background 0.2s;
@@ -215,17 +223,17 @@
   .row-product { display: flex; align-items: center; gap: 16px; min-width: 0; }
 
   .row-thumb {
-    width: 64px; height: 64px; flex-shrink: 0;
+    width: clamp(56px, 5vw, 80px); height: clamp(56px, 5vw, 80px); flex-shrink: 0;
     background: var(--bg3);
     border: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
   }
-  .row-thumb svg { width: 28px; height: 28px; opacity: 0.35; }
+  .row-thumb svg { width: clamp(24px, 2.5vw, 36px); height: clamp(24px, 2.5vw, 36px); opacity: 0.35; }
 
   .row-info { min-width: 0; }
   .row-name {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 1rem;
+    font-weight: 600; font-size: clamp(0.95rem, 1.2vw, 1.2rem);
     letter-spacing: 0.06em; color: var(--text);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
@@ -357,7 +365,7 @@
   .summary-panel {
     background: var(--surface);
     border: 1px solid var(--border);
-    padding: 28px;
+    padding: clamp(20px, 2.5vw, 40px);
     position: relative;
     animation: fadeUp 0.5s 0.1s ease both;
     min-width: 0; overflow: hidden;
@@ -371,7 +379,7 @@
 
   .summary-title {
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
-    font-size: 1.3rem; letter-spacing: 0.08em;
+    font-size: clamp(1.1rem, 1.5vw, 1.6rem); letter-spacing: 0.08em;
     color: var(--text); margin-bottom: 22px;
   }
   .summary-title em { color: var(--gold); font-style: italic; }
@@ -384,12 +392,12 @@
   }
   .summary-row-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.3em;
+    font-size: clamp(0.52rem, 0.7vw, 0.65rem); letter-spacing: 0.3em;
     text-transform: uppercase; color: var(--text-muted);
   }
   .summary-row-val {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 0.9rem; color: var(--text);
+    font-weight: 600; font-size: clamp(0.85rem, 1vw, 1rem); color: var(--text);
   }
   .summary-row-val.free {
     color: var(--green);
@@ -409,11 +417,11 @@
   }
   .total-label {
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
-    font-size: 1.1rem; letter-spacing: 0.12em; color: var(--text);
+    font-size: clamp(1rem, 1.2vw, 1.3rem); letter-spacing: 0.12em; color: var(--text);
   }
   .total-val {
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
-    font-size: 2.2rem; letter-spacing: 0.06em; color: var(--gold);
+    font-size: clamp(2rem, 3vw, 3rem); letter-spacing: 0.06em; color: var(--gold);
     text-shadow: 0 0 20px rgba(201,168,76,0.25);
   }
   .total-val sup {
@@ -528,6 +536,7 @@
     background: var(--bg2); border-top: 1px solid var(--border);
     padding: 28px 48px;
     display: flex; align-items: center; justify-content: space-between;
+    margin-top: auto;
   }
   .footer-logo {
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
@@ -538,9 +547,29 @@
     font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted);
   }
 
+
+  /* ─── HAMBURGER ─── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px; height: 32px;
+    background: none; border: none;
+    cursor: pointer; padding: 4px; z-index: 200;
+  }
+  .nav-hamburger span {
+    display: block; width: 100%; height: 1.5px;
+    background: var(--gold);
+    transition: transform 0.3s, opacity 0.3s;
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
   /* ─── RESPONSIVE ─── */
   @media (max-width: 1100px) {
-    nav { padding: 0 32px; }
     .checkout-progress { padding: 0 32px; }
     .page-header { padding: 40px 32px 0; }
     .cart-wrap { padding: 32px 32px 64px; gap: 28px; }
@@ -553,11 +582,39 @@
     .page-header { padding: 32px 24px 0; }
     .cart-wrap {
       grid-template-columns: 1fr;
-      max-width: 680px;
       gap: 24px;
       padding: 24px 24px 56px;
     }
     .summary-col { position: static; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-center { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-right {
+      display: none;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(10,10,10,0.98);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      gap: 0; padding: 12px 0 20px;
+      z-index: 99;
+    }
+    .nav-right.open { display: flex; }
+    .nav-right a {
+      display: block;
+      padding: 14px 24px;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+    }
+    .nav-right a::after { display: none; }
+    .checkout-progress { padding: 0 16px; }
+    .page-header { padding: 24px 16px 0; }
+    .cart-wrap { padding: 16px 16px 48px; gap: 20px; }
   }
 
   @media (max-width: 600px) {
@@ -605,10 +662,13 @@
       <span class="brand-sub">Blackbird FPV</span>
     </div>
   </div>
-  <div class="nav-right">
+  <div class="nav-right" id="navRight">
     <a href="telepath-store.html#products">Products</a>
     <a href="#" title="Coming soon">Configurator</a>
   </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- ─── PROGRESS ─── -->
@@ -736,20 +796,32 @@
 </footer>
 
 <script>
+  document.documentElement.classList.add('js');
+
+  // ─── Hamburger ───
+  function toggleNav() {
+    var nav = document.getElementById('navRight');
+    var btn = document.getElementById('navHamburger');
+    if (!nav || !btn) return;
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+  }
+
   // ═══════════════════════════════════════════
   // TELEPATH CART — localStorage engine
   // ═══════════════════════════════════════════
-  const CART_KEY = 'telepath_cart';
-  const FREE_SHIP_THRESHOLD = 100;
-  let discountAmount = 0;
+  var CART_KEY = 'telepath_cart';
+  var FREE_SHIP_THRESHOLD = 100;
+  var discountAmount = 0;
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-    catch { return []; }
+    catch(e) { return []; }
   }
 
   function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+    catch(e) {}
   }
 
   // ─── Render cart rows from localStorage ───
@@ -758,9 +830,9 @@
     const panel = document.getElementById('cart-panel');
 
     // Remove existing rows
-    panel.querySelectorAll('.cart-row').forEach(r => r.remove());
+    var existingRows = panel.querySelectorAll('.cart-row'); for (var ri = 0; ri < existingRows.length; ri++) existingRows[ri].remove();
 
-    cart.forEach((item, idx) => {
+    for (var idx = 0; idx < cart.length; idx++) { var item = cart[idx];
       const row = document.createElement('div');
       row.className = 'cart-row';
       row.dataset.id = item.id;
@@ -786,7 +858,7 @@
       // Insert before empty state
       const emptyEl = document.getElementById('cart-empty');
       panel.insertBefore(row, emptyEl);
-    });
+    }
 
     recalc();
     checkEmpty();
@@ -803,18 +875,18 @@
 
   // ─── Qty ───
   function changeQty(btn, delta) {
-    const row = btn.closest('.cart-row');
-    const numEl = row.querySelector('.qty-num');
-    const totalEl = row.querySelector('.row-total-val');
-    const unit = parseFloat(row.dataset.unit);
-    let qty = parseInt(numEl.textContent) + delta;
+    var row = btn.closest('.cart-row');
+    var numEl = row.querySelector('.qty-num');
+    var totalEl = row.querySelector('.row-total-val');
+    var unit = parseFloat(row.dataset.unit);
+    var qty = parseInt(numEl.textContent) + delta;
     if (qty < 1) qty = 1;
     numEl.textContent = qty;
     totalEl.textContent = (unit * qty).toFixed(2);
 
     // Sync to localStorage
-    const cart = getCart();
-    const idx = cart.findIndex(i => i.id === row.dataset.id);
+    var cart = getCart();
+    var idx = -1; for (var fi = 0; fi < cart.length; fi++) { if (cart[fi].id === row.dataset.id) { idx = fi; break; } }
     if (idx >= 0) { cart[idx].qty = qty; saveCart(cart); }
 
     recalc();
@@ -822,12 +894,12 @@
 
   // ─── Remove ───
   function removeRow(btn) {
-    const row = btn.closest('.cart-row');
-    const id = row.dataset.id;
+    var row = btn.closest('.cart-row');
+    var id = row.dataset.id;
     row.classList.add('removing');
     setTimeout(() => {
       row.remove();
-      const cart = getCart().filter(i => i.id !== id);
+      var allCart = getCart(); var cart = []; for (var fi2 = 0; fi2 < allCart.length; fi2++) { if (allCart[fi2].id !== id) cart.push(allCart[fi2]); }
       saveCart(cart);
       recalc();
       checkEmpty();
@@ -837,22 +909,22 @@
   // ─── Empty state ───
   function hasPhysicalItems() {
     // Returns true if cart contains any non-license item
-    const rows = document.querySelectorAll('.cart-row');
-    for (const row of rows) {
-      if (!row.dataset.id.startsWith('lic')) return true;
+    var rows = document.querySelectorAll('.cart-row');
+    for (var ri2 = 0; ri2 < rows.length; ri2++) {
+      if (!rows[ri2].dataset.id.startsWith('lic')) return true;
     }
     return false;
   }
 
   function checkEmpty() {
-    const rows = document.querySelectorAll('.cart-row');
-    const empty = document.getElementById('cart-empty');
-    const shipNote = document.getElementById('ship-note');
-    const shipRow = document.getElementById('shipping-row');
-    const checkoutBtn = document.getElementById('checkout-btn');
-    const count = rows.length;
+    var rows = document.querySelectorAll('.cart-row');
+    var empty = document.getElementById('cart-empty');
+    var shipNote = document.getElementById('ship-note');
+    var shipRow = document.getElementById('shipping-row');
+    var checkoutBtn = document.getElementById('checkout-btn');
+    var count = rows.length;
     document.getElementById('item-count').textContent = count + ' item' + (count !== 1 ? 's' : '');
-    const physical = hasPhysicalItems();
+    var physical = hasPhysicalItems();
     if (count === 0) {
       empty.style.display = 'flex';
       if (checkoutBtn) checkoutBtn.classList.add('disabled');
@@ -867,13 +939,14 @@
 
   // ─── Recalc ───
   function recalc() {
-    let sub = 0;
-    document.querySelectorAll('.cart-row').forEach(row => {
-      const v = parseFloat(row.querySelector('.row-total-val').textContent);
+    var sub = 0;
+    var recalcRows = document.querySelectorAll('.cart-row');
+    for (var ri3 = 0; ri3 < recalcRows.length; ri3++) {
+      var v = parseFloat(recalcRows[ri3].querySelector('.row-total-val').textContent);
       if (!isNaN(v)) sub += v;
-    });
+    }
     document.getElementById('subtotal-val').textContent = '€' + sub.toFixed(2);
-    const physical = hasPhysicalItems();
+    var physical = hasPhysicalItems();
     const shipEl = document.getElementById('shipping-val');
     let shipping = 0;
     if (physical) {
@@ -883,13 +956,13 @@
         shipEl.textContent = '€8.90'; shipEl.className = 'summary-row-val';
         shipping = 8.90;
       }
-      const pct = Math.min(sub / FREE_SHIP_THRESHOLD, 1);
+      var pct = Math.min(sub / FREE_SHIP_THRESHOLD, 1);
       document.getElementById('ship-fill').style.width = (pct * 100) + '%';
       if (pct >= 1) {
         document.getElementById('ship-text').textContent = 'You qualify for free shipping';
         document.getElementById('ship-pct').textContent = '✓';
       } else {
-        const remaining = (FREE_SHIP_THRESHOLD - sub).toFixed(2);
+        var remaining = (FREE_SHIP_THRESHOLD - sub).toFixed(2);
         document.getElementById('ship-text').textContent = '€' + remaining + ' away from free shipping';
         document.getElementById('ship-pct').textContent = Math.round(pct * 100) + '%';
       }
@@ -900,10 +973,10 @@
 
   // ─── Promo ───
   function applyPromo() {
-    const code = document.getElementById('promo-input').value.trim().toUpperCase();
-    const row = document.getElementById('discount-row');
-    const val = document.getElementById('discount-val');
-    const input = document.getElementById('promo-input');
+    var code = document.getElementById('promo-input').value.trim().toUpperCase();
+    var row = document.getElementById('discount-row');
+    var val = document.getElementById('discount-val');
+    var input = document.getElementById('promo-input');
     if (code === 'TELEPATH10') {
       discountAmount = 10;
       val.textContent = '−€10.00'; val.style.color = 'var(--green)';

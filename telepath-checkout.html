@@ -25,7 +25,11 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; touch-action: manipulation; }
+  a, button, [onclick], .nav-hamburger {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 
   body {
     background: var(--bg);
@@ -34,6 +38,8 @@
     font-weight: 400;
     min-height: 100vh;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   /* Noise overlay */
@@ -51,11 +57,12 @@
     padding: 0 48px; height: 72px;
     background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.80) 100%);
     border-bottom: 1px solid var(--border);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
   .nav-logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem; letter-spacing: 0.12em;
+    font-size: clamp(1rem, 3.5vw, 2rem); letter-spacing: 0.08em; white-space: nowrap;
     color: var(--gold); text-decoration: none;
     text-shadow: 0 0 24px rgba(201,168,76,0.4);
   }
@@ -103,7 +110,7 @@
     margin-top: 72px;
     background: var(--bg2);
     border-bottom: 1px solid var(--border);
-    padding: 0 48px;
+    padding: 0 5vw;
     display: flex;
     align-items: stretch;
     height: 52px;
@@ -159,14 +166,14 @@
 
   /* ─── LAYOUT ─── */
   .checkout-wrap {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 40px 48px 80px;
+    padding: 40px 5vw 80px;
     display: grid;
-    grid-template-columns: 1fr minmax(0, 340px);
-    gap: 40px;
+    grid-template-columns: 1fr clamp(260px, 30%, 380px);
+    gap: clamp(16px, 2vw, 40px);
     align-items: start;
+    min-width: 0;
   }
+  .checkout-wrap > * { min-width: 0; overflow: hidden; }
 
   /* ─── SECTION HEADING ─── */
   .section-eyebrow {
@@ -548,39 +555,67 @@
 
   /* ─── RESPONSIVE ─── */
 
+
+  /* ─── HAMBURGER ─── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px; height: 32px;
+    background: none; border: none;
+    cursor: pointer; padding: 4px; z-index: 200;
+  }
+  .nav-hamburger span {
+    display: block; width: 100%; height: 1.5px;
+    background: var(--gold);
+    transition: transform 0.3s, opacity 0.3s;
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
   @media (max-width: 1100px) {
-    nav { padding: 0 32px; }
-    .checkout-progress { padding: 0 32px; }
-    .checkout-wrap { padding: 32px 32px 64px; gap: 28px; }
+    .checkout-wrap { padding: 32px 4vw 64px; gap: 24px; }
   }
 
-  /* Single column: summary moves above form */
-  @media (max-width: 1050px) {
-    nav { padding: 0 24px; }
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
     .nav-center { display: none; }
-    .checkout-progress { padding: 0 24px; }
+    .nav-hamburger { display: flex; }
+    .nav-right {
+      display: none;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(10,10,10,0.98);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      gap: 0; padding: 12px 0 20px;
+      z-index: 99;
+    }
+    .nav-right.open { display: flex; }
+    .nav-right a { display: block; padding: 14px 24px; font-size: 1rem; letter-spacing: 0.15em; }
+    .nav-right a::after { display: none; }
+    .checkout-progress { padding: 0 16px; }
     .checkout-wrap {
       grid-template-columns: 1fr;
-      max-width: 680px;
-      gap: 24px;
-      padding: 24px 24px 56px;
+      gap: 20px;
+      padding: 20px 16px 48px;
     }
-    .summary-col {
-      position: static;
-      order: -1;
-    }
+    .summary-col { position: static; order: -1; }
     .field-row.triple { grid-template-columns: 1fr 1fr; }
   }
 
-  /* Mobile */
   @media (max-width: 480px) {
     .checkout-progress { gap: 0; }
     .progress-step { padding: 0 16px 0 0; }
     .step-label { display: none; }
     .checkout-wrap { padding: 16px 14px 48px; gap: 16px; }
     .form-block { padding: 16px 14px; }
-    .field-row,
-    .field-row.triple { grid-template-columns: 1fr; }
+    .field-row, .field-row.triple { grid-template-columns: 1fr; }
     .radio-option { padding: 10px 12px; }
     footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 16px; }
   }
@@ -604,10 +639,13 @@
       <span class="brand-sub">Blackbird FPV</span>
     </div>
   </div>
-  <div class="nav-right">
+  <div class="nav-right" id="navRight">
     <a href="telepath-store.html#products">Products</a>
     <a href="#" title="Coming soon">Configurator</a>
   </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- ─── PROGRESS ─── -->
@@ -843,175 +881,185 @@
 </footer>
 
 <script>
-  const CART_KEY = 'telepath_cart';
-  let shippingCost = 0;
+  // ─── Hamburger ───
+  function toggleNav() {
+    try {
+      var nr = document.getElementById('navRight');
+      var nb = document.getElementById('navHamburger');
+      if (nr) nr.classList.toggle('open');
+      if (nb) nb.classList.toggle('open');
+    } catch(e) {}
+  }
+
+  var CART_KEY = 'telepath_cart';
+  var shippingCost = 0;
+  var discountAmount = 0;
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-    catch { return []; }
+    catch(e) { return []; }
   }
 
   function saveCart(cart) {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+    catch(e) {}
   }
 
   function iconFor(id) {
-    if (id.startsWith('frame'))
-      return `<svg viewBox="0 0 32 32" fill="none"><rect x="10" y="10" width="12" height="12" stroke="#C9A84C" stroke-width="1.5"/><line x1="4" y1="4" x2="10" y2="10" stroke="#C9A84C" stroke-width="1.2"/><line x1="28" y1="4" x2="22" y2="10" stroke="#C9A84C" stroke-width="1.2"/><line x1="4" y1="28" x2="10" y2="22" stroke="#C9A84C" stroke-width="1.2"/><line x1="28" y1="28" x2="22" y2="22" stroke="#C9A84C" stroke-width="1.2"/></svg>`;
-    if (id.startsWith('stack'))
-      return `<svg viewBox="0 0 32 32" fill="none"><rect x="4" y="10" width="24" height="4" rx="1" stroke="#C9A84C" stroke-width="1.5"/><rect x="4" y="18" width="24" height="4" rx="1" stroke="#C9A84C" stroke-width="1.5"/><circle cx="9" cy="12" r="1.5" fill="#C9A84C" opacity="0.6"/><circle cx="9" cy="20" r="1.5" fill="#C9A84C" opacity="0.6"/></svg>`;
-    if (id.startsWith('motors'))
-      return `<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="10" stroke="#C9A84C" stroke-width="1.5"/><circle cx="16" cy="16" r="4" fill="#C9A84C" opacity="0.9"/><line x1="16" y1="4" x2="16" y2="8" stroke="#C9A84C" stroke-width="1.5"/><line x1="16" y1="24" x2="16" y2="28" stroke="#C9A84C" stroke-width="1.5"/><line x1="4" y1="16" x2="8" y2="16" stroke="#C9A84C" stroke-width="1.5"/><line x1="24" y1="16" x2="28" y2="16" stroke="#C9A84C" stroke-width="1.5"/></svg>`;
-    if (id.startsWith('props'))
-      return `<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="2.5" fill="#C9A84C"/><path d="M16 13 C16 13 19 11 21 8 C22 6 20 5 19 6 C16 9 16 13 16 13Z" fill="#C9A84C" opacity="0.85"/><path d="M19 16 C19 16 21 19 24 21 C26 22 27 20 26 19 C23 16 19 16 19 16Z" fill="#C9A84C" opacity="0.7"/><path d="M16 19 C16 19 13 21 11 24 C10 26 12 27 13 26 C16 23 16 19 16 19Z" fill="#C9A84C" opacity="0.85"/><path d="M13 16 C13 16 11 13 8 11 C6 10 5 12 6 13 C9 16 13 16 13 16Z" fill="#C9A84C" opacity="0.7"/></svg>`;
+    if (id.indexOf('frame') === 0)
+      return '<svg viewBox="0 0 32 32" fill="none"><rect x="10" y="10" width="12" height="12" stroke="#C9A84C" stroke-width="1.5"/><line x1="4" y1="4" x2="10" y2="10" stroke="#C9A84C" stroke-width="1.2"/><line x1="28" y1="4" x2="22" y2="10" stroke="#C9A84C" stroke-width="1.2"/><line x1="4" y1="28" x2="10" y2="22" stroke="#C9A84C" stroke-width="1.2"/><line x1="28" y1="28" x2="22" y2="22" stroke="#C9A84C" stroke-width="1.2"/></svg>';
+    if (id.indexOf('stack') === 0)
+      return '<svg viewBox="0 0 32 32" fill="none"><rect x="4" y="10" width="24" height="4" rx="1" stroke="#C9A84C" stroke-width="1.5"/><rect x="4" y="18" width="24" height="4" rx="1" stroke="#C9A84C" stroke-width="1.5"/><circle cx="9" cy="12" r="1.5" fill="#C9A84C" opacity="0.6"/><circle cx="9" cy="20" r="1.5" fill="#C9A84C" opacity="0.6"/></svg>';
+    if (id.indexOf('motors') === 0)
+      return '<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="10" stroke="#C9A84C" stroke-width="1.5"/><circle cx="16" cy="16" r="4" fill="#C9A84C" opacity="0.9"/><line x1="16" y1="4" x2="16" y2="8" stroke="#C9A84C" stroke-width="1.5"/><line x1="16" y1="24" x2="16" y2="28" stroke="#C9A84C" stroke-width="1.5"/><line x1="4" y1="16" x2="8" y2="16" stroke="#C9A84C" stroke-width="1.5"/><line x1="24" y1="16" x2="28" y2="16" stroke="#C9A84C" stroke-width="1.5"/></svg>';
+    if (id.indexOf('props') === 0)
+      return '<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="2.5" fill="#C9A84C"/><path d="M16 13 C16 13 19 11 21 8 C22 6 20 5 19 6 C16 9 16 13 16 13Z" fill="#C9A84C" opacity="0.85"/><path d="M19 16 C19 16 21 19 24 21 C26 22 27 20 26 19 C23 16 19 16 19 16Z" fill="#C9A84C" opacity="0.7"/><path d="M16 19 C16 19 13 21 11 24 C10 26 12 27 13 26 C16 23 16 19 16 19Z" fill="#C9A84C" opacity="0.85"/><path d="M13 16 C13 16 11 13 8 11 C6 10 5 12 6 13 C9 16 13 16 13 16Z" fill="#C9A84C" opacity="0.7"/></svg>';
     if (id === 'license')
-      return `<svg viewBox="0 0 32 32" fill="none"><path d="M16 4 L28 8 L28 18 C28 24 22 29 16 30 C10 29 4 24 4 18 L4 8 Z" stroke="#C9A84C" stroke-width="1.5"/><path d="M12 16 L15 19 L21 13" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>`;
-    return `<svg viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="20" rx="2" stroke="#C9A84C" stroke-width="1.5"/></svg>`;
+      return '<svg viewBox="0 0 32 32" fill="none"><path d="M16 4 L28 8 L28 18 C28 24 22 29 16 30 C10 29 4 24 4 18 L4 8 Z" stroke="#C9A84C" stroke-width="1.5"/><path d="M12 16 L15 19 L21 13" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    return '<svg viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="20" rx="2" stroke="#C9A84C" stroke-width="1.5"/></svg>';
   }
 
   function renderCartSummary() {
-    const cart = getCart();
-    const container = document.getElementById('cart-items');
-    container.innerHTML = '';
-    cart.forEach(item => {
-      const total = (item.price * item.qty).toFixed(2);
-      const el = document.createElement('div');
-      el.className = 'cart-item';
-      el.dataset.price = item.price;
-      el.dataset.id = item.id;
-      el.innerHTML = `
-        <div class="item-thumb">${iconFor(item.id)}</div>
-        <div class="item-info">
-          <div class="item-name">${item.name}</div>
-          <div class="item-qty">
-            <button class="qty-btn" onclick="changeQty(this, -1)">−</button>
-            <span class="qty-num">${item.qty}</span>
-            <button class="qty-btn" onclick="changeQty(this, 1)">+</button>
-            <button class="item-remove" onclick="removeItem(this)">remove</button>
-          </div>
-        </div>
-        <div class="item-price"><sup style="font-size:0.65rem;font-family:'Rajdhani',sans-serif;vertical-align:super;">€</sup><span class="price-val">${total}</span></div>`;
-      container.appendChild(el);
-    });
-    recalc();
+    try {
+      var cart = getCart();
+      var container = document.getElementById('cart-items');
+      container.innerHTML = '';
+      for (var ci = 0; ci < cart.length; ci++) {
+        var item = cart[ci];
+        var total = (item.price * item.qty).toFixed(2);
+        var el = document.createElement('div');
+        el.className = 'cart-item';
+        el.dataset.price = item.price;
+        el.dataset.id = item.id;
+        el.innerHTML =
+          '<div class="item-thumb">' + iconFor(item.id) + '</div>' +
+          '<div class="item-info">' +
+            '<div class="item-name">' + item.name + '</div>' +
+            '<div class="item-qty">' +
+              '<button class="qty-btn" onclick="changeQty(this,-1)">−</button>' +
+              '<span class="qty-num">' + item.qty + '</span>' +
+              '<button class="qty-btn" onclick="changeQty(this,1)">+</button>' +
+              '<button class="item-remove" onclick="removeItem(this)">remove</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="item-price"><sup style="font-size:0.65rem;font-family:Rajdhani,sans-serif;vertical-align:super;">€</sup><span class="price-val">' + total + '</span></div>';
+        container.appendChild(el);
+      }
+      recalc();
+    } catch(e) {}
   }
-  let discountAmount = 0;
 
-  // ─── Radio select ───
   function selectRadio(groupId, el) {
-    document.getElementById(groupId)
-      .querySelectorAll('.radio-option')
-      .forEach(o => o.classList.remove('selected'));
-    el.classList.add('selected');
+    try {
+      var opts = document.getElementById(groupId).querySelectorAll('.radio-option');
+      for (var i = 0; i < opts.length; i++) opts[i].classList.remove('selected');
+      el.classList.add('selected');
+    } catch(e) {}
   }
 
-  // ─── Shipping update ───
   function updateShipping(cost, label) {
     shippingCost = cost;
-    const el = document.getElementById('shipping-val');
-    if (cost === 0) {
-      el.textContent = 'FREE';
-      el.classList.add('free');
-    } else {
-      el.textContent = label;
-      el.classList.remove('free');
-    }
+    var el = document.getElementById('shipping-val');
+    if (cost === 0) { el.textContent = 'FREE'; el.classList.add('free'); }
+    else { el.textContent = label; el.classList.remove('free'); }
     recalc();
   }
 
-  // ─── Qty change ───
   function changeQty(btn, delta) {
-    const item = btn.closest('.cart-item');
-    const numEl = item.querySelector('.qty-num');
-    const priceEl = item.querySelector('.price-val');
-    const unitPrice = parseFloat(item.dataset.price);
-    let qty = parseInt(numEl.textContent) + delta;
-    if (qty < 1) qty = 1;
-    numEl.textContent = qty;
-    priceEl.textContent = (unitPrice * qty).toFixed(2);
-    // Sync to localStorage
-    const cart = getCart();
-    const idx = cart.findIndex(i => i.id === item.dataset.id);
-    if (idx >= 0) { cart[idx].qty = qty; saveCart(cart); }
-    recalc();
-  }
-
-  // ─── Remove item ───
-  function removeItem(btn) {
-    const item = btn.closest('.cart-item');
-    const id = item.dataset.id;
-    item.style.transition = 'opacity 0.3s, transform 0.3s';
-    item.style.opacity = '0';
-    item.style.transform = 'translateX(20px)';
-    setTimeout(() => {
-      item.remove();
-      // Sync to localStorage
-      const cart = getCart().filter(i => i.id !== id);
-      saveCart(cart);
+    try {
+      var item = btn.closest('.cart-item');
+      var numEl = item.querySelector('.qty-num');
+      var priceEl = item.querySelector('.price-val');
+      var unitPrice = parseFloat(item.dataset.price);
+      var qty = parseInt(numEl.textContent) + delta;
+      if (qty < 1) qty = 1;
+      numEl.textContent = qty;
+      priceEl.textContent = (unitPrice * qty).toFixed(2);
+      var cart = getCart();
+      var idx = -1;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === item.dataset.id) { idx = i; break; } }
+      if (idx >= 0) { cart[idx].qty = qty; saveCart(cart); }
       recalc();
-    }, 300);
+    } catch(e) {}
   }
 
-  // ─── Recalculate totals ───
+  function removeItem(btn) {
+    try {
+      var item = btn.closest('.cart-item');
+      var id = item.dataset.id;
+      item.style.transition = 'opacity 0.3s, transform 0.3s';
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(20px)';
+      setTimeout(function() {
+        item.remove();
+        var allCart = getCart();
+        var filtCart = [];
+        for (var i = 0; i < allCart.length; i++) { if (allCart[i].id !== id) filtCart.push(allCart[i]); }
+        saveCart(filtCart);
+        recalc();
+      }, 300);
+    } catch(e) {}
+  }
+
   function recalc() {
-    let sub = 0;
-    document.querySelectorAll('.cart-item').forEach(item => {
-      const val = parseFloat(item.querySelector('.price-val').textContent);
-      if (!isNaN(val)) sub += val;
-    });
-    document.getElementById('subtotal-val').textContent = '€' + sub.toFixed(2);
-    const total = sub + shippingCost - discountAmount;
-    document.getElementById('total-num').textContent = Math.max(0, total).toFixed(2);
+    try {
+      var sub = 0;
+      var items = document.querySelectorAll('.cart-item');
+      for (var i = 0; i < items.length; i++) {
+        var val = parseFloat(items[i].querySelector('.price-val').textContent);
+        if (!isNaN(val)) sub += val;
+      }
+      document.getElementById('subtotal-val').textContent = '€' + sub.toFixed(2);
+      var total = sub + shippingCost - discountAmount;
+      document.getElementById('total-num').textContent = Math.max(0, total).toFixed(2);
+    } catch(e) {}
   }
 
-  // ─── Promo code ───
   function applyPromo() {
-    const code = document.getElementById('promo-input').value.trim().toUpperCase();
-    const row = document.getElementById('discount-row');
-    const val = document.getElementById('discount-val');
-    if (code === 'TELEPATH10') {
-      discountAmount = 10;
-      val.textContent = '−€10.00';
-      row.style.display = 'flex';
-      document.getElementById('promo-input').style.borderColor = 'var(--green)';
-    } else if (code) {
-      document.getElementById('promo-input').style.borderColor = 'var(--red)';
-      discountAmount = 0;
-      row.style.display = 'none';
-    }
-    recalc();
+    try {
+      var code = document.getElementById('promo-input').value.trim().toUpperCase();
+      var row = document.getElementById('discount-row');
+      var val = document.getElementById('discount-val');
+      if (code === 'TELEPATH10') {
+        discountAmount = 10;
+        val.textContent = '−€10.00';
+        row.style.display = 'flex';
+        document.getElementById('promo-input').style.borderColor = 'var(--green)';
+      } else if (code) {
+        document.getElementById('promo-input').style.borderColor = 'var(--red)';
+        discountAmount = 0;
+        row.style.display = 'none';
+      }
+      recalc();
+    } catch(e) {}
   }
 
-  // ─── Card formatting ───
   function formatCard(el) {
-    let v = el.value.replace(/\D/g,'').substring(0,16);
+    var v = el.value.replace(/\D/g,'').substring(0,16);
     el.value = v.replace(/(.{4})/g,'$1 ').trim();
   }
 
   function formatExpiry(el) {
-    let v = el.value.replace(/\D/g,'').substring(0,4);
+    var v = el.value.replace(/\D/g,'').substring(0,4);
     if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2);
     el.value = v;
   }
 
-  // ─── Submit ───
   function handleCheckout(btn) {
     btn.textContent = 'Processing…';
     btn.style.opacity = '0.7';
     btn.disabled = true;
-    setTimeout(() => {
+    setTimeout(function() {
       btn.textContent = '✓  Order Placed';
       btn.style.background = 'var(--green)';
       btn.style.color = '#0A0A0A';
       btn.style.opacity = '1';
-      setTimeout(() => { window.location.href = 'telepath-confirm.html'; }, 600);
+      setTimeout(function() { window.location.href = 'telepath-confirm.html'; }, 600);
     }, 1800);
   }
 
-  // ─── Step navigation ───
   function goToStep(n) { if (n === 1) window.location.href = 'telepath-cart.html'; }
 
-  // ─── Init ───
   renderCartSummary();
 </script>
 </body>

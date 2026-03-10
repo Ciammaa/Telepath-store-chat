@@ -22,7 +22,11 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; touch-action: manipulation; }
+  a, button, [onclick], .nav-hamburger {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 
   body {
     background: var(--bg);
@@ -31,6 +35,8 @@
     font-weight: 400;
     min-height: 100vh;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   body::before {
@@ -47,11 +53,12 @@
     padding: 0 48px; height: 72px;
     background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.80) 100%);
     border-bottom: 1px solid var(--border);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
   .nav-logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem; letter-spacing: 0.12em;
+    font-size: clamp(1rem, 3.5vw, 2rem); letter-spacing: 0.08em; white-space: nowrap;
     color: var(--gold); text-decoration: none;
     text-shadow: 0 0 24px rgba(201,168,76,0.4);
   }
@@ -112,7 +119,7 @@
   /* ─── HERO CONFIRM ─── */
   .confirm-hero {
     display: flex; flex-direction: column; align-items: center;
-    padding: 64px 48px 48px;
+    padding: 64px 5vw 48px;
     text-align: center;
     animation: fadeUp 0.6s ease both;
   }
@@ -188,12 +195,14 @@
 
   /* ─── MAIN LAYOUT ─── */
   .confirm-wrap {
-    max-width: 960px; margin: 0 auto;
-    padding: 0 48px 80px;
+    padding: 0 5vw 80px;
     display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 40px; align-items: start;
+    grid-template-columns: 1fr clamp(260px, 30%, 360px);
+    gap: clamp(16px, 2vw, 40px);
+    align-items: start;
+    min-width: 0;
   }
+  .confirm-wrap > * { min-width: 0; }
 
   /* ─── PANELS ─── */
   .panel {
@@ -417,7 +426,9 @@
     font-size: 0.52rem; letter-spacing: 0.22em;
     color: var(--text-muted); text-transform: uppercase; line-height: 1.6;
   }
-  .email-text strong { color: var(--green); font-weight: normal; }
+  .email-text strong { color: var(--gold-light); font-weight: 600; }
+  .email-text a, .email-text strong a { color: inherit; text-decoration: none; }
+  .detail-val a { color: var(--gold-light); text-decoration: none; }
 
   /* ─── ANIMATIONS ─── */
   @keyframes fadeUp {
@@ -430,6 +441,7 @@
     background: var(--bg2); border-top: 1px solid var(--border);
     padding: 28px 48px;
     display: flex; align-items: center; justify-content: space-between;
+    margin-top: auto;
   }
   .footer-logo {
     font-family: 'Bebas Neue', sans-serif;
@@ -440,39 +452,8 @@
     font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted);
   }
 
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 1100px) {
-    nav { padding: 0 32px; }
-    .checkout-progress { padding: 0 32px; }
-    .confirm-wrap { padding: 0 32px 64px; }
-    .confirm-hero { padding: 56px 32px 40px; }
-  }
 
-  @media (max-width: 860px) {
-    nav { padding: 0 24px; }
-    .nav-center { display: none; }
-    .checkout-progress { padding: 0 24px; }
-    .confirm-hero { padding: 48px 24px 32px; }
-    .confirm-wrap {
-      grid-template-columns: 1fr;
-      max-width: 620px;
-      padding: 0 24px 56px;
-      gap: 0;
-    }
-    .right-col { margin-top: 20px; }
-    .details-grid { grid-template-columns: 1fr; gap: 16px; }
-  }
-
-  @media (max-width: 480px) {
-    .checkout-progress { gap: 0; }
-    .progress-step { padding: 0 16px 0 0; }
-    .step-label { display: none; }
-    .confirm-wrap { padding: 0 14px 48px; }
-    .panel { padding: 18px 14px; }
-    .confirm-hero { padding: 40px 14px 24px; }
-    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 16px; }
-  }
-
+  /* ─── NAV RIGHT ─── */
   .nav-right {
     display: flex;
     gap: 36px;
@@ -498,6 +479,73 @@
   }
   .nav-right a:hover { color: var(--gold); }
   .nav-right a:hover::after { width: 100%; }
+
+  /* ─── HAMBURGER ─── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px; height: 32px;
+    background: none; border: none;
+    cursor: pointer; padding: 4px; z-index: 200;
+  }
+  .nav-hamburger span {
+    display: block; width: 100%; height: 1.5px;
+    background: var(--gold);
+    transition: transform 0.3s, opacity 0.3s;
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1100px) {
+    .confirm-wrap { padding: 0 4vw 64px; }
+    .confirm-hero { padding: 56px 4vw 40px; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-center { display: none; }
+    .nav-hamburger { display: flex; }
+    .nav-right {
+      display: none;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(10,10,10,0.98);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      gap: 0; padding: 12px 0 20px;
+      z-index: 99;
+    }
+    .nav-right.open { display: flex; }
+    .nav-right a { display: block; padding: 14px 24px; font-size: 1rem; letter-spacing: 0.15em; }
+    .nav-right a::after { display: none; }
+    .checkout-progress { padding: 0 16px; }
+    .confirm-hero { padding: 48px 16px 32px; }
+    .confirm-wrap {
+      grid-template-columns: 1fr;
+      padding: 0 16px 48px;
+      gap: 20px;
+    }
+    .right-col { margin-top: 0; }
+    .details-grid { grid-template-columns: 1fr; gap: 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .checkout-progress { gap: 0; }
+    .progress-step { padding: 0 16px 0 0; }
+    .step-label { display: none; }
+    .confirm-wrap { padding: 0 14px 48px; }
+    .panel { padding: 18px 14px; }
+    .confirm-hero { padding: 40px 14px 24px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 16px; }
+  }
+
 </style>
 </head>
 <body>
@@ -518,10 +566,13 @@
       <span class="brand-sub">Blackbird FPV</span>
     </div>
   </div>
-  <div class="nav-right">
+  <div class="nav-right" id="navRight">
     <a href="telepath-store.html#products">Products</a>
     <a href="#" title="Coming soon">Configurator</a>
   </div>
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- ─── PROGRESS ─── -->
@@ -677,50 +728,56 @@
       <a href="telepath-store.html" class="btn-primary">Continue Shopping</a>
       <a href="#" class="btn-secondary" onclick="window.print(); return false;">Print / Save
 <script>
-  // ═══════════════════════════════════════
-  // TELEPATH CONFIRM — render order summary
-  // ═══════════════════════════════════════
-  const CART_KEY = 'telepath_cart';
+  function toggleNav() {
+    try {
+      var nr = document.getElementById('navRight');
+      var nb = document.getElementById('navHamburger');
+      if (nr) nr.classList.toggle('open');
+      if (nb) nb.classList.toggle('open');
+    } catch(e) {}
+  }
+
+  var CART_KEY = 'telepath_cart';
 
   function getCart() {
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-    catch { return []; }
+    catch(e) { return []; }
   }
 
   function renderOrderItems() {
-    const cart = getCart();
-    const container = document.getElementById('order-items');
-    if (!container) return;
+    try {
+      var cart = getCart();
+      var container = document.getElementById('order-items');
+      if (!container) return;
 
-    if (cart.length === 0) {
-      container.innerHTML = '<p style="font-size:0.8rem;color:var(--text-muted);padding:12px 0;">No items found.</p>';
-      return;
-    }
+      if (cart.length === 0) {
+        container.innerHTML = '<p style="font-size:0.8rem;color:var(--text-muted);padding:12px 0;">No items found.</p>';
+        return;
+      }
 
-    let total = 0;
-    cart.forEach(item => {
-      const lineTotal = item.price * item.qty;
-      total += lineTotal;
-      const el = document.createElement('div');
-      el.className = 'order-item';
-      el.innerHTML = `
-        <div class="order-item-info" style="flex:1;">
-          <div style="font-family:'Rajdhani',sans-serif;font-weight:600;font-size:0.88rem;letter-spacing:0.05em;">${item.name}</div>
-          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Qty: ${item.qty}</div>
-        </div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:0.85rem;color:var(--gold);">€${lineTotal.toFixed(2)}</div>
-      `;
-      container.appendChild(el);
-    });
+      var total = 0;
+      for (var i = 0; i < cart.length; i++) {
+        var item = cart[i];
+        var lineTotal = item.price * item.qty;
+        total += lineTotal;
+        var el = document.createElement('div');
+        el.className = 'order-item';
+        el.innerHTML =
+          '<div class="order-item-info" style="flex:1;">' +
+            '<div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:0.88rem;letter-spacing:0.05em;">' + item.name + '</div>' +
+            '<div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Qty: ' + item.qty + '</div>' +
+          '</div>' +
+          '<div style="font-family:Share Tech Mono,monospace;font-size:0.85rem;color:var(--gold);">€' + lineTotal.toFixed(2) + '</div>';
+        container.appendChild(el);
+      }
 
-    // Update total
-    const shipping = total >= 100 ? 0 : 8.90;
-    const grandTotal = total + shipping;
-    const totalEl = document.getElementById('confirm-total');
-    if (totalEl) totalEl.textContent = grandTotal.toFixed(2);
+      var shipping = total >= 100 ? 0 : 8.90;
+      var grandTotal = total + shipping;
+      var totalEl = document.getElementById('confirm-total');
+      if (totalEl) totalEl.textContent = grandTotal.toFixed(2);
 
-    // Clear cart after showing
-    localStorage.removeItem(CART_KEY);
+      localStorage.removeItem(CART_KEY);
+    } catch(e) {}
   }
 
   renderOrderItems();
