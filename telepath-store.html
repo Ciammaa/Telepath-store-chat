@@ -103,7 +103,7 @@
     backdrop-filter: blur(12px);
   }
 
-  .nav-logo {
+    .nav-logo {
     font-family: 'Special Gothic Expanded One', sans-serif;
     font-style: italic;
     font-size: clamp(1rem, 3.5vw, 2rem);
@@ -127,14 +127,11 @@
   }
 
   /* Bird SVG logo */
-  .bird-logo {
-    width: 38px;
+    .bird-logo {
     height: 38px;
+    width: auto;
     opacity: 0.85;
-    transition: opacity 0.3s, filter 0.3s;
-    filter: drop-shadow(0 0 6px rgba(201,168,76,0.3));
   }
-  .bird-logo:hover { opacity: 1; filter: drop-shadow(0 0 12px rgba(201,168,76,0.6)); }
 
   .brand-sub {
     font-family: 'Share Tech Mono', monospace;
@@ -1087,8 +1084,6 @@
     }
     .nav-links a::after { display: none; }
 
-    .nav-center { display: none; }
-
     .hero-cta { margin-top: 32px; }
     .btn-primary, .btn-outline {
       flex: 1 1 auto;
@@ -1109,7 +1104,6 @@
     section { padding: 64px 20px; }
   }
   @media (max-width: 600px) {
-    .nav-center { display: none; }
   }
   @media (max-width: 400px) {
     .btn-primary, .btn-outline {
@@ -1160,22 +1154,12 @@
 
 <!-- ─── NAV ─── -->
 <nav>
+  <!-- TELEPATH a sinistra come link home -->
   <a href="#home" class="nav-logo">TELEPATH</a>
 
+  <!-- Logo al centro -->
   <div class="nav-center">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-      <svg class="bird-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Stylized bird / drone silhouette -->
-        <path d="M40 18 L14 38 L24 38 L20 62 L40 48 L60 62 L56 38 L66 38 Z" fill="#C9A84C" opacity="0.9"/>
-        <path d="M40 18 L28 32 L40 28 L52 32 Z" fill="#E2C06A"/>
-        <!-- Arm tips (rotors) -->
-        <circle cx="14" cy="38" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
-        <circle cx="66" cy="38" r="4" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
-        <circle cx="20" cy="62" r="3.5" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
-        <circle cx="60" cy="62" r="3.5" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
-      </svg>
-      <span class="brand-sub">BlackBird FPV</span>
-    </div>
+    <img src="images/BBlogo.webp" class="bird-logo" alt="BlackBird FPV">
   </div>
 
   <ul class="nav-links" id="navLinks">

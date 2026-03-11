@@ -2,9 +2,6 @@ TODO:
 
 
 - - - - - - - - - - - - - - - -
-
-FOOTER DIVERSO IN CART E CHECKOUT
-
 STORE RIVEDERE "ADD" E "ADDED", OGNI TANTO ROMPE I COGLIONI
 
 
