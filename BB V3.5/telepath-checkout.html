@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TELEPATH — Checkout</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Gothic+Expanded+One&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --gold:       #C9A84C;
+    --gold-light: #E2C06A;
+    --gold-dim:   #8A6E2F;
+    --gold-glow:  rgba(201,168,76,0.18);
+    --bg:         #0A0A0A;
+    --bg2:        #111111;
+    --bg3:        #181818;
+    --surface:    #141414;
+    --surface2:   #1A1A1A;
+    --border:     rgba(201,168,76,0.18);
+    --border-focus: rgba(201,168,76,0.55);
+    --text:       #E8E0D0;
+    --text-muted: #7A7060;
+    --green:      #4ECCA3;
+    --red:        #C0392B;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; overflow-x: hidden; touch-action: manipulation; }
+  a, button, [onclick], .nav-hamburger {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.6;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 72px;
+    background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.80) 100%);
+    border-bottom: 1px solid var(--border);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+    .nav-logo {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    font-style: italic;
+    font-size: clamp(1rem, 3.5vw, 2rem);
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    text-decoration: none;
+    text-shadow: 0 0 24px rgba(201,168,76,0.4);
+    transition: text-shadow 0.3s;
+    white-space: nowrap;
+  }
+  .nav-logo:hover { text-shadow: 0 0 40px rgba(201,168,76,0.8); }
+  .nav-logo:visited, .nav-logo:active, .nav-logo:focus { color: var(--gold); outline: none; }
+  .nav-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 10px;
+  }
+    .bird-logo {
+    height: 38px;
+    width: auto;
+    opacity: 0.85;
+  }
+  .brand-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.35em;
+    color: var(--gold-dim); text-transform: uppercase; margin-top: 2px;
+  }
+  .nav-right {
+    display: flex;
+    gap: 36px;
+  }
+  .nav-right a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.25s;
+  }
+  .nav-right a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width 0.3s;
+  }
+  .nav-right a:hover { color: var(--gold); }
+  .nav-right a:hover::after { width: 100%; }
+
+  /* ─── PROGRESS BAR ─── */
+  .checkout-progress {
+    margin-top: 72px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5vw;
+    display: flex;
+    align-items: stretch;
+    height: 52px;
+    gap: 0;
+  }
+  .progress-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 28px 0 0;
+    position: relative;
+    cursor: default;
+    transition: opacity 0.3s;
+  }
+  .progress-step:not(:last-child)::after {
+    content: '›';
+    position: absolute; right: 8px;
+    color: var(--gold-dim);
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
+  }
+  .progress-step.done { opacity: 0.45; cursor: pointer; }
+  .progress-step.done:hover { opacity: 0.7; }
+  .progress-step.active { opacity: 1; }
+  .progress-step.upcoming { opacity: 0.25; }
+  .step-num {
+    width: 20px; height: 20px;
+    border: 1px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.1em;
+    color: var(--gold-dim);
+    flex-shrink: 0;
+  }
+  .progress-step.active .step-num {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.08);
+    box-shadow: 0 0 12px rgba(201,168,76,0.2);
+  }
+  .progress-step.done .step-num {
+    border-color: var(--green);
+    color: var(--green);
+    background: rgba(78,204,163,0.08);
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
+  }
+  .step-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .progress-step.active .step-label { color: var(--gold); }
+
+  /* ─── LAYOUT ─── */
+  .checkout-wrap {
+    padding: 40px 5vw 80px;
+    display: grid;
+    grid-template-columns: 1fr clamp(260px, 30%, 380px);
+    gap: clamp(16px, 2vw, 40px);
+    align-items: start;
+    min-width: 0;
+  }
+  .checkout-wrap > * { min-width: 0; overflow: hidden; }
+
+  /* ─── SECTION HEADING ─── */
+  .section-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.45em;
+    color: var(--gold-dim); text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+  }
+  .section-eyebrow::before {
+    content: ''; display: block;
+    width: 24px; height: 1px; background: var(--gold-dim);
+  }
+
+  /* ─── FORM PANEL ─── */
+  .form-panel { display: flex; flex-direction: column; gap: 40px; }
+
+  .form-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px;
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+  }
+  .form-block::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 32px; height: 32px;
+    border-top: 1px solid var(--gold);
+    border-left: 1px solid var(--gold);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .form-block-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 0.08em;
+    color: var(--text); margin-bottom: 24px;
+  }
+  .form-block-title em { color: var(--gold); font-style: normal; }
+
+  /* Fields */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .field-row.single { grid-template-columns: 1fr; }
+  .field-row.triple { grid-template-columns: 2fr 1fr 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .field input,
+  .field select {
+    background: var(--bg);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(1rem, 1.9vw, 1.3rem);
+    font-weight: 500;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  }
+  .field input::placeholder { color: var(--text-muted); opacity: 0.6; }
+  .field input:focus,
+  .field select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 1px rgba(201,168,76,0.15), 0 0 20px rgba(201,168,76,0.05);
+  }
+  .field select { cursor: pointer; }
+
+  /* Select arrow */
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '›';
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%) rotate(90deg);
+    color: var(--gold-dim); pointer-events: none; font-size: clamp(0.9rem, 1.7vw, 1.2rem);
+  }
+
+  /* Radio group */
+  .radio-group { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .radio-option {
+    display: flex; align-items: center;
+    gap: 14px; padding: 14px 16px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    position: relative;
+  }
+  .radio-option:hover { border-color: rgba(201,168,76,0.35); }
+  .radio-option.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.04);
+  }
+  .radio-dot {
+    width: 14px; height: 14px;
+    border: 1px solid var(--gold-dim);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .radio-option.selected .radio-dot { border-color: var(--gold); }
+  .radio-option.selected .radio-dot::after {
+    content: '';
+    position: absolute; inset: 3px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+  .radio-info { flex: 1; }
+  .radio-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.3rem);
+    letter-spacing: 0.1em; color: var(--text);
+  }
+  .radio-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .radio-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 0.05em;
+    color: var(--gold);
+  }
+  .radio-price.free { color: var(--green); font-size: clamp(0.9rem, 1.6vw, 1.15rem); letter-spacing: 0.2em; font-family: 'Share Tech Mono', monospace; }
+
+  /* Card field row */
+  .card-icons {
+    display: flex; gap: 8px; margin-bottom: 16px;
+  }
+  .card-icon {
+    height: 22px; padding: 3px 8px;
+    background: var(--bg3); border: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.15em;
+    color: var(--text-muted); text-transform: uppercase;
+    display: flex; align-items: center;
+  }
+
+  /* Secure badge */
+  .secure-note {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .secure-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(78,204,163,0.6);
+    flex-shrink: 0;
+  }
+
+  /* ─── SUBMIT BUTTON ─── */
+  .btn-checkout {
+    width: 100%;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+    letter-spacing: 0.35em; text-transform: uppercase;
+    padding: 18px 40px;
+    background: var(--gold);
+    color: #0A0A0A;
+    border: none; cursor: pointer;
+    transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    margin-top: 8px;
+  }
+  .btn-checkout:hover {
+    background: var(--gold-light);
+    box-shadow: 0 0 40px rgba(201,168,76,0.5);
+    transform: translateY(-1px);
+  }
+
+  /* ─── ORDER SUMMARY (right column) ─── */
+  .summary-col { position: sticky; top: 140px; min-width: 0; }
+
+  .summary-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    position: relative;
+    animation: fadeUp 0.5s 0.1s ease both;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .summary-panel::before {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 28px; height: 28px;
+    border-top: 1px solid var(--gold);
+    border-right: 1px solid var(--gold);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .summary-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem; letter-spacing: 0.08em;
+    color: var(--text); margin-bottom: 22px;
+  }
+  .summary-title em { color: var(--gold); font-style: normal; }
+
+  /* Cart items */
+  .cart-item {
+    display: flex; align-items: flex-start;
+    gap: 14px; padding: 14px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+  }
+  .cart-item:last-of-type { border-bottom: none; }
+  .item-thumb {
+    width: 52px; height: 52px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .item-thumb svg { width: 24px; height: 24px; opacity: 0.4; }
+  .item-info { flex: 1; min-width: 0; }
+  .item-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+    letter-spacing: 0.08em; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .item-variant {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .item-qty {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 8px;
+  }
+  .qty-btn {
+    width: 20px; height: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--gold-dim);
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .qty-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .qty-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); letter-spacing: 0.15em;
+    color: var(--text); min-width: 16px; text-align: center;
+  }
+  .item-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 0.05em;
+    color: var(--gold); white-space: nowrap;
+  }
+  .item-remove {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
+    color: var(--text-muted); cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    border: none; background: none;
+    padding: 0; margin-top: 4px; display: block;
+  }
+  .item-remove:hover { color: #C0392B; }
+
+  /* Totals */
+  .summary-divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  .summary-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .summary-row-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .summary-row-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.3rem);
+    color: var(--text);
+  }
+  .summary-row-val.free { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.2em; }
+
+  .summary-total {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: 16px;
+  }
+  .total-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 0.12em;
+    color: var(--text);
+  }
+  .total-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 0.06em;
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(201,168,76,0.25);
+  }
+  .total-val sup {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: clamp(1rem, 1.8vw, 1.3rem);
+    vertical-align: super;
+  }
+
+  /* Promo code */
+  .promo-row {
+    display: flex; gap: 8px;
+    margin-top: 16px;
+  }
+  .promo-row input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid rgba(201,168,76,0.18);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); letter-spacing: 0.25em;
+    padding: 10px 12px;
+    outline: none;
+    text-transform: uppercase;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+    transition: border-color 0.2s;
+  }
+  .promo-row input::placeholder { color: var(--text-muted); opacity: 0.5; }
+  .promo-row input:focus { border-color: var(--border-focus); }
+  .promo-row button {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+    white-space: nowrap;
+  }
+  .promo-row button:hover { border-color: var(--gold); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 0.12em; color: var(--gold-dim);
+  }
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; color: var(--text-muted);
+  }
+
+  /* ─── RESPONSIVE ─── */
+
+
+  /* ─── HAMBURGER ─── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px; height: 32px;
+    background: none; border: none;
+    cursor: pointer; padding: 4px; z-index: 200;
+  }
+  .nav-hamburger span {
+    display: block; width: 100%; height: 1.5px;
+    background: var(--gold);
+    transition: transform 0.3s, opacity 0.3s;
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  @media (max-width: 1100px) {
+    .checkout-wrap { padding: 32px 4vw 64px; gap: 24px; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-hamburger { display: flex; }
+    .nav-right {
+      display: none;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(10,10,10,0.98);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      gap: 0; padding: 12px 0 20px;
+      z-index: 99;
+    }
+    .nav-right.open { display: flex; }
+    .nav-right a { display: block; padding: 14px 24px; font-size: 1rem; letter-spacing: 0.15em; }
+    .nav-right a::after { display: none; }
+    .checkout-progress { padding: 0 16px; }
+    .checkout-wrap {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 20px 16px 48px;
+    }
+    .summary-col { position: static; order: -1; }
+    .field-row.triple { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .checkout-progress { gap: 0; }
+    .progress-step { padding: 0 16px 0 0; }
+    .step-label { display: none; }
+    .checkout-wrap { padding: 16px 14px 48px; gap: 16px; }
+    .form-block { padding: 16px 14px; }
+    .field-row, .field-row.triple { grid-template-columns: 1fr; }
+    .radio-option { padding: 10px 12px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 16px; }
+  }
+  nav { transition: background 0.4s, box-shadow 0.4s; }
+  nav.scrolled {
+    background: rgba(10,10,10,0.97) !important;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    border-bottom-color: rgba(201,168,76,0.15) !important;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <!-- TELEPATH a sinistra come link home -->
+  <a href="telepath-store.html#home" class="nav-logo">TELEPATH</a>
+
+  <!-- Logo al centro -->
+  <div class="nav-center">
+    <img src="images/BBlogo.webp" class="bird-logo" alt="BlackBird FPV">
+  </div>
+
+  <div class="nav-right" id="navRight">
+    <a href="telepath-store.html#products">Products</a>
+    <a href="#" title="Coming soon">Configurator</a>
+  </div>
+
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─── PROGRESS ─── -->
+<div class="checkout-progress">
+  <div class="progress-step done" onclick="goToStep(1)">
+    <div class="step-num">✓</div>
+    <span class="step-label">Cart</span>
+  </div>
+  <div class="progress-step active">
+    <div class="step-num">02</div>
+    <span class="step-label">Checkout</span>
+  </div>
+  <div class="progress-step upcoming">
+    <div class="step-num">03</div>
+    <span class="step-label">Confirm</span>
+  </div>
+</div>
+
+<!-- ─── MAIN ─── -->
+<div class="checkout-wrap">
+
+  <!-- LEFT: Forms -->
+  <div class="form-panel">
+
+    <!-- Contact -->
+    <div class="form-block" style="animation-delay:0s">
+      <div class="section-eyebrow">01</div>
+      <div class="form-block-title">Contact <em>Info</em></div>
+      <div class="field-row">
+        <div class="field">
+          <label>First Name</label>
+          <input type="text" placeholder="Luca" autocomplete="given-name" />
+        </div>
+        <div class="field">
+          <label>Last Name</label>
+          <input type="text" placeholder="Rossi" autocomplete="family-name" />
+        </div>
+      </div>
+      <div class="field-row single">
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" placeholder="you@example.com" autocomplete="email" />
+        </div>
+      </div>
+      <div class="field-row single">
+        <div class="field">
+          <label>Phone (optional)</label>
+          <input type="tel" placeholder="+39 000 000 0000" autocomplete="tel" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping -->
+    <div class="form-block" style="animation-delay:0.08s">
+      <div class="section-eyebrow">02</div>
+      <div class="form-block-title">Shipping <em>Address</em></div>
+      <div class="field-row single">
+        <div class="field">
+          <label>Street Address</label>
+          <input type="text" placeholder="Via Roma, 42" autocomplete="address-line1" />
+        </div>
+      </div>
+      <div class="field-row single">
+        <div class="field">
+          <label>Apartment, floor, etc. (optional)</label>
+          <input type="text" placeholder="Interno 3" autocomplete="address-line2" />
+        </div>
+      </div>
+      <div class="field-row triple">
+        <div class="field">
+          <label>City</label>
+          <input type="text" placeholder="Roma" autocomplete="address-level2" />
+        </div>
+        <div class="field">
+          <label>Postal Code</label>
+          <input type="text" placeholder="00100" autocomplete="postal-code" />
+        </div>
+        <div class="field">
+          <label>Province</label>
+          <input type="text" placeholder="RM" autocomplete="address-level1" />
+        </div>
+      </div>
+      <div class="field-row single">
+        <div class="field">
+          <label>Country</label>
+          <div class="select-wrap">
+            <select autocomplete="country">
+              <option value="IT" selected>Italy</option>
+              <option value="DE">Germany</option>
+              <option value="FR">France</option>
+              <option value="ES">Spain</option>
+              <option value="NL">Netherlands</option>
+              <option value="BE">Belgium</option>
+              <option value="AT">Austria</option>
+              <option value="CH">Switzerland</option>
+              <option value="GB">United Kingdom</option>
+              <option value="US">United States</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping method -->
+    <div class="form-block" style="animation-delay:0.16s">
+      <div class="section-eyebrow">03</div>
+      <div class="form-block-title">Shipping <em>Method</em></div>
+      <div class="radio-group" id="shipping-group">
+        <div class="radio-option selected" onclick="selectRadio('shipping-group', this); updateShipping(0, 'Free')">
+          <div class="radio-dot"></div>
+          <div class="radio-info">
+            <div class="radio-title">Standard Shipping</div>
+            <div class="radio-sub">5–8 business days</div>
+          </div>
+          <div class="radio-price free">FREE</div>
+        </div>
+        <div class="radio-option" onclick="selectRadio('shipping-group', this); updateShipping(8.90, '€8.90')">
+          <div class="radio-dot"></div>
+          <div class="radio-info">
+            <div class="radio-title">Express Shipping</div>
+            <div class="radio-sub">2–3 business days</div>
+          </div>
+          <div class="radio-price"><sup style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);font-family:'Rajdhani',sans-serif;">€</sup>8.90</div>
+        </div>
+        <div class="radio-option" onclick="selectRadio('shipping-group', this); updateShipping(18.90, '€18.90')">
+          <div class="radio-dot"></div>
+          <div class="radio-info">
+            <div class="radio-title">Priority Overnight</div>
+            <div class="radio-sub">Next business day</div>
+          </div>
+          <div class="radio-price"><sup style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);font-family:'Rajdhani',sans-serif;">€</sup>18.90</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div class="form-block" style="animation-delay:0.24s">
+      <div class="section-eyebrow">04</div>
+      <div class="form-block-title">Payment <em>Details</em></div>
+
+      <div class="card-icons">
+        <div class="card-icon">Visa</div>
+        <div class="card-icon">MC</div>
+        <div class="card-icon">Amex</div>
+        <div class="card-icon">PayPal</div>
+      </div>
+
+      <div class="field-row single">
+        <div class="field">
+          <label>Card Number</label>
+          <input type="text" placeholder="0000 0000 0000 0000" maxlength="19"
+            autocomplete="cc-number"
+            oninput="formatCard(this)" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Expiry Date</label>
+          <input type="text" placeholder="MM / YY" maxlength="7"
+            autocomplete="cc-exp"
+            oninput="formatExpiry(this)" />
+        </div>
+        <div class="field">
+          <label>CVV</label>
+          <input type="text" placeholder="•••" maxlength="4"
+            autocomplete="cc-csc" />
+        </div>
+      </div>
+      <div class="field-row single">
+        <div class="field">
+          <label>Name on Card</label>
+          <input type="text" placeholder="LUCA ROSSI" autocomplete="cc-name"
+            style="text-transform:uppercase; letter-spacing:0.1em;" />
+        </div>
+      </div>
+
+      <div class="secure-note">
+        <span class="secure-dot"></span>
+        256-bit SSL encryption — your data is never stored
+      </div>
+
+      <button class="btn-checkout" onclick="handleCheckout(this)">
+        Confirm Order
+      </button>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: Order Summary -->
+  <div class="summary-col">
+    <div class="summary-panel">
+      <div class="summary-title">Order <em>Summary</em></div>
+
+      <!-- Cart items -->
+      <div id="cart-items"></div>
+
+      <!-- Promo -->
+      <div class="promo-row">
+        <input type="text" placeholder="Promo code" id="promo-input" />
+        <button onclick="applyPromo()">Apply</button>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-row">
+        <span class="summary-row-label">Subtotal</span>
+        <span class="summary-row-val" id="subtotal-val">€229.50</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-row-label">Shipping</span>
+        <span class="summary-row-val free" id="shipping-val">FREE</span>
+      </div>
+      <div class="summary-row" id="discount-row" style="display:none;">
+        <span class="summary-row-label">Discount</span>
+        <span class="summary-row-val" id="discount-val" style="color:var(--green);">—</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-total">
+        <span class="total-label">Total</span>
+        <span class="total-val" id="total-val"><sup>€</sup><span id="total-num">229.50</span></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-logo"><em>TELEPATH</em></div>
+  <div class="footer-copy">© 2026 BlackBird FPV — All rights reserved</div>
+  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:clamp(0.85rem, 1.3vw, 1rem);color:var(--text-muted);text-align:right;letter-spacing:0.05em;">Made for pilots, by pilots.</div>
+</footer>
+
+<script>
+  // ─── Hamburger ───
+  function toggleNav() {
+    try {
+      var nr = document.getElementById('navRight');
+      var nb = document.getElementById('navHamburger');
+      if (nr) nr.classList.toggle('open');
+      if (nb) nb.classList.toggle('open');
+    } catch(e) {}
+  }
+
+  var CART_KEY = 'telepath_cart';
+  var shippingCost = 0;
+  var discountAmount = 0;
+
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch(e) { return []; }
+  }
+
+  function saveCart(cart) {
+    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+    catch(e) {}
+  }
+
+  function iconFor(id) {
+    if (id.indexOf('frame') === 0)
+      return '<svg viewBox="0 0 32 32" fill="none"><rect x="10" y="10" width="12" height="12" stroke="#C9A84C" stroke-width="1.5"/><line x1="4" y1="4" x2="10" y2="10" stroke="#C9A84C" stroke-width="1.2"/><line x1="28" y1="4" x2="22" y2="10" stroke="#C9A84C" stroke-width="1.2"/><line x1="4" y1="28" x2="10" y2="22" stroke="#C9A84C" stroke-width="1.2"/><line x1="28" y1="28" x2="22" y2="22" stroke="#C9A84C" stroke-width="1.2"/></svg>';
+    if (id.indexOf('stack') === 0)
+      return '<svg viewBox="0 0 32 32" fill="none"><rect x="4" y="10" width="24" height="4" rx="1" stroke="#C9A84C" stroke-width="1.5"/><rect x="4" y="18" width="24" height="4" rx="1" stroke="#C9A84C" stroke-width="1.5"/><circle cx="9" cy="12" r="1.5" fill="#C9A84C" opacity="0.6"/><circle cx="9" cy="20" r="1.5" fill="#C9A84C" opacity="0.6"/></svg>';
+    if (id.indexOf('motors') === 0)
+      return '<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="10" stroke="#C9A84C" stroke-width="1.5"/><circle cx="16" cy="16" r="4" fill="#C9A84C" opacity="0.9"/><line x1="16" y1="4" x2="16" y2="8" stroke="#C9A84C" stroke-width="1.5"/><line x1="16" y1="24" x2="16" y2="28" stroke="#C9A84C" stroke-width="1.5"/><line x1="4" y1="16" x2="8" y2="16" stroke="#C9A84C" stroke-width="1.5"/><line x1="24" y1="16" x2="28" y2="16" stroke="#C9A84C" stroke-width="1.5"/></svg>';
+    if (id.indexOf('props') === 0)
+      return '<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="2.5" fill="#C9A84C"/><path d="M16 13 C16 13 19 11 21 8 C22 6 20 5 19 6 C16 9 16 13 16 13Z" fill="#C9A84C" opacity="0.85"/><path d="M19 16 C19 16 21 19 24 21 C26 22 27 20 26 19 C23 16 19 16 19 16Z" fill="#C9A84C" opacity="0.7"/><path d="M16 19 C16 19 13 21 11 24 C10 26 12 27 13 26 C16 23 16 19 16 19Z" fill="#C9A84C" opacity="0.85"/><path d="M13 16 C13 16 11 13 8 11 C6 10 5 12 6 13 C9 16 13 16 13 16Z" fill="#C9A84C" opacity="0.7"/></svg>';
+    if (id === 'license')
+      return '<svg viewBox="0 0 32 32" fill="none"><path d="M16 4 L28 8 L28 18 C28 24 22 29 16 30 C10 29 4 24 4 18 L4 8 Z" stroke="#C9A84C" stroke-width="1.5"/><path d="M12 16 L15 19 L21 13" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/></svg>';
+    return '<svg viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="20" rx="2" stroke="#C9A84C" stroke-width="1.5"/></svg>';
+  }
+
+  function renderCartSummary() {
+    try {
+      var cart = getCart();
+      var container = document.getElementById('cart-items');
+      container.innerHTML = '';
+      for (var ci = 0; ci < cart.length; ci++) {
+        var item = cart[ci];
+        var total = (item.price * item.qty).toFixed(2);
+        var el = document.createElement('div');
+        el.className = 'cart-item';
+        el.dataset.price = item.price;
+        el.dataset.id = item.id;
+        el.innerHTML =
+          '<div class="item-thumb">' + iconFor(item.id) + '</div>' +
+          '<div class="item-info">' +
+            '<div class="item-name">' + item.name + '</div>' +
+            '<div class="item-qty">' +
+              '<button class="qty-btn" onclick="changeQty(this,-1)">−</button>' +
+              '<span class="qty-num">' + item.qty + '</span>' +
+              '<button class="qty-btn" onclick="changeQty(this,1)">+</button>' +
+              '<button class="item-remove" onclick="removeItem(this)">remove</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="item-price"><sup style="font-size:clamp(0.9rem, 1.5vw, 1.1rem);font-family:Rajdhani,sans-serif;vertical-align:super;">€</sup><span class="price-val">' + total + '</span></div>';
+        container.appendChild(el);
+      }
+      recalc();
+    } catch(e) {}
+  }
+
+  function selectRadio(groupId, el) {
+    try {
+      var opts = document.getElementById(groupId).querySelectorAll('.radio-option');
+      for (var i = 0; i < opts.length; i++) opts[i].classList.remove('selected');
+      el.classList.add('selected');
+    } catch(e) {}
+  }
+
+  function updateShipping(cost, label) {
+    shippingCost = cost;
+    var el = document.getElementById('shipping-val');
+    if (cost === 0) { el.textContent = 'FREE'; el.classList.add('free'); }
+    else { el.textContent = label; el.classList.remove('free'); }
+    recalc();
+  }
+
+  function changeQty(btn, delta) {
+    try {
+      var item = btn.closest('.cart-item');
+      var numEl = item.querySelector('.qty-num');
+      var priceEl = item.querySelector('.price-val');
+      var unitPrice = parseFloat(item.dataset.price);
+      var qty = parseInt(numEl.textContent) + delta;
+      if (qty < 1) qty = 1;
+      numEl.textContent = qty;
+      priceEl.textContent = (unitPrice * qty).toFixed(2);
+      var cart = getCart();
+      var idx = -1;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === item.dataset.id) { idx = i; break; } }
+      if (idx >= 0) { cart[idx].qty = qty; saveCart(cart); }
+      recalc();
+    } catch(e) {}
+  }
+
+  function removeItem(btn) {
+    try {
+      var item = btn.closest('.cart-item');
+      var id = item.dataset.id;
+      item.style.transition = 'opacity 0.3s, transform 0.3s';
+      item.style.opacity = '0';
+      item.style.transform = 'translateX(20px)';
+      setTimeout(function() {
+        item.remove();
+        var allCart = getCart();
+        var filtCart = [];
+        for (var i = 0; i < allCart.length; i++) { if (allCart[i].id !== id) filtCart.push(allCart[i]); }
+        saveCart(filtCart);
+        recalc();
+      }, 300);
+    } catch(e) {}
+  }
+
+  function recalc() {
+    try {
+      var sub = 0;
+      var items = document.querySelectorAll('.cart-item');
+      for (var i = 0; i < items.length; i++) {
+        var val = parseFloat(items[i].querySelector('.price-val').textContent);
+        if (!isNaN(val)) sub += val;
+      }
+      document.getElementById('subtotal-val').textContent = '€' + sub.toFixed(2);
+      var total = sub + shippingCost - discountAmount;
+      document.getElementById('total-num').textContent = Math.max(0, total).toFixed(2);
+    } catch(e) {}
+  }
+
+  function applyPromo() {
+    try {
+      var code = document.getElementById('promo-input').value.trim().toUpperCase();
+      var row = document.getElementById('discount-row');
+      var val = document.getElementById('discount-val');
+      if (code === 'TELEPATH10') {
+        discountAmount = 10;
+        val.textContent = '−€10.00';
+        row.style.display = 'flex';
+        document.getElementById('promo-input').style.borderColor = 'var(--green)';
+      } else if (code) {
+        document.getElementById('promo-input').style.borderColor = 'var(--red)';
+        discountAmount = 0;
+        row.style.display = 'none';
+      }
+      recalc();
+    } catch(e) {}
+  }
+
+  function formatCard(el) {
+    var v = el.value.replace(/\D/g,'').substring(0,16);
+    el.value = v.replace(/(.{4})/g,'$1 ').trim();
+  }
+
+  function formatExpiry(el) {
+    var v = el.value.replace(/\D/g,'').substring(0,4);
+    if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2);
+    el.value = v;
+  }
+
+  function handleCheckout(btn) {
+    btn.textContent = 'Processing…';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+    setTimeout(function() {
+      btn.textContent = '✓  Order Placed';
+      btn.style.background = 'var(--green)';
+      btn.style.color = '#0A0A0A';
+      btn.style.opacity = '1';
+      setTimeout(function() { window.location.href = 'telepath-confirm.html'; }, 600);
+    }, 1800);
+  }
+
+  function goToStep(n) { if (n === 1) window.location.href = 'telepath-cart.html'; }
+
+  renderCartSummary();
+</script>
+</body>
+</html>

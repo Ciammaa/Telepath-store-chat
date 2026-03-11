@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TELEPATH — Cart</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Gothic+Expanded+One&family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --gold:       #C9A84C;
+    --gold-light: #E2C06A;
+    --gold-dim:   #8A6E2F;
+    --gold-glow:  rgba(201,168,76,0.18);
+    --bg:         #0A0A0A;
+    --bg2:        #111111;
+    --bg3:        #181818;
+    --surface:    #141414;
+    --border:     rgba(201,168,76,0.18);
+    --text:       #E8E0D0;
+    --text-muted: #7A7060;
+    --green:      #4ECCA3;
+    --red:        #C0392B;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+
+  /* iOS tap delay fix */
+  html { touch-action: manipulation; }
+  a, button, [onclick], .nav-hamburger {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.6;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 72px;
+    background: linear-gradient(180deg, rgba(10,10,10,0.98) 0%, rgba(10,10,10,0.80) 100%);
+    border-bottom: 1px solid var(--border);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+    .nav-logo {
+    font-family: 'Special Gothic Expanded One', sans-serif;
+    font-style: italic;
+    font-size: clamp(1rem, 3.5vw, 2rem);
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    text-decoration: none;
+    text-shadow: 0 0 24px rgba(201,168,76,0.4);
+    transition: text-shadow 0.3s;
+    white-space: nowrap;
+  }
+  .nav-logo:hover { text-shadow: 0 0 40px rgba(201,168,76,0.8); }
+  .nav-logo:visited, .nav-logo:active, .nav-logo:focus { color: var(--gold); outline: none; }
+  .nav-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 10px;
+  }
+    .bird-logo {
+    height: 38px;
+    width: auto;
+    opacity: 0.85;
+  }
+  .brand-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.35em;
+    color: var(--gold-dim); text-transform: uppercase; margin-top: 2px;
+  }
+  .nav-right {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-right a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.25s;
+  }
+  .nav-right a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width 0.3s;
+  }
+  .nav-right a:hover { color: var(--gold); }
+  .nav-right a:hover::after { width: 100%; }
+
+  /* ─── PROGRESS ─── */
+  .checkout-progress {
+    margin-top: 72px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5vw;
+    display: flex;
+    align-items: stretch;
+    height: 52px;
+  }
+  .progress-step {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 28px 0 0;
+    position: relative; cursor: default; transition: opacity 0.3s;
+  }
+  .progress-step:not(:last-child)::after {
+    content: '›'; position: absolute; right: 8px;
+    color: var(--gold-dim); font-size: clamp(0.9rem, 1.6vw, 1.15rem);
+  }
+  .progress-step.active { opacity: 1; }
+  .progress-step.upcoming { opacity: 0.25; }
+  .step-num {
+    width: 20px; height: 20px;
+    border: 1px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.1em; color: var(--gold-dim); flex-shrink: 0;
+  }
+  .progress-step.active .step-num {
+    border-color: var(--gold); color: var(--gold);
+    background: rgba(201,168,76,0.08);
+    box-shadow: 0 0 12px rgba(201,168,76,0.2);
+  }
+  .step-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .progress-step.active .step-label { color: var(--gold); }
+
+  /* ─── PAGE HEADER ─── */
+  .page-header {
+    padding: 48px 5vw 0;
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 24px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .page-title {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: clamp(2.2rem, 4vw, 5rem); letter-spacing: 0.06em;
+    color: var(--text); line-height: 1;
+  }
+  .page-title em { color: var(--gold); font-style: italic; }
+  .item-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); letter-spacing: 0.35em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+
+  /* ─── MAIN LAYOUT ─── */
+  .cart-wrap {
+    padding: 40px 5vw 80px;
+    display: grid;
+    grid-template-columns: 1fr minmax(320px, 36%);
+    gap: clamp(20px, 2.5vw, 48px);
+    align-items: start;
+  }
+
+  /* ─── CART ITEMS PANEL ─── */
+  .cart-panel {
+    display: flex; flex-direction: column; gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    animation: fadeUp 0.45s ease both;
+  }
+  .cart-panel::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 32px; height: 32px;
+    border-top: 1px solid var(--gold); border-left: 1px solid var(--gold);
+    opacity: 0.5; pointer-events: none;
+  }
+
+  /* Table header */
+  .cart-table-head {
+    display: grid;
+    grid-template-columns: 1fr 100px 120px 48px;
+    gap: 16px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cart-table-head span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .cart-table-head span:nth-child(2),
+  .cart-table-head span:nth-child(3) { text-align: center; }
+
+  /* Cart row */
+  .cart-row {
+    display: grid;
+    grid-template-columns: 1fr 100px 140px 48px;
+    gap: 16px;
+    padding: clamp(16px, 2vw, 28px) clamp(16px, 2vw, 32px);
+    border-bottom: 1px solid rgba(201,168,76,0.07);
+    align-items: center;
+    transition: background 0.2s;
+  }
+  .cart-row:last-child { border-bottom: none; }
+  .cart-row:hover { background: rgba(201,168,76,0.02); }
+
+  .row-product { display: flex; align-items: center; gap: 16px; min-width: 0; }
+
+  .row-thumb {
+    width: clamp(56px, 5vw, 80px); height: clamp(56px, 5vw, 80px); flex-shrink: 0;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .row-thumb svg { width: clamp(24px, 2.5vw, 36px); height: clamp(24px, 2.5vw, 36px); opacity: 0.35; }
+
+  .row-info { min-width: 0; }
+  .row-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: clamp(0.95rem, 1.2vw, 1.2rem);
+    letter-spacing: 0.06em; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .row-variant {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .row-unit-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
+    color: var(--gold-dim); text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* Qty control */
+  .qty-control {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0;
+    border: 1px solid var(--border);
+    width: 100px;
+  }
+  .qty-btn {
+    width: 30px; height: 34px;
+    background: transparent; border: none;
+    color: var(--gold-dim); font-size: 1rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: color 0.2s, background 0.2s;
+    flex-shrink: 0;
+  }
+  .qty-btn:hover { color: var(--gold); background: rgba(201,168,76,0.06); }
+  .qty-num {
+    flex: 1; text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem); letter-spacing: 0.15em;
+    color: var(--text);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    height: 34px; line-height: 34px;
+  }
+
+  /* Row total */
+  .row-total {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 1.3rem; letter-spacing: 0.05em;
+    color: var(--gold); text-align: center;
+    white-space: nowrap;
+  }
+  .row-total sup {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: clamp(0.9rem, 1.6vw, 1.15rem);
+    vertical-align: super;
+  }
+
+  /* Remove */
+  .row-remove {
+    display: flex; align-items: center; justify-content: center;
+  }
+  .remove-btn {
+    width: 28px; height: 28px;
+    background: transparent; border: 1px solid transparent;
+    color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .remove-btn:hover { color: var(--red); border-color: rgba(192,57,43,0.3); }
+
+  /* Empty state */
+  .cart-empty {
+    padding: 64px 24px;
+    text-align: center;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .cart-empty svg { opacity: 0.15; }
+  .cart-empty-title {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 1.8rem; letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+  .cart-empty-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.3em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .btn-shop {
+    margin-top: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: clamp(0.9rem, 1.7vw, 1.2rem);
+    letter-spacing: 0.3em; text-transform: uppercase;
+    padding: 14px 36px;
+    background: transparent; color: var(--gold);
+    border: 1px solid var(--gold-dim); cursor: pointer;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    text-decoration: none; display: inline-block;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .btn-shop:hover { border-color: var(--gold); box-shadow: 0 0 20px rgba(201,168,76,0.2); }
+
+  /* Suggested / recently viewed */
+  .cart-footer-note {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cart-footer-note span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .free-ship-bar {
+    flex: 1; height: 2px;
+    background: rgba(201,168,76,0.1);
+    position: relative; overflow: hidden;
+  }
+  .free-ship-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: var(--gold);
+    transition: width 0.5s ease;
+  }
+
+  /* ─── SUMMARY COL ─── */
+  .summary-col { position: sticky; top: 140px; min-width: 0; }
+
+  .summary-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: clamp(20px, 2.5vw, 40px);
+    position: relative;
+    animation: fadeUp 0.5s 0.1s ease both;
+    min-width: 0; overflow: hidden;
+  }
+  .summary-panel::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 28px; height: 28px;
+    border-top: 1px solid var(--gold); border-right: 1px solid var(--gold);
+    opacity: 0.5; pointer-events: none;
+  }
+
+  .summary-title {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: clamp(1.1rem, 1.5vw, 1.6rem); letter-spacing: 0.08em;
+    color: var(--text); margin-bottom: 22px;
+  }
+  .summary-title em { color: var(--gold); font-style: italic; }
+
+  .summary-divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+  .summary-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .summary-row-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .summary-row-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.3rem); color: var(--text);
+  }
+  .summary-row-val.free {
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
+  }
+  .summary-row-val.tbd {
+    color: var(--text-muted);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
+    font-style: italic;
+  }
+
+  .summary-total {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-top: 16px;
+  }
+  .total-label {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: clamp(1rem, 1.2vw, 1.3rem); letter-spacing: 0.12em; color: var(--text);
+  }
+  .total-val {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: clamp(2rem, 3vw, 3rem); letter-spacing: 0.06em; color: var(--gold);
+    text-shadow: 0 0 20px rgba(201,168,76,0.25);
+  }
+  .total-val sup {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: clamp(1rem, 1.8vw, 1.3rem); vertical-align: super;
+  }
+  .tax-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase;
+    margin-top: 6px; text-align: right;
+  }
+
+  /* Promo */
+  .promo-row { display: flex; gap: 8px; margin-top: 16px; }
+  .promo-row input {
+    flex: 1; background: var(--bg);
+    border: 1px solid rgba(201,168,76,0.18);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); letter-spacing: 0.25em;
+    padding: 10px 12px; outline: none;
+    text-transform: uppercase;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+    transition: border-color 0.2s;
+  }
+  .promo-row input::placeholder { color: var(--text-muted); opacity: 0.5; }
+  .promo-row input:focus { border-color: rgba(201,168,76,0.55); }
+  .promo-row button {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.25em; text-transform: uppercase;
+    padding: 10px 16px; background: transparent; color: var(--gold);
+    border: 1px solid var(--gold-dim); cursor: pointer;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+    white-space: nowrap; transition: border-color 0.2s;
+  }
+  .promo-row button:hover { border-color: var(--gold); }
+
+  .discount-row {
+    display: none;
+    justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .discount-row .summary-row-val { color: var(--green); }
+
+  /* CTA */
+  .btn-checkout {
+    width: 100%; margin-top: 20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700; font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+    letter-spacing: 0.35em; text-transform: uppercase;
+    padding: 18px 40px;
+    background: var(--gold); color: #0A0A0A;
+    border: none; cursor: pointer; text-decoration: none;
+    display: block; text-align: center;
+    transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-checkout:hover {
+    background: var(--gold-light);
+    box-shadow: 0 0 40px rgba(201,168,76,0.5);
+    transform: translateY(-1px);
+  }
+  .btn-checkout.disabled {
+    opacity: 0.3; pointer-events: none;
+  }
+
+  .btn-continue {
+    width: 100%; margin-top: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; text-transform: uppercase;
+    padding: 12px;
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--border); cursor: pointer;
+    text-decoration: none; display: block; text-align: center;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-continue:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+  /* Trust badges */
+  .trust-badges {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 20px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .trust-badge {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .trust-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--gold-dim); flex-shrink: 0;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideOut {
+    to { opacity: 0; transform: translateX(24px); max-height: 0; padding: 0; overflow: hidden; }
+  }
+  .cart-row.removing {
+    animation: slideOut 0.3s ease forwards;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: 28px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: auto;
+  }
+  .footer-logo {
+    font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
+    font-size: 1.4rem; letter-spacing: 0.12em; color: var(--gold-dim);
+  }
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; color: var(--text-muted);
+  }
+
+
+  /* ─── HAMBURGER ─── */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 32px; height: 32px;
+    background: none; border: none;
+    cursor: pointer; padding: 4px; z-index: 200;
+  }
+  .nav-hamburger span {
+    display: block; width: 100%; height: 1.5px;
+    background: var(--gold);
+    transition: transform 0.3s, opacity 0.3s;
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1100px) {
+    .checkout-progress { padding: 0 32px; }
+    .page-header { padding: 40px 32px 0; }
+    .cart-wrap { padding: 32px 32px 64px; gap: 28px; }
+  }
+
+  @media (max-width: 1050px) {
+    nav { padding: 0 24px; }
+    .checkout-progress { padding: 0 24px; }
+    .page-header { padding: 32px 24px 0; }
+    .cart-wrap {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 24px 24px 56px;
+    }
+    .summary-col { position: static; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-hamburger { display: flex; }
+    .nav-right {
+      display: none;
+      position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(10,10,10,0.98);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      flex-direction: column;
+      gap: 0; padding: 12px 0 20px;
+      z-index: 99;
+    }
+    .nav-right.open { display: flex; }
+    .nav-right a {
+      display: block;
+      padding: 14px 24px;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+    }
+    .nav-right a::after { display: none; }
+    .checkout-progress { padding: 0 16px; }
+    .page-header { padding: 24px 16px 0; }
+    .cart-wrap { padding: 16px 16px 48px; gap: 20px; }
+  }
+
+  @media (max-width: 600px) {
+    .cart-table-head { display: none; }
+    .cart-row {
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      gap: 12px;
+      padding: 16px;
+    }
+    .row-product { grid-column: 1; grid-row: 1; }
+    .qty-control { grid-column: 1; grid-row: 2; width: 96px; }
+    .row-total { grid-column: 2; grid-row: 1; align-self: start; }
+    .row-remove { grid-column: 2; grid-row: 2; justify-content: flex-end; }
+    .page-header { flex-direction: column; gap: 4px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 16px; }
+  }
+
+  @media (max-width: 480px) {
+    .checkout-progress { gap: 0; }
+    .progress-step { padding: 0 16px 0 0; }
+    .step-label { display: none; }
+    .cart-wrap { padding: 16px 14px 48px; }
+    .summary-panel { padding: 20px 16px; }
+  }
+
+
+  nav { transition: background 0.4s, box-shadow 0.4s; }
+  nav.scrolled {
+    background: rgba(10,10,10,0.97) !important;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.6);
+    border-bottom-color: rgba(201,168,76,0.15) !important;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <!-- TELEPATH a sinistra come link home -->
+  <a href="telepath-store.html#home" class="nav-logo">TELEPATH</a>
+
+  <!-- Logo al centro -->
+  <div class="nav-center">
+    <img src="images/BBlogo.webp" class="bird-logo" alt="BlackBird FPV">
+  </div>
+
+  <div class="nav-right" id="navRight">
+    <a href="telepath-store.html#products">Products</a>
+    <a href="#" title="Coming soon">Configurator</a>
+  </div>
+
+  <button class="nav-hamburger" id="navHamburger" aria-label="Menu" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─── PROGRESS ─── -->
+<div class="checkout-progress">
+  <div class="progress-step active">
+    <div class="step-num">01</div>
+    <span class="step-label">Cart</span>
+  </div>
+  <div class="progress-step upcoming">
+    <div class="step-num">02</div>
+    <span class="step-label">Checkout</span>
+  </div>
+  <div class="progress-step upcoming">
+    <div class="step-num">03</div>
+    <span class="step-label">Confirm</span>
+  </div>
+</div>
+
+<!-- ─── PAGE HEADER ─── -->
+<div class="page-header">
+  <h1 class="page-title">Your <em>Cart</em></h1>
+  <span class="item-count" id="item-count">0 items</span>
+</div>
+
+<!-- ─── MAIN ─── -->
+<div class="cart-wrap">
+
+  <!-- LEFT: Items -->
+  <div>
+    <div class="cart-panel" id="cart-panel">
+
+      <!-- Table header -->
+      <div class="cart-table-head">
+        <span>Product</span>
+        <span>Quantity</span>
+        <span>Total</span>
+        <span></span>
+      </div>
+
+      <div id="cart-rows"></div>
+
+      <!-- Empty state (hidden by default) -->
+      <div class="cart-empty" id="cart-empty">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="20" width="48" height="36" rx="2" stroke="#C9A84C" stroke-width="1.5"/>
+          <path d="M22 20V16a10 10 0 0 1 20 0v4" stroke="#C9A84C" stroke-width="1.5"/>
+          <circle cx="32" cy="38" r="4" stroke="#C9A84C" stroke-width="1.5"/>
+        </svg>
+        <div class="cart-empty-title">Cart is Empty</div>
+        <div class="cart-empty-sub">Your build starts here</div>
+        <a href="telepath-store.html" class="btn-shop">Browse Products</a>
+      </div>
+
+      <!-- Free shipping bar -->
+      <div class="cart-footer-note" id="ship-note">
+        <span id="ship-text">Free shipping on orders over €100</span>
+        <div class="free-ship-bar">
+          <div class="free-ship-fill" id="ship-fill" style="width:100%"></div>
+        </div>
+        <span id="ship-pct">✓</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: Summary -->
+  <div class="summary-col">
+    <div class="summary-panel">
+      <div class="summary-title">Order <em>Summary</em></div>
+
+      <div class="summary-row">
+        <span class="summary-row-label">Subtotal</span>
+        <span class="summary-row-val" id="subtotal-val">€0.00</span>
+      </div>
+      <div class="summary-row" id="shipping-row">
+        <span class="summary-row-label">Shipping</span>
+        <span class="summary-row-val free" id="shipping-val">FREE</span>
+      </div>
+      <div class="discount-row" id="discount-row">
+        <span class="summary-row-label">Discount</span>
+        <span class="summary-row-val" id="discount-val">—</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-row-label">Tax (VAT 22%)</span>
+        <span class="summary-row-val tbd" id="tax-val">Calculated at checkout</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-total">
+        <span class="total-label">Total</span>
+        <span class="total-val"><sup>€</sup><span id="total-num">0.00</span></span>
+      </div>
+      <div class="tax-note">Excl. VAT — calculated at next step</div>
+
+      <!-- Promo -->
+      <div class="promo-row">
+        <input type="text" placeholder="Promo code" id="promo-input" />
+        <button onclick="applyPromo()">Apply</button>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <a href="telepath-checkout.html" class="btn-checkout" id="checkout-btn">
+        Proceed to Checkout
+      </a>
+      <a href="telepath-store.html" class="btn-continue">← Continue Shopping</a>
+
+      <!-- Trust -->
+      <div class="trust-badges">
+        <div class="trust-badge"><span class="trust-dot"></span><span>Secure SSL checkout</span></div>
+        <div class="trust-badge"><span class="trust-dot"></span><span>Free returns within 30 days</span></div>
+        <div class="trust-badge"><span class="trust-dot"></span><span>Ships from EU — no customs fees</span></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-logo"><em>TELEPATH</em></div>
+  <div class="footer-copy">© 2026 BlackBird FPV — All rights reserved</div>
+  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:clamp(0.85rem, 1.3vw, 1rem);color:var(--text-muted);text-align:right;letter-spacing:0.05em;">Made for pilots, by pilots.</div>
+</footer>
+
+<script>
+  document.documentElement.classList.add('js');
+
+  // ─── Hamburger ───
+  function toggleNav() {
+    var nav = document.getElementById('navRight');
+    var btn = document.getElementById('navHamburger');
+    if (!nav || !btn) return;
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+  }
+
+  // ═══════════════════════════════════════════
+  // TELEPATH CART — localStorage engine
+  // ═══════════════════════════════════════════
+  var CART_KEY = 'telepath_cart';
+  var FREE_SHIP_THRESHOLD = 100;
+  var discountAmount = 0;
+
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch(e) { return []; }
+  }
+
+  function saveCart(cart) {
+    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
+    catch(e) {}
+  }
+
+  // ─── Render cart rows from localStorage ───
+  function getProductUrl(id) {
+    if (id.startsWith('frame'))  return 'telepath-frame.html';
+    if (id.startsWith('stack'))  return 'telepath-executor.html';
+    if (id.startsWith('motors')) return 'telepath-motors.html';
+    if (id.startsWith('props'))  return 'telepath-props.html';
+    if (id === 'license' || id.startsWith('lic')) return 'telepath-store.html#license';
+    return null;
+  }
+
+  function renderCart() {
+    const cart = getCart();
+    const panel = document.getElementById('cart-panel');
+
+    // Remove existing rows
+    var existingRows = panel.querySelectorAll('.cart-row'); for (var ri = 0; ri < existingRows.length; ri++) existingRows[ri].remove();
+
+    for (var idx = 0; idx < cart.length; idx++) { var item = cart[idx];
+      const row = document.createElement('div');
+      row.className = 'cart-row';
+      row.dataset.id = item.id;
+      row.dataset.unit = item.price.toFixed(2);
+      const url = getProductUrl(item.id);
+      const productLink = url
+        ? `<a href="${url}" class="row-product" style="text-decoration:none;color:inherit;cursor:pointer;" title="Vai al prodotto">`
+        : `<div class="row-product">`;
+      const productLinkClose = url ? `</a>` : `</div>`;
+      row.innerHTML = `
+        ${productLink}
+          <div class="row-thumb">${getThumbSVG(item.id)}</div>
+          <div class="row-info">
+            <div class="row-name">${item.name}</div>
+            <div class="row-unit-price">€${item.price.toFixed(2)} / unit</div>
+          </div>
+        ${productLinkClose}
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(this, -1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(this, 1)">+</button>
+        </div>
+        <div class="row-total"><sup>€</sup><span class="row-total-val">${(item.price * item.qty).toFixed(2)}</span></div>
+        <div class="row-remove">
+          <button class="remove-btn" onclick="removeRow(this)" title="Remove">✕</button>
+        </div>
+      `;
+      // Insert before empty state
+      const emptyEl = document.getElementById('cart-empty');
+      panel.insertBefore(row, emptyEl);
+    }
+
+    recalc();
+    checkEmpty();
+  }
+
+  function getThumbSVG(id) {
+    if (id.startsWith('frame'))  return '<svg viewBox="0 0 32 32" fill="none"><rect x="11" y="11" width="10" height="10" stroke="#C9A84C" stroke-width="1.5"/><line x1="6" y1="6" x2="11" y2="11" stroke="#C9A84C" stroke-width="1.2"/><line x1="26" y1="6" x2="21" y2="11" stroke="#C9A84C" stroke-width="1.2"/><line x1="6" y1="26" x2="11" y2="21" stroke="#C9A84C" stroke-width="1.2"/><line x1="26" y1="26" x2="21" y2="21" stroke="#C9A84C" stroke-width="1.2"/></svg>';
+    if (id.startsWith('stack'))  return '<svg viewBox="0 0 32 32" fill="none"><rect x="4" y="10" width="24" height="4" rx="1" stroke="#C9A84C" stroke-width="1.5"/><rect x="4" y="18" width="24" height="4" rx="1" stroke="#C9A84C" stroke-width="1.5"/><circle cx="9" cy="12" r="1.5" fill="#C9A84C" opacity="0.6"/><circle cx="9" cy="20" r="1.5" fill="#C9A84C" opacity="0.6"/></svg>';
+    if (id.startsWith('motors')) return '<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="8" stroke="#C9A84C" stroke-width="1.5"/><circle cx="16" cy="16" r="3" fill="#C9A84C" opacity="0.9"/></svg>';
+    if (id.startsWith('props'))  return '<svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="2.5" fill="#C9A84C"/><path d="M16 13.5 C16 13.5 20 11 22 8 C23 6 21 5 20 6 C17 9 16 13.5 16 13.5Z" fill="#C9A84C" opacity="0.8"/><path d="M18.5 16 C18.5 16 21 20 24 22 C26 23 27 21 26 20 C23 17 18.5 16 18.5 16Z" fill="#C9A84C" opacity="0.65"/><path d="M16 18.5 C16 18.5 12 21 10 24 C9 26 11 27 12 26 C15 23 16 18.5 16 18.5Z" fill="#C9A84C" opacity="0.8"/><path d="M13.5 16 C13.5 16 11 12 8 10 C6 9 5 11 6 12 C9 15 13.5 16 13.5 16Z" fill="#C9A84C" opacity="0.65"/></svg>';
+    if (id === 'license')        return '<svg viewBox="0 0 32 32" fill="none"><rect x="6" y="4" width="20" height="24" rx="2" stroke="#C9A84C" stroke-width="1.5"/><line x1="10" y1="12" x2="22" y2="12" stroke="#C9A84C" stroke-width="1.2"/><line x1="10" y1="17" x2="18" y2="17" stroke="#C9A84C" stroke-width="1.2"/></svg>';
+    return '<svg viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="20" rx="2" stroke="#C9A84C" stroke-width="1.5"/></svg>';
+  }
+
+  // ─── Qty ───
+  function changeQty(btn, delta) {
+    var row = btn.closest('.cart-row');
+    var numEl = row.querySelector('.qty-num');
+    var totalEl = row.querySelector('.row-total-val');
+    var unit = parseFloat(row.dataset.unit);
+    var qty = parseInt(numEl.textContent) + delta;
+    if (qty < 1) qty = 1;
+    numEl.textContent = qty;
+    totalEl.textContent = (unit * qty).toFixed(2);
+
+    // Sync to localStorage
+    var cart = getCart();
+    var idx = -1; for (var fi = 0; fi < cart.length; fi++) { if (cart[fi].id === row.dataset.id) { idx = fi; break; } }
+    if (idx >= 0) { cart[idx].qty = qty; saveCart(cart); }
+
+    recalc();
+  }
+
+  // ─── Remove ───
+  function removeRow(btn) {
+    var row = btn.closest('.cart-row');
+    var id = row.dataset.id;
+    row.classList.add('removing');
+    setTimeout(() => {
+      row.remove();
+      var allCart = getCart(); var cart = []; for (var fi2 = 0; fi2 < allCart.length; fi2++) { if (allCart[fi2].id !== id) cart.push(allCart[fi2]); }
+      saveCart(cart);
+      recalc();
+      checkEmpty();
+    }, 300);
+  }
+
+  // ─── Empty state ───
+  function hasPhysicalItems() {
+    // Returns true if cart contains any non-license item
+    var rows = document.querySelectorAll('.cart-row');
+    for (var ri2 = 0; ri2 < rows.length; ri2++) {
+      if (!rows[ri2].dataset.id.startsWith('lic')) return true;
+    }
+    return false;
+  }
+
+  function checkEmpty() {
+    var rows = document.querySelectorAll('.cart-row');
+    var empty = document.getElementById('cart-empty');
+    var shipNote = document.getElementById('ship-note');
+    var shipRow = document.getElementById('shipping-row');
+    var checkoutBtn = document.getElementById('checkout-btn');
+    var count = rows.length;
+    document.getElementById('item-count').textContent = count + ' item' + (count !== 1 ? 's' : '');
+    var physical = hasPhysicalItems();
+    if (count === 0) {
+      empty.style.display = 'flex';
+      if (checkoutBtn) checkoutBtn.classList.add('disabled');
+    } else {
+      empty.style.display = 'none';
+      if (checkoutBtn) checkoutBtn.classList.remove('disabled');
+    }
+    // Shipping bar and row only for physical items
+    if (shipNote) shipNote.style.display = physical ? 'flex' : 'none';
+    if (shipRow)  shipRow.style.display  = physical ? 'flex' : 'none';
+  }
+
+  // ─── Recalc ───
+  function recalc() {
+    var sub = 0;
+    var recalcRows = document.querySelectorAll('.cart-row');
+    for (var ri3 = 0; ri3 < recalcRows.length; ri3++) {
+      var v = parseFloat(recalcRows[ri3].querySelector('.row-total-val').textContent);
+      if (!isNaN(v)) sub += v;
+    }
+    document.getElementById('subtotal-val').textContent = '€' + sub.toFixed(2);
+    var physical = hasPhysicalItems();
+    const shipEl = document.getElementById('shipping-val');
+    let shipping = 0;
+    if (physical) {
+      if (sub >= FREE_SHIP_THRESHOLD) {
+        shipEl.textContent = 'FREE'; shipEl.className = 'summary-row-val free';
+      } else {
+        shipEl.textContent = '€8.90'; shipEl.className = 'summary-row-val';
+        shipping = 8.90;
+      }
+      var pct = Math.min(sub / FREE_SHIP_THRESHOLD, 1);
+      document.getElementById('ship-fill').style.width = (pct * 100) + '%';
+      if (pct >= 1) {
+        document.getElementById('ship-text').textContent = 'You qualify for free shipping';
+        document.getElementById('ship-pct').textContent = '✓';
+      } else {
+        var remaining = (FREE_SHIP_THRESHOLD - sub).toFixed(2);
+        document.getElementById('ship-text').textContent = '€' + remaining + ' away from free shipping';
+        document.getElementById('ship-pct').textContent = Math.round(pct * 100) + '%';
+      }
+    }
+    const total = Math.max(0, sub + shipping - discountAmount);
+    document.getElementById('total-num').textContent = total.toFixed(2);
+  }
+
+  // ─── Promo ───
+  function applyPromo() {
+    var code = document.getElementById('promo-input').value.trim().toUpperCase();
+    var row = document.getElementById('discount-row');
+    var val = document.getElementById('discount-val');
+    var input = document.getElementById('promo-input');
+    if (code === 'TELEPATH10') {
+      discountAmount = 10;
+      val.textContent = '−€10.00'; val.style.color = 'var(--green)';
+      row.style.display = 'flex'; input.style.borderColor = 'var(--green)';
+    } else if (code) {
+      input.style.borderColor = 'var(--red)';
+      discountAmount = 0; row.style.display = 'none';
+    }
+    recalc();
+  }
+
+  // ─── Init ───
+  renderCart();
+</script>
+</body>
+</html>
