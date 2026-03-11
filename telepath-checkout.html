@@ -76,7 +76,7 @@
   }
   .brand-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.35em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.35em;
     color: var(--gold-dim); text-transform: uppercase; margin-top: 2px;
   }
   .nav-right {
@@ -86,7 +86,7 @@
   .nav-right a {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-muted);
@@ -129,7 +129,7 @@
     content: '›';
     position: absolute; right: 8px;
     color: var(--gold-dim);
-    font-size: 0.7rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
   }
   .progress-step.done { opacity: 0.45; cursor: pointer; }
   .progress-step.done:hover { opacity: 0.7; }
@@ -140,7 +140,7 @@
     border: 1px solid var(--gold-dim);
     display: flex; align-items: center; justify-content: center;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.1em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.1em;
     color: var(--gold-dim);
     flex-shrink: 0;
   }
@@ -154,11 +154,11 @@
     border-color: var(--green);
     color: var(--green);
     background: rgba(78,204,163,0.08);
-    font-size: 0.7rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
   }
   .step-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.3em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--text-muted);
   }
@@ -178,7 +178,7 @@
   /* ─── SECTION HEADING ─── */
   .section-eyebrow {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.45em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.45em;
     color: var(--gold-dim); text-transform: uppercase;
     display: flex; align-items: center; gap: 12px;
     margin-bottom: 24px;
@@ -231,7 +231,7 @@
   }
   .field label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.35em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.35em;
     text-transform: uppercase; color: var(--text-muted);
   }
   .field input,
@@ -240,7 +240,7 @@
     border: 1px solid rgba(201,168,76,0.2);
     color: var(--text);
     font-family: 'Rajdhani', sans-serif;
-    font-size: 0.95rem;
+    font-size: clamp(1rem, 1.9vw, 1.3rem);
     font-weight: 500;
     padding: 12px 14px;
     outline: none;
@@ -262,7 +262,7 @@
   .select-wrap::after {
     content: '›';
     position: absolute; right: 14px; top: 50%; transform: translateY(-50%) rotate(90deg);
-    color: var(--gold-dim); pointer-events: none; font-size: 0.8rem;
+    color: var(--gold-dim); pointer-events: none; font-size: clamp(0.9rem, 1.7vw, 1.2rem);
   }
 
   /* Radio group */
@@ -300,12 +300,12 @@
   .radio-info { flex: 1; }
   .radio-title {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 0.9rem;
+    font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.3rem);
     letter-spacing: 0.1em; color: var(--text);
   }
   .radio-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.25em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
     color: var(--text-muted); text-transform: uppercase;
     margin-top: 2px;
   }
@@ -314,7 +314,7 @@
     font-size: 1.1rem; letter-spacing: 0.05em;
     color: var(--gold);
   }
-  .radio-price.free { color: var(--green); font-size: 0.75rem; letter-spacing: 0.2em; font-family: 'Share Tech Mono', monospace; }
+  .radio-price.free { color: var(--green); font-size: clamp(0.9rem, 1.6vw, 1.15rem); letter-spacing: 0.2em; font-family: 'Share Tech Mono', monospace; }
 
   /* Card field row */
   .card-icons {
@@ -324,7 +324,7 @@
     height: 22px; padding: 3px 8px;
     background: var(--bg3); border: 1px solid var(--border);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.5rem; letter-spacing: 0.15em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.15em;
     color: var(--text-muted); text-transform: uppercase;
     display: flex; align-items: center;
   }
@@ -334,7 +334,7 @@
     display: flex; align-items: center; gap: 8px;
     margin-top: 20px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.3em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
     color: var(--text-muted); text-transform: uppercase;
   }
   .secure-dot {
@@ -348,7 +348,7 @@
   .btn-checkout {
     width: 100%;
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.85rem;
+    font-weight: 700; font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.35em; text-transform: uppercase;
     padding: 18px 40px;
     background: var(--gold);
@@ -411,13 +411,13 @@
   .item-info { flex: 1; min-width: 0; }
   .item-name {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 0.88rem;
+    font-weight: 600; font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.08em; color: var(--text);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .item-variant {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.25em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
     color: var(--text-muted); text-transform: uppercase;
     margin-top: 3px;
   }
@@ -430,14 +430,14 @@
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--gold-dim);
-    font-size: 0.75rem; cursor: pointer;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: border-color 0.2s, color 0.2s;
   }
   .qty-btn:hover { border-color: var(--gold); color: var(--gold); }
   .qty-num {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.62rem; letter-spacing: 0.15em;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); letter-spacing: 0.15em;
     color: var(--text); min-width: 16px; text-align: center;
   }
   .item-price {
@@ -447,7 +447,7 @@
   }
   .item-remove {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.5rem; letter-spacing: 0.2em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
     color: var(--text-muted); cursor: pointer;
     text-transform: uppercase;
     transition: color 0.2s;
@@ -465,15 +465,15 @@
   }
   .summary-row-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.3em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
     text-transform: uppercase; color: var(--text-muted);
   }
   .summary-row-val {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 0.9rem;
+    font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.3rem);
     color: var(--text);
   }
-  .summary-row-val.free { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 0.58rem; letter-spacing: 0.2em; }
+  .summary-row-val.free { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.2em; }
 
   .summary-total {
     display: flex; justify-content: space-between; align-items: baseline;
@@ -492,7 +492,7 @@
   }
   .total-val sup {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.9rem;
+    font-weight: 700; font-size: clamp(1rem, 1.8vw, 1.3rem);
     vertical-align: super;
   }
 
@@ -507,7 +507,7 @@
     border: 1px solid rgba(201,168,76,0.18);
     color: var(--text);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.65rem; letter-spacing: 0.25em;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); letter-spacing: 0.25em;
     padding: 10px 12px;
     outline: none;
     text-transform: uppercase;
@@ -518,7 +518,7 @@
   .promo-row input:focus { border-color: var(--border-focus); }
   .promo-row button {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.25em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
     text-transform: uppercase;
     padding: 10px 16px;
     background: transparent;
@@ -550,7 +550,7 @@
   }
   .footer-copy {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted);
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; color: var(--text-muted);
   }
 
   /* ─── RESPONSIVE ─── */
@@ -768,7 +768,7 @@
             <div class="radio-title">Express Shipping</div>
             <div class="radio-sub">2–3 business days</div>
           </div>
-          <div class="radio-price"><sup style="font-size:0.7rem;font-family:'Rajdhani',sans-serif;">€</sup>8.90</div>
+          <div class="radio-price"><sup style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);font-family:'Rajdhani',sans-serif;">€</sup>8.90</div>
         </div>
         <div class="radio-option" onclick="selectRadio('shipping-group', this); updateShipping(18.90, '€18.90')">
           <div class="radio-dot"></div>
@@ -776,7 +776,7 @@
             <div class="radio-title">Priority Overnight</div>
             <div class="radio-sub">Next business day</div>
           </div>
-          <div class="radio-price"><sup style="font-size:0.7rem;font-family:'Rajdhani',sans-serif;">€</sup>18.90</div>
+          <div class="radio-price"><sup style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);font-family:'Rajdhani',sans-serif;">€</sup>18.90</div>
         </div>
       </div>
     </div>
@@ -942,7 +942,7 @@
               '<button class="item-remove" onclick="removeItem(this)">remove</button>' +
             '</div>' +
           '</div>' +
-          '<div class="item-price"><sup style="font-size:0.65rem;font-family:Rajdhani,sans-serif;vertical-align:super;">€</sup><span class="price-val">' + total + '</span></div>';
+          '<div class="item-price"><sup style="font-size:clamp(0.9rem, 1.5vw, 1.1rem);font-family:Rajdhani,sans-serif;vertical-align:super;">€</sup><span class="price-val">' + total + '</span></div>';
         container.appendChild(el);
       }
       recalc();

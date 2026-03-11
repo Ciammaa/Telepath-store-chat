@@ -72,7 +72,7 @@
   }
   .brand-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.35em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.35em;
     color: var(--gold-dim); text-transform: uppercase; margin-top: 2px;
   }
 
@@ -90,14 +90,14 @@
   }
   .progress-step:not(:last-child)::after {
     content: '›'; position: absolute; right: 8px;
-    color: var(--gold-dim); font-size: 0.7rem;
+    color: var(--gold-dim); font-size: clamp(0.9rem, 1.6vw, 1.15rem);
   }
   .step-num {
     width: 20px; height: 20px;
     border: 1px solid var(--gold-dim);
     display: flex; align-items: center; justify-content: center;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; color: var(--gold-dim); flex-shrink: 0;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); color: var(--gold-dim); flex-shrink: 0;
   }
   .progress-step.done .step-num {
     border-color: var(--green); color: var(--green);
@@ -110,7 +110,7 @@
   }
   .step-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.3em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.3em;
     text-transform: uppercase; color: var(--text-muted);
   }
   .progress-step.done .step-label  { color: var(--green); opacity: 0.6; }
@@ -153,7 +153,7 @@
 
   .confirm-eyebrow {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.5em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.5em;
     color: var(--green); text-transform: uppercase;
     margin-bottom: 12px;
     animation: fadeUp 0.5s 0.6s ease both; opacity: 0;
@@ -168,9 +168,9 @@
   .confirm-title em { color: var(--gold); font-style: normal; }
   .confirm-sub {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 300; font-size: 1rem;
+    font-weight: 300; font-size: clamp(1rem, 2vw, 1.4rem);
     letter-spacing: 0.15em; color: var(--text-muted);
-    margin-top: 12px; max-width: 460px;
+    margin-top: 12px; max-width: 100%;
     animation: fadeUp 0.5s 0.8s ease both; opacity: 0;
   }
 
@@ -185,7 +185,7 @@
   }
   .order-badge-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.35em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.35em;
     color: var(--text-muted); text-transform: uppercase;
   }
   .order-badge-num {
@@ -197,12 +197,18 @@
   .confirm-wrap {
     padding: 0 5vw 80px;
     display: grid;
-    grid-template-columns: 1fr clamp(260px, 30%, 360px);
-    gap: clamp(16px, 2vw, 40px);
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+    gap: clamp(24px, 3vw, 48px);
     align-items: start;
     min-width: 0;
+    width: min(1400px, 100%);
+    max-width: 1400px;
+    margin: 0 auto;
+    box-sizing: border-box;
   }
   .confirm-wrap > * { min-width: 0; }
+  .confirm-wrap > div:first-child { min-width: 0; width: 100%; }
+  .right-col { min-width: 320px; }
 
   /* ─── PANELS ─── */
   .panel {
@@ -242,17 +248,17 @@
   .order-info { flex: 1; min-width: 0; }
   .order-name {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 0.9rem; letter-spacing: 0.06em;
+    font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.3rem); letter-spacing: 0.06em;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .order-variant {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.5rem; letter-spacing: 0.25em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
     color: var(--text-muted); text-transform: uppercase; margin-top: 3px;
   }
   .order-qty {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.2em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
     color: var(--text-muted); white-space: nowrap;
   }
   .order-price {
@@ -262,7 +268,7 @@
   }
   .order-price sup {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.65rem; vertical-align: super;
+    font-weight: 700; font-size: clamp(0.9rem, 1.5vw, 1.1rem); vertical-align: super;
   }
 
   /* Details grid */
@@ -272,13 +278,13 @@
   .detail-block {}
   .detail-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.35em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.35em;
     text-transform: uppercase; color: var(--text-muted);
     margin-bottom: 8px;
   }
   .detail-val {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 500; font-size: 0.9rem;
+    font-weight: 500; font-size: clamp(1rem, 1.8vw, 1.3rem);
     letter-spacing: 0.05em; color: var(--text);
     line-height: 1.5;
   }
@@ -314,13 +320,13 @@
   .tl-content {}
   .tl-title {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 0.88rem;
+    font-weight: 600; font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.08em; color: var(--text);
   }
   .tl-step:not(.done):not(.active) .tl-title { color: var(--text-muted); }
   .tl-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.5rem; letter-spacing: 0.25em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
     color: var(--text-muted); text-transform: uppercase; margin-top: 3px;
   }
 
@@ -347,14 +353,14 @@
   }
   .t-row-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.3em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
     text-transform: uppercase; color: var(--text-muted);
   }
   .t-row-val {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 0.9rem; color: var(--text);
+    font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.3rem); color: var(--text);
   }
-  .t-row-val.free { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: 0.58rem; }
+  .t-row-val.free { color: var(--green); font-family: 'Share Tech Mono', monospace; font-size: clamp(0.875rem, 1.4vw, 1.05rem); }
   .t-divider { height: 1px; background: var(--border); margin: 16px 0; }
   .t-total {
     display: flex; justify-content: space-between; align-items: baseline;
@@ -370,7 +376,7 @@
   }
   .t-total-val sup {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.85rem; vertical-align: super;
+    font-weight: 700; font-size: clamp(0.95rem, 1.8vw, 1.25rem); vertical-align: super;
   }
 
   /* Actions */
@@ -383,7 +389,7 @@
   }
   .btn-primary {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.8rem;
+    font-weight: 700; font-size: clamp(0.9rem, 1.7vw, 1.2rem);
     letter-spacing: 0.3em; text-transform: uppercase;
     padding: 16px; text-align: center;
     background: var(--gold); color: #0A0A0A;
@@ -398,7 +404,7 @@
   }
   .btn-secondary {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; text-transform: uppercase;
     padding: 14px; text-align: center;
     background: transparent; color: var(--text-muted);
     border: 1px solid var(--border); cursor: pointer; text-decoration: none; display: block;
@@ -423,7 +429,7 @@
   }
   .email-text {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.22em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.22em;
     color: var(--text-muted); text-transform: uppercase; line-height: 1.6;
   }
   .email-text strong { color: var(--gold-light); font-weight: 600; }
@@ -449,7 +455,7 @@
   }
   .footer-copy {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted);
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; color: var(--text-muted);
   }
 
 
@@ -461,7 +467,7 @@
   .nav-right a {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-muted);
@@ -621,6 +627,7 @@
     <div class="panel" style="animation-delay:0s">
       <div class="panel-title">Items <em>Ordered</em></div>
       <div id="order-items"></div>
+    </div>
 
     <!-- Shipping & billing details -->
     <div class="panel" style="animation-delay:0.08s">
@@ -638,7 +645,7 @@
         <div class="detail-block">
           <div class="detail-label">Shipping Method</div>
           <div class="detail-val">Standard Shipping<br>
-            <span style="font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--text-muted);">5–8 BUSINESS DAYS</span>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:clamp(0.875rem, 1.4vw, 1.05rem);letter-spacing:0.2em;color:var(--text-muted);">5–8 BUSINESS DAYS</span>
           </div>
         </div>
         <div class="detail-block">
@@ -726,7 +733,17 @@
     <!-- Actions -->
     <div class="action-panel">
       <a href="telepath-store.html" class="btn-primary">Continue Shopping</a>
-      <a href="#" class="btn-secondary" onclick="window.print(); return false;">Print / Save
+      <a href="#" class="btn-secondary" onclick="window.print(); return false;">Print / Save</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">TELEPATH</div>
+  <div class="footer-copy">BLACKBIRD FPV — ORDER CONFIRMED</div>
+</footer>
+
 <script>
   function toggleNav() {
     try {
@@ -751,7 +768,7 @@
       if (!container) return;
 
       if (cart.length === 0) {
-        container.innerHTML = '<p style="font-size:0.8rem;color:var(--text-muted);padding:12px 0;">No items found.</p>';
+        container.innerHTML = '<p style="font-size:clamp(0.9rem, 1.7vw, 1.2rem);color:var(--text-muted);padding:12px 0;">No items found.</p>';
         return;
       }
 
@@ -764,10 +781,10 @@
         el.className = 'order-item';
         el.innerHTML =
           '<div class="order-item-info" style="flex:1;">' +
-            '<div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:0.88rem;letter-spacing:0.05em;">' + item.name + '</div>' +
-            '<div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;">Qty: ' + item.qty + '</div>' +
+            '<div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:clamp(0.95rem, 1.8vw, 1.25rem);letter-spacing:0.05em;">' + item.name + '</div>' +
+            '<div style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);margin-top:2px;">Qty: ' + item.qty + '</div>' +
           '</div>' +
-          '<div style="font-family:Share Tech Mono,monospace;font-size:0.85rem;color:var(--gold);">€' + lineTotal.toFixed(2) + '</div>';
+          '<div style="font-family:Share Tech Mono,monospace;font-size:clamp(0.95rem, 1.8vw, 1.25rem);color:var(--gold);">€' + lineTotal.toFixed(2) + '</div>';
         container.appendChild(el);
       }
 

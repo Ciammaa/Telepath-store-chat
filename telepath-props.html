@@ -78,13 +78,13 @@
   .bird-logo:hover { opacity: 1; filter: drop-shadow(0 0 12px rgba(201,168,76,0.6)); }
   .brand-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.35em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.35em;
     color: var(--gold-dim); text-transform: uppercase; margin-top: 2px;
   }
   .nav-links { display: flex; gap: 36px; list-style: none; }
   .nav-links a {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: 0.85rem;
+    font-weight: 600; font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.2em; text-transform: uppercase;
     color: var(--text-muted); text-decoration: none;
     position: relative; transition: color 0.25s;
@@ -108,7 +108,7 @@
   }
   .breadcrumb-bar a, .breadcrumb-bar span {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.62rem;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
     letter-spacing: 0.3em;
     color: var(--text-muted);
     text-decoration: none;
@@ -116,7 +116,7 @@
     transition: color 0.2s;
   }
   .breadcrumb-bar a:hover { color: var(--gold); }
-  .breadcrumb-sep { color: var(--gold-dim); font-size: 0.55rem; }
+  .breadcrumb-sep { color: var(--gold-dim); font-size: clamp(0.875rem, 1.4vw, 1.05rem); }
   .breadcrumb-current { color: var(--gold); }
 
   /* ─── MAIN PRODUCT LAYOUT ─── */
@@ -183,7 +183,7 @@
   }
   .img-placeholder-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     letter-spacing: 0.4em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -194,7 +194,7 @@
     position: absolute;
     bottom: 16px; left: 50%; transform: translateX(-50%);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.35em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -239,7 +239,7 @@
   .thumb.active::after { opacity: 1; }
   .thumb-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.5rem;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem);
     letter-spacing: 0.25em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -253,7 +253,7 @@
 
   .product-category {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     letter-spacing: 0.45em;
     color: var(--gold);
     text-transform: uppercase;
@@ -287,7 +287,7 @@
   .product-tagline {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 300;
-    font-size: 0.9rem;
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
     letter-spacing: 0.15em;
     color: var(--text-muted);
     margin-bottom: 20px;
@@ -323,7 +323,7 @@
   }
   .spec-chip-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem);
     letter-spacing: 0.3em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -335,7 +335,7 @@
   .options-section { margin-bottom: 16px; }
   .options-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.35em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -346,7 +346,7 @@
   }
   .options-label-value {
     color: var(--gold);
-    font-size: 0.65rem;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
     letter-spacing: 0.2em;
   }
 
@@ -358,7 +358,7 @@
   .pill {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: clamp(0.9rem, 1.7vw, 1.2rem);
     letter-spacing: 0.15em;
     padding: 10px 22px;
     border: 1px solid rgba(201,168,76,0.2);
@@ -400,7 +400,7 @@
   .price-block { flex: 0 0 auto; }
   .price-note {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.3em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -426,7 +426,7 @@
   .btn-primary {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: clamp(0.9rem, 1.7vw, 1.2rem);
     letter-spacing: 0.3em;
     text-transform: uppercase;
     padding: 16px 40px;
@@ -453,7 +453,7 @@
 
   .btn-outline {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.8rem;
+    font-weight: 700; font-size: clamp(0.9rem, 1.7vw, 1.2rem);
     letter-spacing: 0.3em; text-transform: uppercase;
     padding: 15px 28px;
     background: transparent; color: var(--gold);
@@ -473,7 +473,7 @@
     align-items: center;
     gap: 8px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     letter-spacing: 0.3em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -507,7 +507,7 @@
   .tab-btn {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: clamp(0.9rem, 1.7vw, 1.2rem);
     letter-spacing: 0.25em;
     text-transform: uppercase;
     padding: 22px 32px;
@@ -546,10 +546,10 @@
   }
   .desc-text h3 em { color: var(--gold); font-style: italic; }
   .desc-text p {
-    font-size: 0.97rem;
-    font-weight: 300;
-    line-height: 1.85;
-    color: var(--text-muted);
+    font-size: clamp(1rem, 1.9vw, 1.3rem);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text);
     margin-bottom: 20px;
   }
 
@@ -563,14 +563,14 @@
     display: flex;
     align-items: flex-start;
     gap: 14px;
-    font-size: 0.95rem;
+    font-size: clamp(1rem, 1.9vw, 1.3rem);
     font-weight: 400;
     line-height: 1.5;
     color: var(--text);
   }
   .feature-icon {
     color: var(--gold);
-    font-size: 0.65rem;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
     flex-shrink: 0;
     margin-top: 4px;
   }
@@ -601,7 +601,7 @@
   }
   .spec-row-key {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.65rem;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
     letter-spacing: 0.25em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -656,14 +656,14 @@
   .inbox-name {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: clamp(1rem, 1.9vw, 1.3rem);
     letter-spacing: 0.15em;
     color: var(--text);
     margin-bottom: 6px;
   }
   .inbox-note {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.2em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -685,7 +685,7 @@
   }
   .section-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     letter-spacing: 0.45em;
     color: var(--gold);
     text-transform: uppercase;
@@ -742,7 +742,7 @@
 
   .photo-placeholder {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.35em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -804,14 +804,14 @@
   }
   .related-img-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.3em;
     color: var(--gold-dim);
     text-transform: uppercase;
   }
   .related-cat {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.35em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -827,7 +827,7 @@
   }
   .related-card:hover .related-name { color: var(--gold); }
   .related-desc {
-    font-size: 0.85rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     font-weight: 300;
     color: var(--text-muted);
     line-height: 1.6;
@@ -855,7 +855,7 @@
   }
   .footer-copy {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted);
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; color: var(--text-muted);
   }
 
   /* ─── CART ─── */
@@ -872,8 +872,8 @@
   .cart-float:hover { border-color: var(--gold); box-shadow: 0 4px 40px rgba(201,168,76,0.2); }
   .cart-icon { color: var(--gold); font-size: 1rem; }
   .cart-count { font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic; font-size: 1.1rem; color: var(--gold); }
-  .cart-label { font-family: 'Share Tech Mono', monospace; font-size: 0.58rem; letter-spacing: 0.25em; color: var(--text-muted); text-transform: uppercase; }
-  .cart-total { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.9rem; color: var(--gold); border-left: 1px solid var(--border); padding-left: 12px; margin-left: 4px; }
+  .cart-label { font-family: 'Share Tech Mono', monospace; font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.25em; color: var(--text-muted); text-transform: uppercase; }
+  .cart-total { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: clamp(1rem, 1.8vw, 1.3rem); color: var(--gold); border-left: 1px solid var(--border); padding-left: 12px; margin-left: 4px; }
 
   /* ─── ANIMATIONS ─── */
   @keyframes fadeUp {
@@ -945,7 +945,7 @@
     .specs-quick { grid-template-columns: repeat(3, 1fr); }
     .gallery-section { padding: 60px 24px; }
     .details-inner { padding: 0 16px; }
-    .tab-btn { font-size: 0.6rem !important; padding: 14px 12px !important; letter-spacing: 0.2em !important; }
+    .tab-btn { font-size: clamp(0.875rem, 1.5vw, 1.1rem) !important; padding: 14px 12px !important; letter-spacing: 0.2em !important; }
     .specs-grid { grid-template-columns: 1fr; }
     .inbox-grid { display: flex !important; flex-direction: column !important; gap: 2px !important; }
     .inbox-item {
@@ -957,13 +957,13 @@
       text-align: left !important;
     }
     .inbox-qty { font-size: 1.4rem !important; margin-bottom: 0 !important; text-align: center !important; }
-    .inbox-name { font-size: 0.85rem !important; margin-bottom: 2px !important; letter-spacing: 0.08em !important; }
-    .inbox-note { font-size: 0.5rem !important; letter-spacing: 0.15em !important; text-align: right !important; white-space: nowrap !important; }
+    .inbox-name { font-size: clamp(0.95rem, 1.8vw, 1.25rem) !important; margin-bottom: 2px !important; letter-spacing: 0.08em !important; }
+    .inbox-note { font-size: clamp(0.85rem, 1.4vw, 1.05rem) !important; letter-spacing: 0.15em !important; text-align: right !important; white-space: nowrap !important; }
     .related-section { padding: 40px 16px; }
     .related-grid { grid-template-columns: 1fr; gap: 2px; }
     .related-card { padding: 14px 16px !important; display: grid !important; grid-template-columns: 1fr auto !important; grid-template-rows: auto auto !important; align-items: center !important; gap: 0 16px !important; }
     .related-img { display: none !important; }
-    .related-cat { grid-column: 1; grid-row: 1; margin-bottom: 2px; font-size: 0.48rem; }
+    .related-cat { grid-column: 1; grid-row: 1; margin-bottom: 2px; font-size: clamp(0.8rem, 1.3vw, 1rem); }
     .related-name { grid-column: 1; grid-row: 2; font-size: 1.1rem !important; margin-bottom: 0 !important; line-height: 1; }
     .related-desc { display: none !important; }
     .related-price { grid-column: 2; grid-row: 1 / 3; font-size: 1rem !important; white-space: nowrap; }
@@ -1106,11 +1106,11 @@
         <span class="options-label-value" id="colorLabel">— Black</span>
       </div>
       <div class="option-pills" id="prop-color">
-        <button class="pill pill-color black-pill active" title="Black"
+        <button class="pill pill-color black-pill active" title="Black" data-value="black"
           onclick="selectPill('prop-color', this); updateColorLabel('Black')"></button>
-        <button class="pill pill-color red-pill" title="Red"
+        <button class="pill pill-color red-pill" title="Red" data-value="red"
           onclick="selectPill('prop-color', this); updateColorLabel('Red')"></button>
-        <button class="pill pill-color blue-pill" title="Blue"
+        <button class="pill pill-color blue-pill" title="Blue" data-value="blue"
           onclick="selectPill('prop-color', this); updateColorLabel('Blue')"></button>
       </div>
     </div>
@@ -1142,17 +1142,9 @@
     <div class="tab-content active" id="tab-desc">
       <div class="desc-layout">
         <div class="desc-text">
-          <h3>Built for <em>Pilots</em></h3>
+          <h3>Feel Every <em>Input</em></h3>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent viverra
-            nunc ut orci vehicula, vel tincidunt odio porta. Curabitur finibus odio
-            in tortor tincidunt facilisis. Etiam sollicitudin, lorem vel lacinia
-            efficitur, quam enim ultrices purus.
-          </p>
-          <p>
-            Sed at velit quis lorem interdum iaculis. Quisque tincidunt, enim in
-            posuere scelerisque, velit urna sodales nisi, in lacinia justo libero
-            nec tortor. Placeholder description text — replace with real copy.
+            The BB39 props translate throttle input with zero lag — what you ask for is exactly what you get, the moment you ask for it. Linear, predictable, alive. The same precise feel from a locked hover to a full-throttle gate pass, crash after crash. Polycarbonate construction flexes on impact instead of shattering, so you spend more time flying and less time replacing.
           </p>
         </div>
         <ul class="feature-list">
@@ -1275,12 +1267,7 @@
           <span>Detail Close-up</span>
         </div>
       </div>
-      <div class="photo-grid-item" style="height:260px;">
-        <div class="photo-placeholder">
-          <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="5" width="28" height="22" rx="1" stroke="#C9A84C" stroke-width="1.5"/></svg>
-          <span>Side View</span>
-        </div>
-      </div>
+
       <div class="photo-grid-item" style="height:260px;">
         <div class="photo-placeholder">
           <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="5" width="28" height="22" rx="1" stroke="#C9A84C" stroke-width="1.5"/></svg>
@@ -1341,7 +1328,7 @@
 <footer>
   <div class="footer-logo">TELEPATH</div>
   <div class="footer-copy">© 2025 BlackBird FPV — All rights reserved</div>
-  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:0.75rem;color:var(--text-muted);">Made for pilots, by pilots.</div>
+  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);">Made for pilots, by pilots.</div>
 </footer>
 
 <!-- ─── CART FLOAT ─── -->

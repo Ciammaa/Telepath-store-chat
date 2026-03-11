@@ -78,7 +78,7 @@
   }
   .brand-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.35em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.35em;
     color: var(--gold-dim); text-transform: uppercase; margin-top: 2px;
   }
   .nav-right {
@@ -89,7 +89,7 @@
   .nav-right a {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-muted);
@@ -125,7 +125,7 @@
   }
   .progress-step:not(:last-child)::after {
     content: '›'; position: absolute; right: 8px;
-    color: var(--gold-dim); font-size: 0.7rem;
+    color: var(--gold-dim); font-size: clamp(0.9rem, 1.6vw, 1.15rem);
   }
   .progress-step.active { opacity: 1; }
   .progress-step.upcoming { opacity: 0.25; }
@@ -134,7 +134,7 @@
     border: 1px solid var(--gold-dim);
     display: flex; align-items: center; justify-content: center;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.1em; color: var(--gold-dim); flex-shrink: 0;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.1em; color: var(--gold-dim); flex-shrink: 0;
   }
   .progress-step.active .step-num {
     border-color: var(--gold); color: var(--gold);
@@ -143,7 +143,7 @@
   }
   .step-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.3em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.3em;
     text-transform: uppercase; color: var(--text-muted);
   }
   .progress-step.active .step-label { color: var(--gold); }
@@ -163,7 +163,7 @@
   .page-title em { color: var(--gold); font-style: italic; }
   .item-count {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.65rem; letter-spacing: 0.35em;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); letter-spacing: 0.35em;
     color: var(--text-muted); text-transform: uppercase;
   }
 
@@ -201,7 +201,7 @@
   }
   .cart-table-head span {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.35em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.35em;
     text-transform: uppercase; color: var(--text-muted);
   }
   .cart-table-head span:nth-child(2),
@@ -239,13 +239,13 @@
   }
   .row-variant {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.25em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
     color: var(--text-muted); text-transform: uppercase;
     margin-top: 4px;
   }
   .row-unit-price {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.2em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
     color: var(--gold-dim); text-transform: uppercase;
     margin-top: 6px;
   }
@@ -269,7 +269,7 @@
   .qty-num {
     flex: 1; text-align: center;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.72rem; letter-spacing: 0.15em;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem); letter-spacing: 0.15em;
     color: var(--text);
     border-left: 1px solid var(--border);
     border-right: 1px solid var(--border);
@@ -285,7 +285,7 @@
   }
   .row-total sup {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.7rem;
+    font-weight: 700; font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     vertical-align: super;
   }
 
@@ -298,7 +298,7 @@
     background: transparent; border: 1px solid transparent;
     color: var(--text-muted); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem;
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
     transition: color 0.2s, border-color 0.2s;
   }
   .remove-btn:hover { color: var(--red); border-color: rgba(192,57,43,0.3); }
@@ -320,13 +320,13 @@
   }
   .cart-empty-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem; letter-spacing: 0.3em;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem); letter-spacing: 0.3em;
     color: var(--text-muted); text-transform: uppercase;
   }
   .btn-shop {
     margin-top: 8px;
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.8rem;
+    font-weight: 700; font-size: clamp(0.9rem, 1.7vw, 1.2rem);
     letter-spacing: 0.3em; text-transform: uppercase;
     padding: 14px 36px;
     background: transparent; color: var(--gold);
@@ -345,7 +345,7 @@
   }
   .cart-footer-note span {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.3em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
     color: var(--text-muted); text-transform: uppercase;
   }
   .free-ship-bar {
@@ -392,22 +392,22 @@
   }
   .summary-row-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: clamp(0.52rem, 0.7vw, 0.65rem); letter-spacing: 0.3em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em;
     text-transform: uppercase; color: var(--text-muted);
   }
   .summary-row-val {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600; font-size: clamp(0.85rem, 1vw, 1rem); color: var(--text);
+    font-weight: 600; font-size: clamp(1rem, 1.8vw, 1.3rem); color: var(--text);
   }
   .summary-row-val.free {
     color: var(--green);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.2em;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
   }
   .summary-row-val.tbd {
     color: var(--text-muted);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.52rem; letter-spacing: 0.2em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.2em;
     font-style: italic;
   }
 
@@ -426,11 +426,11 @@
   }
   .total-val sup {
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.9rem; vertical-align: super;
+    font-weight: 700; font-size: clamp(1rem, 1.8vw, 1.3rem); vertical-align: super;
   }
   .tax-note {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.5rem; letter-spacing: 0.25em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
     color: var(--text-muted); text-transform: uppercase;
     margin-top: 6px; text-align: right;
   }
@@ -442,7 +442,7 @@
     border: 1px solid rgba(201,168,76,0.18);
     color: var(--text);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.65rem; letter-spacing: 0.25em;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); letter-spacing: 0.25em;
     padding: 10px 12px; outline: none;
     text-transform: uppercase;
     clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
@@ -452,7 +452,7 @@
   .promo-row input:focus { border-color: rgba(201,168,76,0.55); }
   .promo-row button {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.25em; text-transform: uppercase;
     padding: 10px 16px; background: transparent; color: var(--gold);
     border: 1px solid var(--gold-dim); cursor: pointer;
     clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
@@ -471,7 +471,7 @@
   .btn-checkout {
     width: 100%; margin-top: 20px;
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 700; font-size: 0.85rem;
+    font-weight: 700; font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.35em; text-transform: uppercase;
     padding: 18px 40px;
     background: var(--gold); color: #0A0A0A;
@@ -492,7 +492,7 @@
   .btn-continue {
     width: 100%; margin-top: 10px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; text-transform: uppercase;
     padding: 12px;
     background: transparent; color: var(--text-muted);
     border: 1px solid var(--border); cursor: pointer;
@@ -511,7 +511,7 @@
   .trust-badge {
     display: flex; align-items: center; gap: 10px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.5rem; letter-spacing: 0.25em;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem); letter-spacing: 0.25em;
     color: var(--text-muted); text-transform: uppercase;
   }
   .trust-dot {
@@ -544,7 +544,7 @@
   }
   .footer-copy {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem; letter-spacing: 0.3em; color: var(--text-muted);
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing: 0.3em; color: var(--text-muted);
   }
 
 
@@ -825,6 +825,15 @@
   }
 
   // ─── Render cart rows from localStorage ───
+  function getProductUrl(id) {
+    if (id.startsWith('frame'))  return 'telepath-frame.html';
+    if (id.startsWith('stack'))  return 'telepath-executor.html';
+    if (id.startsWith('motors')) return 'telepath-motors.html';
+    if (id.startsWith('props'))  return 'telepath-props.html';
+    if (id === 'license' || id.startsWith('lic')) return 'telepath-store.html#license';
+    return null;
+  }
+
   function renderCart() {
     const cart = getCart();
     const panel = document.getElementById('cart-panel');
@@ -837,14 +846,19 @@
       row.className = 'cart-row';
       row.dataset.id = item.id;
       row.dataset.unit = item.price.toFixed(2);
+      const url = getProductUrl(item.id);
+      const productLink = url
+        ? `<a href="${url}" class="row-product" style="text-decoration:none;color:inherit;cursor:pointer;" title="Vai al prodotto">`
+        : `<div class="row-product">`;
+      const productLinkClose = url ? `</a>` : `</div>`;
       row.innerHTML = `
-        <div class="row-product">
+        ${productLink}
           <div class="row-thumb">${getThumbSVG(item.id)}</div>
           <div class="row-info">
             <div class="row-name">${item.name}</div>
             <div class="row-unit-price">€${item.price.toFixed(2)} / unit</div>
           </div>
-        </div>
+        ${productLinkClose}
         <div class="qty-control">
           <button class="qty-btn" onclick="changeQty(this, -1)">−</button>
           <span class="qty-num">${item.qty}</span>

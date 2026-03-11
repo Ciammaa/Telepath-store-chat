@@ -138,7 +138,7 @@
 
   .brand-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     letter-spacing: 0.35em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -154,7 +154,7 @@
   .nav-links a {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-muted);
@@ -209,7 +209,7 @@
 
   .hero-tag {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.65rem;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
     letter-spacing: 0.45em;
     color: var(--gold-dim);
     text-transform: uppercase;
@@ -262,7 +262,7 @@
   .btn-primary {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    font-size: clamp(0.9rem, 1.8vw, 1.2rem);
     letter-spacing: clamp(0.1em, 1vw, 0.3em);
     text-transform: uppercase;
     text-decoration: none;
@@ -284,7 +284,7 @@
   .btn-outline {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    font-size: clamp(0.9rem, 1.8vw, 1.2rem);
     letter-spacing: clamp(0.1em, 1vw, 0.3em);
     text-transform: uppercase;
     text-decoration: none;
@@ -320,7 +320,7 @@
   }
   .scroll-hint span {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem);
     letter-spacing: 0.4em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -337,7 +337,7 @@
 
   .section-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     letter-spacing: 0.45em;
     color: var(--gold);
     text-transform: uppercase;
@@ -367,11 +367,11 @@
   }
 
   .section-desc {
-    font-size: 1rem;
+    font-size: clamp(1rem, 2vw, 1.4rem);
     font-weight: 300;
     line-height: 1.7;
     color: var(--text-muted);
-    max-width: 480px;
+    max-width: 100%;
     margin-bottom: 60px;
   }
 
@@ -414,7 +414,7 @@
 
   .card-number {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     letter-spacing: 0.35em;
     color: var(--gold-dim);
     margin-bottom: 32px;
@@ -437,7 +437,7 @@
   .product-card:hover .card-title { color: var(--gold); }
 
   .card-desc {
-    font-size: 0.9rem;
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
     font-weight: 300;
     color: var(--text-muted);
     line-height: 1.6;
@@ -448,7 +448,7 @@
   .options-group { margin-top: 28px; }
   .options-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.35em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -466,7 +466,7 @@
   .pill {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: clamp(0.9rem, 1.7vw, 1.2rem);
     letter-spacing: 0.15em;
     padding: 8px 18px;
     border: 1px solid rgba(201,168,76,0.2);
@@ -526,7 +526,7 @@
   }
   .price-note {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     color: var(--text-muted);
     letter-spacing: 0.2em;
     margin-bottom: 4px;
@@ -535,7 +535,7 @@
   .add-btn {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 0.7rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     letter-spacing: 0.3em;
     text-transform: uppercase;
     padding: 10px 22px;
@@ -568,7 +568,7 @@
     flex: 1;
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     padding: 10px;
@@ -637,7 +637,7 @@
   }
 
   .config-sub {
-    font-size: 0.95rem;
+    font-size: clamp(1rem, 1.9vw, 1.3rem);
     font-weight: 300;
     letter-spacing: 0.12em;
     color: var(--text-muted);
@@ -648,7 +648,7 @@
   .coming-tag {
     display: inline-block;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     letter-spacing: 0.5em;
     color: var(--gold);
     border: 1px solid var(--gold-dim);
@@ -684,7 +684,7 @@
 
   .footer-copy {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.3em;
     color: var(--text-muted);
   }
@@ -725,7 +725,7 @@
   }
   .cart-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.25em;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -733,7 +733,7 @@
   .cart-total {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
     color: var(--gold);
     border-left: 1px solid var(--border);
     padding-left: 12px;
@@ -763,12 +763,12 @@
   }
   .cart-panel-title {
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
-    font-size: 0.75rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     letter-spacing: 0.2em;
     color: var(--gold);
   }
   .cart-panel-close {
-    font-size: 0.75rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     color: var(--text-muted);
     cursor: pointer;
     padding: 2px 6px;
@@ -782,7 +782,7 @@
   }
   .cart-empty {
     padding: 20px 16px;
-    font-size: 0.75rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     color: var(--text-muted);
     font-family: 'Share Tech Mono', monospace;
     letter-spacing: 0.1em;
@@ -797,7 +797,7 @@
   }
   .cart-row-name {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.72rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     color: var(--text);
     letter-spacing: 0.05em;
     flex: 1;
@@ -809,12 +809,12 @@
   .cart-row-price {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     color: var(--gold);
     white-space: nowrap;
   }
   .cart-row-remove {
-    font-size: 0.6rem;
+    font-size: clamp(0.875rem, 1.5vw, 1.1rem);
     color: var(--gold);
     background: #000;
     cursor: pointer;
@@ -841,7 +841,7 @@
     letter-spacing: 0.08em;
   }
   .cart-panel-total span:first-child {
-    font-size: 0.7rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     letter-spacing: 0.2em;
     color: var(--text-muted);
     align-self: center;
@@ -853,7 +853,7 @@
     color: #000;
     border: none;
     font-family: 'Special Gothic Expanded One', sans-serif; font-style: italic;
-    font-size: 0.85rem;
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
     letter-spacing: 0.15em;
     cursor: pointer;
     transition: opacity 0.2s;
@@ -903,7 +903,7 @@
     white-space: nowrap;
   }
   .license-desc {
-    font-size: 0.8rem;
+    font-size: clamp(0.9rem, 1.7vw, 1.2rem);
     font-weight: 300;
     color: var(--text-muted);
     letter-spacing: 0.1em;
@@ -912,7 +912,7 @@
 
   .license-badge {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.55rem;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem);
     letter-spacing: 0.35em;
     color: var(--gold);
     border: 1px solid var(--gold-dim);
@@ -936,7 +936,7 @@
     gap: 14px;
   }
   .license-features li {
-    font-size: 0.92rem;
+    font-size: clamp(1rem, 1.9vw, 1.3rem);
     font-weight: 400;
     color: var(--text);
     letter-spacing: 0.06em;
@@ -954,7 +954,7 @@
   }
   .feat-icon {
     color: var(--gold);
-    font-size: 0.7rem;
+    font-size: clamp(0.9rem, 1.6vw, 1.15rem);
     flex-shrink: 0;
   }
 
@@ -987,7 +987,7 @@
   }
   .license-once {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 0.58rem;
+    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
     letter-spacing: 0.25em;
     color: var(--text-muted);
     margin-left: 8px;
@@ -1289,13 +1289,13 @@
         </div>
 
         <div class="stack-panel visible" id="stack-combo">
-          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">H7 FC Dual Gyro + F4 50A ESC — full bundle, best value.</p>
+          <p style="font-size:clamp(0.9rem, 1.7vw, 1.2rem);color:var(--text-muted);line-height:1.6;">H7 FC Dual Gyro + F4 50A ESC — full bundle, best value.</p>
         </div>
         <div class="stack-panel" id="stack-fc">
-          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">H7 Flight Controller — Dual Gyro, Betaflight ready, Blackbox.</p>
+          <p style="font-size:clamp(0.9rem, 1.7vw, 1.2rem);color:var(--text-muted);line-height:1.6;">H7 Flight Controller — Dual Gyro, Betaflight ready, Blackbox.</p>
         </div>
         <div class="stack-panel" id="stack-esc">
-          <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.6;">F4 50A ESC — AM32, bidirectional telemetry, current sensing.</p>
+          <p style="font-size:clamp(0.9rem, 1.7vw, 1.2rem);color:var(--text-muted);line-height:1.6;">F4 50A ESC — AM32, bidirectional telemetry, current sensing.</p>
         </div>
       </div>
 
@@ -1329,7 +1329,7 @@
           <button class="pill active" data-value="1960" onclick="selectPill('motor-kv', this); updateMotorPrice(this)">1960 KV</button>
           <button class="pill" data-value="2060" onclick="selectPill('motor-kv', this); updateMotorPrice(this)">2060 KV</button>
         </div>
-        <p style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;margin-top:8px;" id="motor-note">Ideal for 5" props — balanced efficiency and speed.</p>
+        <p style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);line-height:1.6;margin-top:8px;" id="motor-note">Ideal for 5" props — balanced efficiency and speed.</p>
       </div>
 
       <div class="divider-line"></div>
@@ -1362,7 +1362,7 @@
           <button class="pill pill-color red-pill" data-value="red" title="Red" onclick="selectPill('prop-color', this); updatePropInfo('red')"></button>
           <button class="pill pill-color blue-pill" data-value="blue" title="Blue" onclick="selectPill('prop-color', this); updatePropInfo('blue')"></button>
         </div>
-        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;" id="prop-color-label">Color: <span style="color:var(--text)">Black</span></p>
+        <p style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);margin-top:6px;" id="prop-color-label">Color: <span style="color:var(--text)">Black</span></p>
       </div>
 
       <div class="divider-line"></div>
@@ -1404,7 +1404,7 @@
             <div class="license-name"><em>TELEPATH</em> License</div>
             <div class="license-desc">Permanent license — instant activation</div>
           </div>
-          <div class="license-badge">ONE-TIME</div>
+
         </div>
 
         <div class="license-divider"></div>
@@ -1422,9 +1422,9 @@
           <div class="license-price-block">
             <span class="license-currency">€</span>
             <span class="license-amount">15</span>
-            <span class="license-once">one-time</span>
+
           </div>
-          <button class="btn-primary" onclick="addToCart('TELEPATH License', 'lic-price', this); this.textContent='✓ Added';" style="font-size:0.75rem;padding:14px 28px;">
+          <button class="btn-primary" onclick="addToCart('TELEPATH License', 'lic-price', this); this.textContent='✓ Added';" style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);padding:14px 28px;">
             Buy License
           </button>
           <span id="lic-price" style="display:none">€ 15</span>
@@ -1433,7 +1433,7 @@
       </div>
     </div>
 
-    <p style="margin-top:20px;font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.3em;color:var(--text-muted);">
+    <p style="margin-top:20px;font-family:'Share Tech Mono',monospace;font-size:clamp(0.875rem, 1.4vw, 1.05rem);letter-spacing:0.3em;color:var(--text-muted);">
       LICENSE DELIVERED VIA EMAIL WITHIN 24H OF PURCHASE
     </p>
 
@@ -1444,7 +1444,7 @@
 <footer>
   <div class="footer-logo"><em>TELEPATH</em></div>
   <div class="footer-copy">© 2025 BlackBird FPV — All rights reserved</div>
-  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:0.75rem;color:var(--text-muted);">Made for pilots, by pilots.</div>
+  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);">Made for pilots, by pilots.</div>
 </footer>
 
 <!-- ─── CART FLOAT ─── -->
