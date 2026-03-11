@@ -670,9 +670,9 @@
     background: var(--bg2);
     border-top: 1px solid var(--border);
     padding: 40px 48px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
   }
 
   .footer-logo {
@@ -684,9 +684,10 @@
 
   .footer-copy {
     font-family: 'Share Tech Mono', monospace;
-    font-size: clamp(0.875rem, 1.4vw, 1.05rem);
+    font-size: clamp(0.75rem, 1.1vw, 0.9rem);
     letter-spacing: 0.3em;
     color: var(--text-muted);
+    text-align: center;
   }
 
   /* ─── CART INDICATOR ─── */
@@ -1053,7 +1054,9 @@
     nav { padding: 0 24px; }
     .products-grid { grid-template-columns: 1fr; }
     section { padding: 80px 24px; }
-    footer { flex-direction: column; gap: 16px; text-align: center; }
+    footer { grid-template-columns: 1fr; gap: 10px; text-align: center; padding: 28px 24px; }
+    footer .footer-copy { text-align: center !important; }
+    footer .footer-logo { text-align: center; }
     .nav-links { gap: 20px; }
   }
   @media (max-width: 768px) {
@@ -1443,8 +1446,8 @@
 <!-- ─── FOOTER ─── -->
 <footer>
   <div class="footer-logo"><em>TELEPATH</em></div>
-  <div class="footer-copy">© 2025 BlackBird FPV — All rights reserved</div>
-  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);">Made for pilots, by pilots.</div>
+  <div class="footer-copy">© 2026 BlackBird FPV — All rights reserved</div>
+  <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:clamp(0.85rem, 1.3vw, 1rem);color:var(--text-muted);text-align:right;letter-spacing:0.05em;">Made for pilots, by pilots.</div>
 </footer>
 
 <!-- ─── CART FLOAT ─── -->
