@@ -393,8 +393,54 @@
   .pill-color.red-pill.active    { border-color: var(--red); background: rgba(192,57,43,0.5); box-shadow: 0 0 12px rgba(192,57,43,0.3); }
   .pill-color.blue-pill.active   { border-color: var(--blue); background: rgba(41,128,185,0.5); box-shadow: 0 0 12px rgba(41,128,185,0.3); }
 
-  /* Purchase row */
-  .purchase-row {
+  /* Spare parts dropdown */
+  .spare-select-outer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    max-width: 340px;
+    border: 1px solid var(--gold-dim);
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    background: transparent;
+    transition: border-color 0.22s;
+  }
+  .spare-select-outer:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(201,168,76,0.2);
+  }
+  .spare-select {
+    width: 100%;
+    padding: 12px 40px 12px 18px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: clamp(0.9rem, 1.7vw, 1.15rem);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--gold);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .spare-select option {
+    background: #111;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+  .spare-select-arrow {
+    position: absolute;
+    right: 14px;
+    color: var(--gold-dim);
+    pointer-events: none;
+    font-size: 1rem;
+    transition: color 0.2s;
+  }
+  .spare-select-outer:focus-within .spare-select-arrow {
+    color: var(--gold);
+  }
     display: flex;
     align-items: flex-end;
     gap: 16px;
@@ -454,6 +500,50 @@
     color: var(--gold-light);
     border: 1px solid var(--gold);
   }
+  /* Qty stepper — replaces Add to Cart once item is in cart */
+  .qty-widget {
+    display: contents;
+  }
+  .qty-stepper {
+    display: none;
+    align-items: center;
+    border: 1px solid var(--gold-dim);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    overflow: hidden;
+    height: 53px;
+    flex: 1;
+    min-width: 160px;
+  }
+  .qty-stepper.visible {
+    display: inline-flex;
+  }
+  .qty-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1;
+    width: 44px;
+    height: 100%;
+    background: transparent;
+    color: var(--gold);
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    flex-shrink: 0;
+  }
+  .qty-btn:hover {
+    background: var(--gold);
+    color: #0A0A0A;
+  }
+  .qty-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    color: var(--gold);
+    flex: 1;
+    text-align: center;
+    user-select: none;
+  }
+
 
   .btn-outline {
     font-family: 'Rajdhani', sans-serif;
@@ -1092,14 +1182,14 @@
     <div class="divider-line reveal reveal-delay-2"></div>
 
     <p class="product-tagline reveal reveal-delay-2">
-      <span id="prod-tagline">Two arm configurations.<br>4.9" for tight and aggressive. 5.1" for power and range.</span>
+      <span id="prod-tagline">One frame, two modes.<br>Buy the complete kit or order individual spare parts.</span>
     </p>
 
     <!-- Quick specs -->
     <div class="specs-quick reveal reveal-delay-2">
       <div class="spec-chip">
-        <span class="spec-chip-val" id="chip1-val">4.9"</span>
-        <span class="spec-chip-label" id="chip1-lab">Arm Length</span>
+        <span class="spec-chip-val" id="chip1-val">Kit</span>
+        <span class="spec-chip-label" id="chip1-lab">Type</span>
       </div>
       <div class="spec-chip">
         <span class="spec-chip-val" id="chip2-val">—</span>
@@ -1113,22 +1203,39 @@
 
     <div class="divider-line reveal reveal-delay-3"></div>
 
-    <!-- Options: Arm length -->
+    <!-- Options: Frame type -->
     <div class="options-section reveal reveal-delay-3">
       <div class="options-label">
-        Arm Length
-        <span class="options-label-value" id="bundleLabel">— 4.9"</span>
+        Selection
+        <span class="options-label-value" id="bundleLabel">— Full Kit</span>
       </div>
       <div class="option-pills" id="stack-bundle">
-        <button class="pill active" onclick="selectBundle(this, '49')">
-          4.9"
+        <button class="pill active" data-value="full" onclick="selectBundle(this, 'full'); refreshQtyWidget()">
+          Full Frame
         </button>
-        <button class="pill" onclick="selectBundle(this, '51')">
-          5.1"
+        <button class="pill" data-value="spare" onclick="selectBundle(this, 'spare'); refreshQtyWidget()">
+          Spare Parts
         </button>
       </div>
       <div style="font-family:'Share Tech Mono',monospace; font-size:clamp(0.875rem, 1.4vw, 1.05rem); letter-spacing:0.2em; color:var(--text-muted); margin-top:8px; text-transform:uppercase;">
-        <span id="bundleDesc">Tight geometry — snappy, responsive, built for technical flying</span>
+        <span id="bundleDesc">Complete frame kit — all plates, arms and hardware included</span>
+      </div>
+
+      <!-- Spare parts dropdown — shown only when "Spare Parts" is selected -->
+      <div id="spare-select-wrap" style="display:none; margin-top:18px;">
+        <div class="options-label" style="margin-bottom:10px;">Select spare part</div>
+        <div class="spare-select-outer">
+          <select id="spareSelect" class="spare-select" onchange="refreshQtyWidget()">
+            <option value="" disabled selected>— Choose a part —</option>
+            <option value="spare-bottom-plate">Bottom Plate</option>
+            <option value="spare-middle-plate">Middle Plate</option>
+            <option value="spare-arm">Arm</option>
+            <option value="spare-camera-mount">Camera Mount</option>
+            <option value="spare-standoffs">Standoffs</option>
+            <option value="spare-screws">Screws</option>
+          </select>
+          <span class="spare-select-arrow">▾</span>
+        </div>
       </div>
     </div>
 
@@ -1139,6 +1246,11 @@
       <button class="btn-primary" id="addBtn" onclick="handleAdd(this)">
         Add to Cart
       </button>
+      <div class="qty-stepper" id="qtyWidget">
+        <button class="qty-btn" onclick="stepQty(-1,event)">−</button>
+        <span class="qty-val" id="qtyVal">1</span>
+        <button class="qty-btn" onclick="stepQty(1,event)">+</button>
+      </div>
       <a href="telepath-store.html#products" class="btn-outline">View All</a>
     </div>
 
@@ -1389,42 +1501,75 @@
     document.getElementById(id).textContent = val;
   }
 
-  const frameData = {
-    '49': {
-      label:   '— 4.9"',
-      tagline: 'Tight geometry — snappy, responsive, built for technical flying',
-      chip1v:  '4.9"', chip1l: 'Arm Length',
-      chip2v:  '—',    chip2l: 'Weight',
-      chip3v:  '—',    chip3l: 'Carbon',
-      arm:     '4.9"',
-      prop:    '4.9" props (e.g. BB39)'
+  var frameData = {
+    'full': {
+      label:   '— Full Kit',
+      tagline: 'Complete frame kit — all plates, arms and hardware included',
+      chip1v:  'Kit',   chip1l: 'Type',
+      chip2v:  '—',     chip2l: 'Weight',
+      chip3v:  '—',     chip3l: 'Carbon',
+      priceNote: 'Frame Kit'
     },
-    '51': {
-      label:   '— 5.1"',
-      tagline: 'Wider stance — planted, efficient, built for power and range',
-      chip1v:  '5.1"', chip1l: 'Arm Length',
-      chip2v:  '—',    chip2l: 'Weight',
-      chip3v:  '—',    chip3l: 'Carbon',
-      arm:     '5.1"',
-      prop:    '5.1" props'
+    'spare': {
+      label:   '— Spare Part',
+      tagline: 'Genuine replacement parts — select the piece you need below',
+      chip1v:  'Part',  chip1l: 'Type',
+      chip2v:  '—',     chip2l: 'Weight',
+      chip3v:  '—',     chip3l: 'Carbon',
+      priceNote: 'Spare Part'
     }
+  };
+
+  // SKU map for spare parts — TODO: add real SKUs when assigned
+  var spareSkuMap = {
+    'spare-bottom-plate':  /* TODO: SKU */ 'SPARE-BOTTOM-PLATE',
+    'spare-middle-plate':  /* TODO: SKU */ 'SPARE-MIDDLE-PLATE',
+    'spare-arm':           /* TODO: SKU */ 'SPARE-ARM',
+    'spare-camera-mount':  /* TODO: SKU */ 'SPARE-CAMERA-MOUNT',
+    'spare-standoffs':     /* TODO: SKU */ 'SPARE-STANDOFFS',
+    'spare-screws':        /* TODO: SKU */ 'SPARE-SCREWS'
+  };
+
+  // Price map for spare parts — TODO: set real prices
+  var sparePriceMap = {
+    'spare-bottom-plate':  null, /* TODO: price */
+    'spare-middle-plate':  null, /* TODO: price */
+    'spare-arm':           null, /* TODO: price */
+    'spare-camera-mount':  null, /* TODO: price */
+    'spare-standoffs':     null, /* TODO: price */
+    'spare-screws':        null  /* TODO: price */
+  };
+
+  var spareLabelMap = {
+    'spare-bottom-plate': 'Bottom Plate',
+    'spare-middle-plate': 'Middle Plate',
+    'spare-arm':          'Arm',
+    'spare-camera-mount': 'Camera Mount',
+    'spare-standoffs':    'Standoffs',
+    'spare-screws':       'Screws'
   };
 
   function selectBundle(el, key) {
     selectPill('stack-bundle', el);
-    const d = frameData[key];
-    document.getElementById('bundleLabel').textContent  = d.label;
-    document.getElementById('bundleDesc').textContent   = d.tagline;
-    document.getElementById('chip1-val').textContent    = d.chip1v;
-    document.getElementById('chip1-lab').textContent    = d.chip1l;
-    document.getElementById('chip2-val').textContent    = d.chip2v;
-    document.getElementById('chip2-lab').textContent    = d.chip2l;
-    document.getElementById('chip3-val').textContent    = d.chip3v;
-    document.getElementById('chip3-lab').textContent    = d.chip3l;
-    const armEl  = document.getElementById('spec-arm');
-    const propEl = document.getElementById('spec-prop');
-    if (armEl)  armEl.innerHTML  = '<em>' + d.arm + '</em>';
-    if (propEl) propEl.innerHTML = '<em>' + d.arm + '</em> props' + (key === '49' ? ' (e.g. BB39)' : '');
+    var d = frameData[key];
+    document.getElementById('bundleLabel').textContent = d.label;
+    document.getElementById('bundleDesc').textContent  = d.tagline;
+    document.getElementById('chip1-val').textContent   = d.chip1v;
+    document.getElementById('chip1-lab').textContent   = d.chip1l;
+    document.getElementById('chip2-val').textContent   = d.chip2v;
+    document.getElementById('chip2-lab').textContent   = d.chip2l;
+    document.getElementById('chip3-val').textContent   = d.chip3v;
+    document.getElementById('chip3-lab').textContent   = d.chip3l;
+    var priceNoteEl = document.getElementById('price-note');
+    if (priceNoteEl) priceNoteEl.textContent = d.priceNote;
+    // Show/hide spare parts dropdown
+    var spareWrap = document.getElementById('spare-select-wrap');
+    if (spareWrap) spareWrap.style.display = key === 'spare' ? 'block' : 'none';
+    // Reset spare select on switch
+    if (key !== 'spare') {
+      var sel = document.getElementById('spareSelect');
+      if (sel) sel.value = '';
+    }
   }
 
   // ─── Thumbnails ───
@@ -1468,12 +1613,12 @@
     catch(e) {}
   }
 
-  function cartAdd(id, name, price) {
+  function cartAdd(id, sku, name, price) {
     var cart = getCart();
     var idx = -1;
     for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
     if (idx >= 0) cart[idx].qty += 1;
-    else cart.push({ id: id, name: name, price: price, qty: 1 });
+    else cart.push({ id: id, sku: sku, name: name, price: price, qty: 1 });
     saveCart(cart);
     return cart;
   }
@@ -1502,19 +1647,97 @@
     } catch(e) {}
   }
 
+  function getActivePill() {
+    var active = document.querySelector('#stack-bundle .pill.active');
+    return active ? (active.dataset.value || 'full') : 'full';
+  }
+
+  function getItemId() {
+    var key = getActivePill();
+    if (key === 'spare') {
+      var sel = document.getElementById('spareSelect');
+      return sel && sel.value ? sel.value : null;
+    }
+    return 'frame-full';
+  }
+
+  function refreshQtyWidget() {
+    try {
+      var id = getItemId();
+      var addBtn = document.getElementById('addBtn');
+      var stepper = document.getElementById('qtyWidget');
+      var qtyVal = document.getElementById('qtyVal');
+      if (!addBtn || !stepper) return;
+      // If spare mode with no part selected → always show the add button (disabled look)
+      if (!id) {
+        addBtn.style.display = '';
+        stepper.classList.remove('visible');
+        return;
+      }
+      var cart = getCart();
+      var qty = 0;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { qty = cart[i].qty; break; } }
+      if (qty > 0) {
+        addBtn.style.display = 'none';
+        stepper.classList.add('visible');
+        if (qtyVal) qtyVal.textContent = qty;
+      } else {
+        addBtn.style.display = '';
+        stepper.classList.remove('visible');
+      }
+    } catch(e) {}
+  }
+
+  function stepQty(delta, event) {
+    try {
+      if (event) event.stopPropagation();
+      var id = getItemId();
+      if (!id) return;
+      var cart = getCart();
+      var idx = -1;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
+      if (idx < 0) return;
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) cart.splice(idx, 1);
+      saveCart(cart);
+      syncCartFloat();
+      refreshQtyWidget();
+    } catch(e) {}
+  }
+
   function handleAdd(btn) {
     try {
-      var active = document.querySelector('#stack-bundle .pill.active');
-      var size = active ? active.dataset.value : '49';
-      var sizeLabel = size === '49' ? '4.9"' : '5.1"';
-      var price = size === '49' ? 109 : 119;
-      var id = 'frame-' + size;
-      var name = 'Telepath Frame — ' + sizeLabel;
-      cartAdd(id, name, price);
+      var key = getActivePill();
+      var id, name, price, sku;
+
+      if (key === 'full') {
+        id    = 'frame-full';
+        name  = 'Telepath Frame — Full Kit';
+        price = 109; /* TODO: update price if needed */
+        sku   = 'TELAIO-STD';
+
+      } else {
+        // Spare part
+        var sel = document.getElementById('spareSelect');
+        var partId = sel ? sel.value : '';
+        if (!partId) {
+          // No part selected — animate the select to draw attention
+          var outer = document.querySelector('.spare-select-outer');
+          if (outer) {
+            outer.style.borderColor = 'var(--gold)';
+            setTimeout(function() { outer.style.borderColor = ''; }, 900);
+          }
+          return;
+        }
+        id    = partId;
+        name  = 'Telepath Frame — ' + (spareLabelMap[partId] || partId);
+        price = sparePriceMap[partId] || 0; /* TODO: set real price */
+        sku   = spareSkuMap[partId]   || partId.toUpperCase();
+      }
+
+      cartAdd(id, sku, name, price);
       syncCartFloat();
-      btn.textContent = '✓ Added';
-      btn.classList.add('added');
-      setTimeout(function() { btn.textContent = 'Add to Cart'; btn.classList.remove('added'); }, 1800);
+      refreshQtyWidget();
       var floatEl = document.getElementById('cartFloat');
       if (floatEl) {
         floatEl.style.transform = 'translateY(0) scale(1.05)';
@@ -1524,6 +1747,7 @@
   }
 
   syncCartFloat();
+  refreshQtyWidget();
 
   try {
     var navLinks = document.getElementById('navLinks');

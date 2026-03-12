@@ -555,6 +555,91 @@
     border-color: var(--gold);
   }
 
+  /* Qty stepper — replaces add-btn once item is in cart */
+  .qty-widget {
+    display: inline-flex;
+    align-items: center;
+  }
+  .qty-stepper {
+    display: none;
+    align-items: center;
+    border: 1px solid var(--gold-dim);
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+    overflow: hidden;
+    height: 40px;
+  }
+  .qty-stepper.visible {
+    display: inline-flex;
+  }
+  .qty-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1;
+    width: 36px;
+    height: 100%;
+    background: transparent;
+    color: var(--gold);
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    flex-shrink: 0;
+  }
+  .qty-btn:hover {
+    background: var(--gold);
+    color: #0A0A0A;
+  }
+  .qty-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+    color: var(--gold);
+    min-width: 32px;
+    text-align: center;
+    padding: 0 2px;
+    user-select: none;
+  }
+
+  /* Frame spare parts dropdown (store card) */
+  .store-spare-outer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid var(--gold-dim);
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+    background: transparent;
+    transition: border-color 0.22s;
+  }
+  .store-spare-outer:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 10px rgba(201,168,76,0.15);
+  }
+  .store-spare-select {
+    width: 100%;
+    padding: 9px 34px 9px 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--gold);
+    border: none;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .store-spare-select option { background: #111; color: var(--gold); }
+  .store-spare-arrow {
+    position: absolute;
+    right: 10px;
+    color: var(--gold-dim);
+    pointer-events: none;
+    font-size: 0.9rem;
+  }
+  .store-spare-outer:focus-within .store-spare-arrow { color: var(--gold); }
+
   /* Stack sub-options */
   .stack-toggle {
     display: flex;
@@ -570,17 +655,19 @@
     text-transform: uppercase;
     padding: 10px;
     text-align: center;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(201,168,76,0.1);
+    background: transparent;
+    border: 1px solid rgba(201,168,76,0.2);
     color: var(--text-muted);
     cursor: pointer;
     transition: all 0.22s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
   }
   .stack-tab:hover { color: var(--gold); border-color: var(--gold-dim); }
   .stack-tab.active {
-    background: rgba(201,168,76,0.1);
+    background: rgba(201,168,76,0.12);
     border-color: var(--gold);
     color: var(--gold);
+    box-shadow: 0 0 12px rgba(201,168,76,0.15);
   }
 
   .stack-panel { display: none; }
@@ -1236,20 +1323,40 @@
       <p class="card-desc">3K carbon fiber frame. Impact-resistant, geometry optimized for maximum agility.</p>
 
       <div class="options-group">
-        <span class="options-label">Arm length</span>
+        <span class="options-label">Type</span>
         <div class="option-pills" id="frame-size">
-          <button class="pill active" data-value="4.9" onclick="selectPill('frame-size', this); updatePrice('frame', this)">4.9"</button>
-          <button class="pill" data-value="5.1" onclick="selectPill('frame-size', this); updatePrice('frame', this)">5.1"</button>
+          <button class="pill active" data-value="full" onclick="selectPill('frame-size', this); selectFrameType('full'); refreshQtyWidget('Frame')">Full Frame</button>
+          <button class="pill" data-value="spare" onclick="selectPill('frame-size', this); selectFrameType('spare'); refreshQtyWidget('Frame')">Spare Parts</button>
+        </div>
+        <div id="frame-spare-wrap" style="display:none; margin-top:12px;">
+          <div class="store-spare-outer">
+            <select id="frameSpareSelect" class="store-spare-select" onchange="refreshQtyWidget('Frame')">
+              <option value="" disabled selected>— Choose a part —</option>
+              <option value="spare-bottom-plate">Bottom Plate</option>
+              <option value="spare-middle-plate">Middle Plate</option>
+              <option value="spare-arm">Arm</option>
+              <option value="spare-camera-mount">Camera Mount</option>
+              <option value="spare-standoffs">Standoffs</option>
+              <option value="spare-screws">Screws</option>
+            </select>
+            <span class="store-spare-arrow">▾</span>
+          </div>
         </div>
       </div>
 
       <div class="divider-line"></div>
       <div class="price-row">
         <div>
-          <div class="price-note">Starting from</div>
           <div class="price" id="frame-price">€ 109</div>
         </div>
-        <button class="add-btn" onclick="addToCart('Frame', 'frame-price', this)">+ Add</button>
+        <div class="qty-widget" data-product="Frame">
+          <button class="add-btn" onclick="addToCart('Frame', 'frame-price', this)">+ Add</button>
+          <div class="qty-stepper">
+            <button class="qty-btn" onclick="stepQty('Frame',-1,event)">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn" onclick="stepQty('Frame',1,event)">+</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1270,9 +1377,9 @@
       <div class="options-group">
         <span class="options-label">Selection</span>
         <div class="stack-toggle">
-          <div class="stack-tab active" onclick="selectStack(this,'stack-combo')">FC + ESC</div>
-          <div class="stack-tab" onclick="selectStack(this,'stack-fc')">FC Only</div>
-          <div class="stack-tab" onclick="selectStack(this,'stack-esc')">ESC Only</div>
+          <div class="stack-tab active" onclick="selectStack(this,'stack-combo'); refreshQtyWidget('Stack')">FC + ESC</div>
+          <div class="stack-tab" onclick="selectStack(this,'stack-fc'); refreshQtyWidget('Stack')">FC Only</div>
+          <div class="stack-tab" onclick="selectStack(this,'stack-esc'); refreshQtyWidget('Stack')">ESC Only</div>
         </div>
 
         <div class="stack-panel visible" id="stack-combo">
@@ -1291,7 +1398,14 @@
         <div>
           <div class="price" id="stack-price">€ 149</div>
         </div>
-        <button class="add-btn" onclick="addToCart('Stack', 'stack-price', this)">+ Add</button>
+        <div class="qty-widget" data-product="Stack">
+          <button class="add-btn" onclick="addToCart('Stack', 'stack-price', this)">+ Add</button>
+          <div class="qty-stepper">
+            <button class="qty-btn" onclick="stepQty('Stack',-1,event)">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn" onclick="stepQty('Stack',1,event)">+</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1313,8 +1427,8 @@
       <div class="options-group">
         <span class="options-label">KV Rating</span>
         <div class="option-pills" id="motor-kv">
-          <button class="pill active" data-value="1960" onclick="selectPill('motor-kv', this); updateMotorPrice(this)">1960 KV</button>
-          <button class="pill" data-value="2060" onclick="selectPill('motor-kv', this); updateMotorPrice(this)">2060 KV</button>
+          <button class="pill active" data-value="1960" onclick="selectPill('motor-kv', this); updateMotorPrice(this); refreshQtyWidget('Motors')">1960 KV</button>
+          <button class="pill" data-value="2060" onclick="selectPill('motor-kv', this); updateMotorPrice(this); refreshQtyWidget('Motors')">2060 KV</button>
         </div>
         <p style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);line-height:1.6;margin-top:8px;" id="motor-note">Ideal for 5" props — balanced efficiency and speed.</p>
       </div>
@@ -1325,7 +1439,14 @@
           <div class="price-note">Single motor</div>
           <div class="price" id="motor-price">€ 28</div>
         </div>
-        <button class="add-btn" onclick="addToCart('Motors', 'motor-price', this)">+ Add</button>
+        <div class="qty-widget" data-product="Motors">
+          <button class="add-btn" onclick="addToCart('Motors', 'motor-price', this)">+ Add</button>
+          <div class="qty-stepper">
+            <button class="qty-btn" onclick="stepQty('Motors',-1,event)">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn" onclick="stepQty('Motors',1,event)">+</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1345,9 +1466,9 @@
       <div class="options-group">
         <span class="options-label">Color</span>
         <div class="option-pills" id="prop-color">
-          <button class="pill pill-color black-pill active" data-value="black" title="Black" onclick="selectPill('prop-color', this); updatePropInfo('black')"></button>
-          <button class="pill pill-color red-pill" data-value="red" title="Red" onclick="selectPill('prop-color', this); updatePropInfo('red')"></button>
-          <button class="pill pill-color blue-pill" data-value="blue" title="Blue" onclick="selectPill('prop-color', this); updatePropInfo('blue')"></button>
+          <button class="pill pill-color black-pill active" data-value="black" title="Black" onclick="selectPill('prop-color', this); updatePropInfo('black'); refreshQtyWidget('Props')"></button>
+          <button class="pill pill-color red-pill" data-value="red" title="Red" onclick="selectPill('prop-color', this); updatePropInfo('red'); refreshQtyWidget('Props')"></button>
+          <button class="pill pill-color blue-pill" data-value="blue" title="Blue" onclick="selectPill('prop-color', this); updatePropInfo('blue'); refreshQtyWidget('Props')"></button>
         </div>
         <p style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);margin-top:6px;" id="prop-color-label">Color: <span style="color:var(--text)">Black</span></p>
       </div>
@@ -1358,7 +1479,14 @@
           <div class="price-note">Set of 4</div>
           <div class="price" id="prop-price">€ 3</div>
         </div>
-        <button class="add-btn" onclick="addToCart('Props', 'prop-price', this)">+ Add</button>
+        <div class="qty-widget" data-product="Props">
+          <button class="add-btn" onclick="addToCart('Props', 'prop-price', this)">+ Add</button>
+          <div class="qty-stepper">
+            <button class="qty-btn" onclick="stepQty('Props',-1,event)">−</button>
+            <span class="qty-val">1</span>
+            <button class="qty-btn" onclick="stepQty('Props',1,event)">+</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1411,9 +1539,16 @@
             <span class="license-amount">15</span>
 
           </div>
-          <button class="btn-primary" onclick="addToCart('TELEPATH License', 'lic-price', this); this.textContent='✓ Added';" style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);padding:14px 28px;">
-            Buy License
-          </button>
+          <div class="qty-widget" data-product="TELEPATH License" style="flex-direction:column;gap:10px;align-items:flex-end;">
+            <button class="btn-primary" onclick="addToCart('TELEPATH License', 'lic-price', this)" style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);padding:14px 28px;">
+              Buy License
+            </button>
+            <div class="qty-stepper">
+              <button class="qty-btn" onclick="stepQty('TELEPATH License',-1,event)">−</button>
+              <span class="qty-val">1</span>
+              <button class="qty-btn" onclick="stepQty('TELEPATH License',1,event)">+</button>
+            </div>
+          </div>
           <span id="lic-price" style="display:none">€ 15</span>
         </div>
 
@@ -1492,6 +1627,20 @@
     } catch(e) {}
   }
 
+  function selectFrameType(type) {
+    try {
+      var wrap = document.getElementById('frame-spare-wrap');
+      if (wrap) wrap.style.display = type === 'spare' ? 'block' : 'none';
+      if (type !== 'spare') {
+        var sel = document.getElementById('frameSpareSelect');
+        if (sel) sel.value = '';
+      }
+      // Price: spare parts have TODO prices — just clear for now
+      var priceEl = document.getElementById('frame-price');
+      if (priceEl) priceEl.textContent = type === 'full' ? '\u20ac 109' : '\u20ac —';
+    } catch(e) {}
+  }
+
   function updatePrice(product, el) {
     try {
       if (product === 'frame') {
@@ -1550,12 +1699,12 @@
     catch(e) {}
   }
 
-  function cartAdd(id, name, price) {
+  function cartAdd(id, sku, name, price) {
     var cart = getCart();
     var idx = -1;
     for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
     if (idx >= 0) cart[idx].qty += 1;
-    else cart.push({ id: id, name: name, price: price, qty: 1 });
+    else cart.push({ id: id, sku: sku, name: name, price: price, qty: 1 });
     saveCart(cart);
     return cart;
   }
@@ -1603,6 +1752,86 @@
     } catch(e) {}
   }
 
+  // ─── Qty stepper helpers ───
+
+  function getItemId(productName) {
+    if (productName === 'Frame') {
+      var activePill = document.querySelector('#frame-size .pill.active');
+      var frameType = activePill ? activePill.dataset.value : 'full';
+      if (frameType === 'spare') {
+        var sel = document.getElementById('frameSpareSelect');
+        return sel && sel.value ? sel.value : null;
+      }
+      return 'frame-full';
+    } else if (productName === 'Stack') {
+      var aP = document.querySelector('.stack-panel.visible');
+      return aP ? aP.id : 'stack-combo';
+    } else if (productName === 'Motors') {
+      var aM = document.querySelector('#motor-kv .pill.active');
+      var kv = aM ? aM.dataset.value : '1960';
+      return 'motors-' + kv;
+    } else if (productName === 'Props') {
+      var aPr = document.querySelector('#prop-color .pill.active');
+      var color = aPr ? aPr.dataset.value : 'black';
+      return 'props-' + color;
+    } else if (productName === 'TELEPATH License') {
+      return 'license';
+    }
+    return productName.toLowerCase().replace(/\s+/g, '-');
+  }
+
+  function refreshQtyWidget(productName) {
+    try {
+      var widget = document.querySelector('.qty-widget[data-product="' + productName + '"]');
+      if (!widget) return;
+      var addBtn = widget.querySelector('.add-btn, .btn-primary');
+      var stepper = widget.querySelector('.qty-stepper');
+      var qtyVal = widget.querySelector('.qty-val');
+      if (!addBtn || !stepper) return;
+      var id = getItemId(productName);
+      // No id = spare parts with nothing selected → show add btn
+      if (!id) {
+        addBtn.style.display = '';
+        stepper.classList.remove('visible');
+        return;
+      }
+      var cart = getCart();
+      var qty = 0;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { qty = cart[i].qty; break; } }
+      if (qty > 0) {
+        addBtn.style.display = 'none';
+        stepper.classList.add('visible');
+        if (qtyVal) qtyVal.textContent = qty;
+      } else {
+        addBtn.style.display = '';
+        stepper.classList.remove('visible');
+      }
+    } catch(e) {}
+  }
+
+  function refreshAllQtyWidgets() {
+    var names = ['Frame', 'Stack', 'Motors', 'Props', 'TELEPATH License'];
+    for (var i = 0; i < names.length; i++) refreshQtyWidget(names[i]);
+  }
+
+  function stepQty(productName, delta, event) {
+    try {
+      if (event) event.stopPropagation();
+      var id = getItemId(productName);
+      var cart = getCart();
+      var idx = -1;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
+      if (idx < 0) return;
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) cart.splice(idx, 1);
+      saveCart(cart);
+      syncCartFloat();
+      refreshQtyWidget(productName);
+      triggerCartBounce();
+    } catch(e) {}
+  }
+
+  // ─── addToCart ───
   function addToCart(name, priceId, btn) {
     try {
       var priceEl = document.getElementById(priceId);
@@ -1610,41 +1839,64 @@
       var price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g, ''));
       var label = name;
       var id = name.toLowerCase().replace(/\s+/g, '-');
+      var sku = '';
 
       if (name === 'Frame') {
-        var aF = document.querySelector('#frame-size .pill.active');
-        var size = aF ? aF.dataset.value : '4.9';
-        label = 'Frame \u2014 ' + size + '"';
-        id = 'frame-' + size.replace('.', '');
+        var activePill = document.querySelector('#frame-size .pill.active');
+        var frameType = activePill ? activePill.dataset.value : 'full';
+        if (frameType === 'spare') {
+          var sel = document.getElementById('frameSpareSelect');
+          var partId = sel ? sel.value : '';
+          if (!partId) {
+            // Flash the dropdown to prompt selection
+            var outer = document.querySelector('.store-spare-outer');
+            if (outer) { outer.style.borderColor = 'var(--gold)'; setTimeout(function() { outer.style.borderColor = ''; }, 900); }
+            return;
+          }
+          var spareNames = { 'spare-bottom-plate': 'Bottom Plate', 'spare-middle-plate': 'Middle Plate', 'spare-arm': 'Arm', 'spare-camera-mount': 'Camera Mount', 'spare-standoffs': 'Standoffs', 'spare-screws': 'Screws' };
+          var spareSkus  = { 'spare-bottom-plate': 'SPARE-BOTTOM-PLATE', 'spare-middle-plate': 'SPARE-MIDDLE-PLATE', 'spare-arm': 'SPARE-ARM', 'spare-camera-mount': 'SPARE-CAMERA-MOUNT', 'spare-standoffs': 'SPARE-STANDOFFS', 'spare-screws': 'SPARE-SCREWS' };
+          id    = partId;
+          label = 'Frame — ' + (spareNames[partId] || partId);
+          price = 0; /* TODO: set spare part price */
+          sku   = spareSkus[partId] || partId.toUpperCase();
+        } else {
+          label = 'Frame \u2014 Full Kit';
+          id    = 'frame-full';
+          sku   = 'TELAIO-STD';
+        }
       } else if (name === 'Stack') {
         var aT = document.querySelector('.stack-tab.active');
         var tabLabel = aT ? aT.textContent.trim() : 'FC + ESC';
         label = 'Stack \u2014 ' + tabLabel;
         var aP = document.querySelector('.stack-panel.visible');
         id = aP ? aP.id : 'stack-combo';
+        var stackSkuMap = { 'stack-combo': 'STACK-INTERO', 'stack-esc': 'STACK-ESC', 'stack-fc': 'STACK-FC' };
+        sku = stackSkuMap[id] || 'STACK-INTERO';
       } else if (name === 'Motors') {
         var aM = document.querySelector('#motor-kv .pill.active');
         var kv = aM ? aM.dataset.value : '1960';
         label = 'Motors \u2014 ' + kv + 'KV';
         id = 'motors-' + kv;
+        var motorSkuMap = { '1960': 'MOTOR-1960', '2060': 'MOTOR-2060' };
+        sku = motorSkuMap[kv] || ('MOTOR-' + kv);
       } else if (name === 'Props') {
         var aPr = document.querySelector('#prop-color .pill.active');
         var color = aPr ? aPr.dataset.value : 'black';
         label = 'Props \u2014 ' + color.charAt(0).toUpperCase() + color.slice(1);
         id = 'props-' + color;
+        var propSkuMap = { 'blue': 'PROP-BLUE', 'red': 'PROP-RED', 'black': 'PROP-BLACK' };
+        sku = propSkuMap[color] || ('PROP-' + color.toUpperCase());
       } else if (name === 'TELEPATH License') {
         id = 'license';
+        sku = 'LICENSE-DIGITAL';
       }
 
-      cartAdd(id, label, price);
-
-      var orig = btn.textContent;
-      btn.textContent = '\u2713 Added';
-      setTimeout(function() { btn.textContent = orig; }, 1800);
+      cartAdd(id, sku, label, price);
 
       var floatEl = document.getElementById('cartFloat');
       var wasVisible = floatEl ? floatEl.classList.contains('visible') : false;
       syncCartFloat();
+      refreshQtyWidget(name);
       if (wasVisible) triggerCartBounce();
     } catch(e) {}
   }
@@ -1749,6 +2001,9 @@
         } catch(e) {}
       }, { passive: true });
     } catch(e) {}
+
+    // Sync qty widgets after DOM is ready
+    refreshAllQtyWidgets();
   }
 
   if (document.readyState === 'loading') {

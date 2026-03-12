@@ -454,6 +454,50 @@
     color: var(--gold-light);
     border: 1px solid var(--gold);
   }
+  /* Qty stepper — replaces Add to Cart once item is in cart */
+  .qty-widget {
+    display: contents;
+  }
+  .qty-stepper {
+    display: none;
+    align-items: center;
+    border: 1px solid var(--gold-dim);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    overflow: hidden;
+    height: 53px;
+    flex: 1;
+    min-width: 160px;
+  }
+  .qty-stepper.visible {
+    display: inline-flex;
+  }
+  .qty-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1;
+    width: 44px;
+    height: 100%;
+    background: transparent;
+    color: var(--gold);
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+    flex-shrink: 0;
+  }
+  .qty-btn:hover {
+    background: var(--gold);
+    color: #0A0A0A;
+  }
+  .qty-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    color: var(--gold);
+    flex: 1;
+    text-align: center;
+    user-select: none;
+  }
+
 
   .btn-outline {
     font-family: 'Rajdhani', sans-serif;
@@ -1182,13 +1226,13 @@
         <span class="options-label-value" id="bundleLabel">— Full Stack</span>
       </div>
       <div class="option-pills" id="stack-bundle">
-        <button class="pill active" onclick="selectBundle(this, 'full')">
+        <button class="pill active" data-value="stack-combo" onclick="selectBundle(this, 'full'); refreshQtyWidget()">
           Full Stack
         </button>
-        <button class="pill" onclick="selectBundle(this, 'fc')">
+        <button class="pill" data-value="stack-fc" onclick="selectBundle(this, 'fc'); refreshQtyWidget()">
           FC Only
         </button>
-        <button class="pill" onclick="selectBundle(this, 'esc')">
+        <button class="pill" data-value="stack-esc" onclick="selectBundle(this, 'esc'); refreshQtyWidget()">
           ESC Only
         </button>
       </div>
@@ -1204,6 +1248,11 @@
       <button class="btn-primary" id="addBtn" onclick="handleAdd(this)">
         Add to Cart
       </button>
+      <div class="qty-stepper" id="qtyWidget">
+        <button class="qty-btn" onclick="stepQty(-1,event)">−</button>
+        <span class="qty-val" id="qtyVal">1</span>
+        <button class="qty-btn" onclick="stepQty(1,event)">+</button>
+      </div>
       <a href="telepath-store.html#products" class="btn-outline">View All</a>
     </div>
 
@@ -1562,12 +1611,12 @@
     catch(e) {}
   }
 
-  function cartAdd(id, name, price) {
+  function cartAdd(id, sku, name, price) {
     var cart = getCart();
     var idx = -1;
     for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
     if (idx >= 0) cart[idx].qty += 1;
-    else cart.push({ id: id, name: name, price: price, qty: 1 });
+    else cart.push({ id: id, sku: sku, name: name, price: price, qty: 1 });
     saveCart(cart);
     return cart;
   }
@@ -1596,6 +1645,48 @@
     } catch(e) {}
   }
 
+  function getItemId() {
+    var activePill = document.querySelector('#stack-bundle .pill.active');
+    return activePill ? (activePill.dataset.value || 'stack-combo') : 'stack-combo';
+  }
+
+  function refreshQtyWidget() {
+    try {
+      var id = getItemId();
+      var cart = getCart();
+      var qty = 0;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { qty = cart[i].qty; break; } }
+      var addBtn = document.getElementById('addBtn');
+      var stepper = document.getElementById('qtyWidget');
+      var qtyVal = document.getElementById('qtyVal');
+      if (!addBtn || !stepper) return;
+      if (qty > 0) {
+        addBtn.style.display = 'none';
+        stepper.classList.add('visible');
+        if (qtyVal) qtyVal.textContent = qty;
+      } else {
+        addBtn.style.display = '';
+        stepper.classList.remove('visible');
+      }
+    } catch(e) {}
+  }
+
+  function stepQty(delta, event) {
+    try {
+      if (event) event.stopPropagation();
+      var id = getItemId();
+      var cart = getCart();
+      var idx = -1;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
+      if (idx < 0) return;
+      cart[idx].qty += delta;
+      if (cart[idx].qty <= 0) cart.splice(idx, 1);
+      saveCart(cart);
+      syncCartFloat();
+      refreshQtyWidget();
+    } catch(e) {}
+  }
+
   function handleAdd(btn) {
     try {
       var activePanel = document.querySelector('.stack-panel.visible');
@@ -1604,11 +1695,11 @@
       var price = prices[panelId] || 149;
       var activeTab = document.querySelector('.stack-tab.active');
       var tabLabel = activeTab ? activeTab.textContent.trim() : 'FC + ESC';
-      cartAdd(panelId, 'Stack \u2014 ' + tabLabel, price);
+      var skuMap = { 'stack-combo': 'STACK-INTERO', 'stack-esc': 'STACK-ESC', 'stack-fc': 'STACK-FC' };
+      var sku = skuMap[panelId] || 'STACK-INTERO';
+      cartAdd(panelId, sku, 'Stack \u2014 ' + tabLabel, price);
       syncCartFloat();
-      btn.textContent = '\u2713 Added';
-      btn.classList.add('added');
-      setTimeout(function() { btn.textContent = 'Add to Cart'; btn.classList.remove('added'); }, 1800);
+      refreshQtyWidget();
       var floatEl = document.getElementById('cartFloat');
       if (floatEl) {
         floatEl.style.transform = 'translateY(0) scale(1.05)';
@@ -1618,6 +1709,7 @@
   }
 
   syncCartFloat();
+  refreshQtyWidget();
 
   // ─── Close nav on link click ───
   try {
