@@ -752,7 +752,38 @@
   <div class="footer-copy">© 2026 BlackBird FPV — All rights reserved</div>
   <div class="footer-copy" style="font-family:'Rajdhani',sans-serif;font-size:clamp(0.85rem, 1.3vw, 1rem);color:var(--text-muted);text-align:right;letter-spacing:0.05em;">Made for pilots, by pilots.</div>
 </footer>
-
+<!-- ─── catalog + cart inline ─── -->
+<script>
+const STORE_CATALOG = {
+  'frame-full':         { id: 'frame-full',         sku: 'TLP-FRM-KIT', name: 'Telepath Frame — Full Kit',  price: 109, isDigital: false },
+  'spare-bottom-plate': { id: 'spare-bottom-plate',  sku: 'TLP-FRM-BTM', name: 'Frame — Bottom Plate',       price: 15,  isDigital: false },
+  'spare-middle-plate': { id: 'spare-middle-plate',  sku: 'TLP-FRM-MID', name: 'Frame — Middle Plate',       price: 12,  isDigital: false },
+  'spare-top-plate':    { id: 'spare-top-plate',     sku: 'TLP-FRM-TOP', name: 'Frame — Top Plate',          price: 12,  isDigital: false },
+  'spare-arm':          { id: 'spare-arm',           sku: 'TLP-FRM-ARM', name: 'Frame — Arm',                price: 8,   isDigital: false },
+  'spare-camera-mount': { id: 'spare-camera-mount',  sku: 'TLP-FRM-CAM', name: 'Frame — Camera Mount',       price: 6,   isDigital: false },
+  'spare-standoffs':    { id: 'spare-standoffs',     sku: 'TLP-FRM-STN', name: 'Frame — Standoffs',          price: 5,   isDigital: false },
+  'spare-screws':       { id: 'spare-screws',        sku: 'TLP-FRM-SCR', name: 'Frame — Screws',             price: 4,   isDigital: false },
+  'stack-combo':        { id: 'stack-combo',         sku: 'STK-CMB',     name: 'Executor Stack — FC + ESC',  price: 149, isDigital: false },
+  'stack-fc':           { id: 'stack-fc',            sku: 'STK-FC',      name: 'Executor Flight Controller',      price: 59,  isDigital: false },
+  'stack-esc':          { id: 'stack-esc',           sku: 'STK-ESC',     name: 'Executor 50A ESC',                price: 99,  isDigital: false },
+  'motors-1960':        { id: 'motors-1960',         sku: 'MOT-1960',    name: 'BBV4 Motors — 1960KV',       price: 28,  isDigital: false },
+  'motors-2060':        { id: 'motors-2060',         sku: 'MOT-2060',    name: 'BBV4 Motors — 2060KV',       price: 28,  isDigital: false },
+  'props-black':        { id: 'props-black',         sku: 'PRP-BLK',     name: 'BB39 Props — Black',         price: 3,   isDigital: false },
+  'props-red':          { id: 'props-red',           sku: 'PRP-RED',     name: 'BB39 Props — Red',           price: 3,   isDigital: false },
+  'props-blue':         { id: 'props-blue',          sku: 'PRP-BLU',     name: 'BB39 Props — Blue',          price: 3,   isDigital: false },
+  'license':            { id: 'license',             sku: 'LIC-DIGITAL', name: 'TELEPATH License',                price: 15,  isDigital: true  }
+};
+function getProductById(id) { return STORE_CATALOG[id] || null; }
+</script>
+<script>
+const CART_KEY = 'telepath_cart_storage';
+function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch(e) { return []; } }
+function saveCart(cart) { localStorage.setItem(CART_KEY, JSON.stringify(cart)); if (typeof syncCartFloat === 'function') syncCartFloat(); }
+function cartAdd(id, qty) { qty = qty || 1; var cart = getCart(); var idx = cart.findIndex(function(i){ return i.id === id; }); if (idx >= 0) { cart[idx].qty += qty; } else { cart.push({ id: id, qty: qty }); } saveCart(cart); }
+function cartUpdateQty(id, delta) { var cart = getCart(); var idx = cart.findIndex(function(i){ return i.id === id; }); if (idx < 0) return; cart[idx].qty += delta; if (cart[idx].qty <= 0) cart.splice(idx, 1); saveCart(cart); }
+function syncCartFloat() { var cart = getCart(); var count = 0; var total = 0; cart.forEach(function(item){ var p = getProductById(item.id); if (p) { count += item.qty; total += p.price * item.qty; } }); var countEl = document.getElementById('cartCount'); var totalEl = document.getElementById('cartTotal'); var floatEl = document.getElementById('cartFloat'); if (countEl) countEl.textContent = count; if (totalEl) totalEl.textContent = '€ ' + Math.round(total); if (floatEl) { if (count > 0) floatEl.classList.add('visible'); else floatEl.classList.remove('visible'); } }
+document.addEventListener('DOMContentLoaded', function(){ if (typeof syncCartFloat === 'function') syncCartFloat(); });
+</script>
 <script>
   function toggleNav() {
     try {
@@ -761,13 +792,6 @@
       if (nr) nr.classList.toggle('open');
       if (nb) nb.classList.toggle('open');
     } catch(e) {}
-  }
-
-  var CART_KEY = 'telepath_cart';
-
-  function getCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-    catch(e) { return []; }
   }
 
   function renderOrderItems() {
@@ -784,13 +808,19 @@
       var total = 0;
       for (var i = 0; i < cart.length; i++) {
         var item = cart[i];
-        var lineTotal = item.price * item.qty;
+        
+        // 🔥 GET PRODUCT FROM CATALOG
+        var product = getProductById(item.id);
+        if (!product) continue; // Skip if product no longer exists
+        
+        var lineTotal = product.price * item.qty;
         total += lineTotal;
+        
         var el = document.createElement('div');
         el.className = 'order-item';
         el.innerHTML =
           '<div class="order-item-info" style="flex:1;">' +
-            '<div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:clamp(0.95rem, 1.8vw, 1.25rem);letter-spacing:0.05em;">' + item.name + '</div>' +
+            '<div style="font-family:Rajdhani,sans-serif;font-weight:600;font-size:clamp(0.95rem, 1.8vw, 1.25rem);letter-spacing:0.05em;">' + product.name + '</div>' +
             '<div style="font-size:clamp(0.9rem, 1.6vw, 1.15rem);color:var(--text-muted);margin-top:2px;">Qty: ' + item.qty + '</div>' +
           '</div>' +
           '<div style="font-family:Share Tech Mono,monospace;font-size:clamp(0.95rem, 1.8vw, 1.25rem);color:var(--gold);">€' + lineTotal.toFixed(2) + '</div>';
@@ -802,7 +832,7 @@
       var totalEl = document.getElementById('confirm-total');
       if (totalEl) totalEl.textContent = grandTotal.toFixed(2);
 
-      localStorage.removeItem(CART_KEY);
+      localStorage.removeItem('telepath_cart_storage');
     } catch(e) {}
   }
 

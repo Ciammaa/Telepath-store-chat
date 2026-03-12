@@ -1334,6 +1334,7 @@
               <option value="" disabled selected>— Choose a part —</option>
               <option value="spare-bottom-plate">Bottom Plate</option>
               <option value="spare-middle-plate">Middle Plate</option>
+              <option value="spare-top-plate">Top Plate</option>
               <option value="spare-arm">Arm</option>
               <option value="spare-camera-mount">Camera Mount</option>
               <option value="spare-standoffs">Standoffs</option>
@@ -1597,6 +1598,38 @@
   </div>
 </div>
 
+<!-- ─── catalog + cart inline ─── -->
+<script>
+const STORE_CATALOG = {
+  'frame-full':         { id: 'frame-full',         sku: 'TLP-FRM-KIT', name: 'Telepath Frame — Full Kit',  price: 109, isDigital: false },
+  'spare-bottom-plate': { id: 'spare-bottom-plate',  sku: 'TLP-FRM-BTM', name: 'Frame — Bottom Plate',       price: 15,  isDigital: false },
+  'spare-middle-plate': { id: 'spare-middle-plate',  sku: 'TLP-FRM-MID', name: 'Frame — Middle Plate',       price: 12,  isDigital: false },
+  'spare-top-plate':    { id: 'spare-top-plate',     sku: 'TLP-FRM-TOP', name: 'Frame — Top Plate',          price: 12,  isDigital: false },
+  'spare-arm':          { id: 'spare-arm',           sku: 'TLP-FRM-ARM', name: 'Frame — Arm',                price: 8,   isDigital: false },
+  'spare-camera-mount': { id: 'spare-camera-mount',  sku: 'TLP-FRM-CAM', name: 'Frame — Camera Mount',       price: 6,   isDigital: false },
+  'spare-standoffs':    { id: 'spare-standoffs',     sku: 'TLP-FRM-STN', name: 'Frame — Standoffs',          price: 5,   isDigital: false },
+  'spare-screws':       { id: 'spare-screws',        sku: 'TLP-FRM-SCR', name: 'Frame — Screws',             price: 4,   isDigital: false },
+  'stack-combo':        { id: 'stack-combo',         sku: 'STK-CMB',     name: 'Executor Stack — FC + ESC',  price: 149, isDigital: false },
+  'stack-fc':           { id: 'stack-fc',            sku: 'STK-FC',      name: 'Executor Flight Controller',      price: 59,  isDigital: false },
+  'stack-esc':          { id: 'stack-esc',           sku: 'STK-ESC',     name: 'Executor 50A ESC',                price: 99,  isDigital: false },
+  'motors-1960':        { id: 'motors-1960',         sku: 'MOT-1960',    name: 'BBV4 Motors — 1960KV',       price: 28,  isDigital: false },
+  'motors-2060':        { id: 'motors-2060',         sku: 'MOT-2060',    name: 'BBV4 Motors — 2060KV',       price: 28,  isDigital: false },
+  'props-black':        { id: 'props-black',         sku: 'PRP-BLK',     name: 'BB39 Props — Black',         price: 3,   isDigital: false },
+  'props-red':          { id: 'props-red',           sku: 'PRP-RED',     name: 'BB39 Props — Red',           price: 3,   isDigital: false },
+  'props-blue':         { id: 'props-blue',          sku: 'PRP-BLU',     name: 'BB39 Props — Blue',          price: 3,   isDigital: false },
+  'license':            { id: 'license',             sku: 'LIC-DIGITAL', name: 'TELEPATH License',                price: 15,  isDigital: true  }
+};
+function getProductById(id) { return STORE_CATALOG[id] || null; }
+</script>
+<script>
+const CART_KEY = 'telepath_cart_storage';
+function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch(e) { return []; } }
+function saveCart(cart) { localStorage.setItem(CART_KEY, JSON.stringify(cart)); if (typeof syncCartFloat === 'function') syncCartFloat(); if (typeof refreshAllQtyWidgets === 'function') refreshAllQtyWidgets(); }
+function cartAdd(id, qty) { qty = qty || 1; var cart = getCart(); var idx = cart.findIndex(function(i){ return i.id === id; }); if (idx >= 0) { cart[idx].qty += qty; } else { cart.push({ id: id, qty: qty }); } saveCart(cart); }
+function cartUpdateQty(id, delta) { var cart = getCart(); var idx = cart.findIndex(function(i){ return i.id === id; }); if (idx < 0) return; cart[idx].qty += delta; if (cart[idx].qty <= 0) cart.splice(idx, 1); saveCart(cart); }
+function syncCartFloat() { var cart = getCart(); var count = 0; var total = 0; cart.forEach(function(item){ var p = getProductById(item.id); if (p) { count += item.qty; total += p.price * item.qty; } }); var countEl = document.getElementById('cartCount'); var totalEl = document.getElementById('cartTotal'); var floatEl = document.getElementById('cartFloat'); if (countEl) countEl.textContent = count; if (totalEl) totalEl.textContent = '€ ' + Math.round(total); if (floatEl) { if (count > 0) floatEl.classList.add('visible'); else floatEl.classList.remove('visible'); } }
+document.addEventListener('DOMContentLoaded', function(){ if (typeof syncCartFloat === 'function') syncCartFloat(); });
+</script>
 <script>
   // Mark JS active immediately (for CSS reveal fallback)
   document.documentElement.classList.add('js');
@@ -1627,6 +1660,38 @@
     } catch(e) {}
   }
 
+  function formatEuroPrice(value) {
+    return value == null || isNaN(value) ? '€ —' : '€ ' + value;
+  }
+
+  function getSelectedFrameVariant() {
+    var activePill = document.querySelector('#frame-size .pill.active');
+    var frameType = activePill ? activePill.dataset.value : 'full';
+    if (frameType === 'spare') {
+      var sel = document.getElementById('frameSpareSelect');
+      return sel && sel.value ? getProductById(sel.value) : null;
+    }
+    return getProductById('frame-full');
+  }
+
+  function getSelectedStackVariant() {
+    var panel = document.querySelector('.stack-panel.visible');
+    var id = panel ? panel.id : 'stack-combo';
+    return getProductById(id) || getProductById('stack-combo');
+  }
+
+  function getSelectedMotorVariant() {
+    var active = document.querySelector('#motor-kv .pill.active');
+    var kv = active ? active.dataset.value : '1960';
+    return getProductById('motors-' + kv) || getProductById('motors-1960');
+  }
+
+  function getSelectedPropVariant() {
+    var active = document.querySelector('#prop-color .pill.active');
+    var color = active ? active.dataset.value : 'black';
+    return getProductById('props-' + color) || getProductById('props-black');
+  }
+
   function selectFrameType(type) {
     try {
       var wrap = document.getElementById('frame-spare-wrap');
@@ -1635,27 +1700,31 @@
         var sel = document.getElementById('frameSpareSelect');
         if (sel) sel.value = '';
       }
-      // Price: spare parts have TODO prices — just clear for now
       var priceEl = document.getElementById('frame-price');
-      if (priceEl) priceEl.textContent = type === 'full' ? '\u20ac 109' : '\u20ac —';
+      if (priceEl) {
+        var variant = type === 'spare' ? getSelectedFrameVariant() : getProductById('frame-full');
+        priceEl.textContent = formatEuroPrice(variant ? variant.price : null);
+      }
     } catch(e) {}
   }
 
   function updatePrice(product, el) {
     try {
       if (product === 'frame') {
-        document.getElementById('frame-price').textContent = '\u20ac 109';
+        var variant = getSelectedFrameVariant();
+        document.getElementById('frame-price').textContent = formatEuroPrice(variant ? variant.price : null);
       }
     } catch(e) {}
   }
 
   function updateMotorPrice(el) {
     try {
+      var variant = getSelectedMotorVariant();
       var kv = el.dataset.value;
-      document.getElementById('motor-price').textContent = '\u20ac 28';
+      document.getElementById('motor-price').textContent = formatEuroPrice(variant.price);
       var noteEl = document.getElementById('motor-note');
       if (noteEl) noteEl.textContent = kv === '1960'
-        ? 'Ideal for 5" props \u2014 balanced efficiency and speed.'
+        ? 'Ideal for 5" props — balanced efficiency and speed.'
         : 'Maximum top speed. Perfect for aggressive freestyle.';
     } catch(e) {}
   }
@@ -1677,41 +1746,22 @@
       tabEl.classList.add('active');
       var panel = document.getElementById(panelId);
       if (panel) panel.classList.add('visible');
-      var prices = { 'stack-combo': '\u20ac 149', 'stack-fc': '\u20ac 59', 'stack-esc': '\u20ac 99' };
+      var variant = getProductById(panelId);
       var priceEl = document.getElementById('stack-price');
-      if (priceEl && prices[panelId]) priceEl.textContent = prices[panelId];
+      if (priceEl && variant) priceEl.textContent = formatEuroPrice(variant.price);
     } catch(e) {}
   }
 
   // ═══════════════════════════════════════════
-  // BLOCK 2 — Cart engine
+  // BLOCK 2 — Cart UI (engine in cart.js)
   // ═══════════════════════════════════════════
-
-  var CART_KEY = 'telepath_cart';
-
-  function getCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-    catch(e) { return []; }
-  }
-
-  function saveCart(cart) {
-    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
-    catch(e) {}
-  }
-
-  function cartAdd(id, sku, name, price) {
-    var cart = getCart();
-    var idx = -1;
-    for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
-    if (idx >= 0) cart[idx].qty += 1;
-    else cart.push({ id: id, sku: sku, name: name, price: price, qty: 1 });
-    saveCart(cart);
-    return cart;
-  }
 
   function cartTotal(cart) {
     var s = 0;
-    for (var i = 0; i < cart.length; i++) s += cart[i].price * cart[i].qty;
+    for (var i = 0; i < cart.length; i++) {
+      var p = getProductById(cart[i].id);
+      if (p && typeof p.price === 'number') s += p.price * cart[i].qty;
+    }
     return s;
   }
 
@@ -1756,26 +1806,16 @@
 
   function getItemId(productName) {
     if (productName === 'Frame') {
-      var activePill = document.querySelector('#frame-size .pill.active');
-      var frameType = activePill ? activePill.dataset.value : 'full';
-      if (frameType === 'spare') {
-        var sel = document.getElementById('frameSpareSelect');
-        return sel && sel.value ? sel.value : null;
-      }
-      return 'frame-full';
+      var frameVariant = getSelectedFrameVariant();
+      return frameVariant ? frameVariant.id : null;
     } else if (productName === 'Stack') {
-      var aP = document.querySelector('.stack-panel.visible');
-      return aP ? aP.id : 'stack-combo';
+      return getSelectedStackVariant().id;
     } else if (productName === 'Motors') {
-      var aM = document.querySelector('#motor-kv .pill.active');
-      var kv = aM ? aM.dataset.value : '1960';
-      return 'motors-' + kv;
+      return getSelectedMotorVariant().id;
     } else if (productName === 'Props') {
-      var aPr = document.querySelector('#prop-color .pill.active');
-      var color = aPr ? aPr.dataset.value : 'black';
-      return 'props-' + color;
+      return getSelectedPropVariant().id;
     } else if (productName === 'TELEPATH License') {
-      return 'license';
+      return getProductById('license').id;
     }
     return productName.toLowerCase().replace(/\s+/g, '-');
   }
@@ -1834,65 +1874,25 @@
   // ─── addToCart ───
   function addToCart(name, priceId, btn) {
     try {
-      var priceEl = document.getElementById(priceId);
-      if (!priceEl) return;
-      var price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g, ''));
-      var label = name;
-      var id = name.toLowerCase().replace(/\s+/g, '-');
-      var sku = '';
-
+      var variant = null;
       if (name === 'Frame') {
-        var activePill = document.querySelector('#frame-size .pill.active');
-        var frameType = activePill ? activePill.dataset.value : 'full';
-        if (frameType === 'spare') {
-          var sel = document.getElementById('frameSpareSelect');
-          var partId = sel ? sel.value : '';
-          if (!partId) {
-            // Flash the dropdown to prompt selection
-            var outer = document.querySelector('.store-spare-outer');
-            if (outer) { outer.style.borderColor = 'var(--gold)'; setTimeout(function() { outer.style.borderColor = ''; }, 900); }
-            return;
-          }
-          var spareNames = { 'spare-bottom-plate': 'Bottom Plate', 'spare-middle-plate': 'Middle Plate', 'spare-arm': 'Arm', 'spare-camera-mount': 'Camera Mount', 'spare-standoffs': 'Standoffs', 'spare-screws': 'Screws' };
-          var spareSkus  = { 'spare-bottom-plate': 'SPARE-BOTTOM-PLATE', 'spare-middle-plate': 'SPARE-MIDDLE-PLATE', 'spare-arm': 'SPARE-ARM', 'spare-camera-mount': 'SPARE-CAMERA-MOUNT', 'spare-standoffs': 'SPARE-STANDOFFS', 'spare-screws': 'SPARE-SCREWS' };
-          id    = partId;
-          label = 'Frame — ' + (spareNames[partId] || partId);
-          price = 0; /* TODO: set spare part price */
-          sku   = spareSkus[partId] || partId.toUpperCase();
-        } else {
-          label = 'Frame \u2014 Full Kit';
-          id    = 'frame-full';
-          sku   = 'TELAIO-STD';
+        variant = getSelectedFrameVariant();
+        if (!variant) {
+          var outer = document.querySelector('.store-spare-outer');
+          if (outer) { outer.style.borderColor = 'var(--gold)'; setTimeout(function() { outer.style.borderColor = ''; }, 900); }
+          return;
         }
       } else if (name === 'Stack') {
-        var aT = document.querySelector('.stack-tab.active');
-        var tabLabel = aT ? aT.textContent.trim() : 'FC + ESC';
-        label = 'Stack \u2014 ' + tabLabel;
-        var aP = document.querySelector('.stack-panel.visible');
-        id = aP ? aP.id : 'stack-combo';
-        var stackSkuMap = { 'stack-combo': 'STACK-INTERO', 'stack-esc': 'STACK-ESC', 'stack-fc': 'STACK-FC' };
-        sku = stackSkuMap[id] || 'STACK-INTERO';
+        variant = getSelectedStackVariant();
       } else if (name === 'Motors') {
-        var aM = document.querySelector('#motor-kv .pill.active');
-        var kv = aM ? aM.dataset.value : '1960';
-        label = 'Motors \u2014 ' + kv + 'KV';
-        id = 'motors-' + kv;
-        var motorSkuMap = { '1960': 'MOTOR-1960', '2060': 'MOTOR-2060' };
-        sku = motorSkuMap[kv] || ('MOTOR-' + kv);
+        variant = getSelectedMotorVariant();
       } else if (name === 'Props') {
-        var aPr = document.querySelector('#prop-color .pill.active');
-        var color = aPr ? aPr.dataset.value : 'black';
-        label = 'Props \u2014 ' + color.charAt(0).toUpperCase() + color.slice(1);
-        id = 'props-' + color;
-        var propSkuMap = { 'blue': 'PROP-BLUE', 'red': 'PROP-RED', 'black': 'PROP-BLACK' };
-        sku = propSkuMap[color] || ('PROP-' + color.toUpperCase());
+        variant = getSelectedPropVariant();
       } else if (name === 'TELEPATH License') {
-        id = 'license';
-        sku = 'LICENSE-DIGITAL';
+        variant = getProductById('license');
       }
-
-      cartAdd(id, sku, label, price);
-
+      if (!variant) return;
+      cartAdd(variant.id, 1);
       var floatEl = document.getElementById('cartFloat');
       var wasVisible = floatEl ? floatEl.classList.contains('visible') : false;
       syncCartFloat();

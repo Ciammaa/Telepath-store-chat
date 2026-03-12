@@ -1498,252 +1498,200 @@
   </div>
   <div class="cart-total" id="cartTotal">€ 0</div>
 </div>
-
+<!-- ─── catalog + cart inline ─── -->
 <script>
-  // ─── Pill select ───
+const STORE_CATALOG = {
+  'frame-full':         { id: 'frame-full',         sku: 'TLP-FRM-KIT', name: 'Telepath Frame — Full Kit',  price: 109, isDigital: false },
+  'spare-bottom-plate': { id: 'spare-bottom-plate',  sku: 'TLP-FRM-BTM', name: 'Frame — Bottom Plate',       price: 15,  isDigital: false },
+  'spare-middle-plate': { id: 'spare-middle-plate',  sku: 'TLP-FRM-MID', name: 'Frame — Middle Plate',       price: 12,  isDigital: false },
+  'spare-top-plate':    { id: 'spare-top-plate',     sku: 'TLP-FRM-TOP', name: 'Frame — Top Plate',          price: 12,  isDigital: false },
+  'spare-arm':          { id: 'spare-arm',           sku: 'TLP-FRM-ARM', name: 'Frame — Arm',                price: 8,   isDigital: false },
+  'spare-camera-mount': { id: 'spare-camera-mount',  sku: 'TLP-FRM-CAM', name: 'Frame — Camera Mount',       price: 6,   isDigital: false },
+  'spare-standoffs':    { id: 'spare-standoffs',     sku: 'TLP-FRM-STN', name: 'Frame — Standoffs',          price: 5,   isDigital: false },
+  'spare-screws':       { id: 'spare-screws',        sku: 'TLP-FRM-SCR', name: 'Frame — Screws',             price: 4,   isDigital: false },
+  'stack-combo':        { id: 'stack-combo',         sku: 'STK-CMB',     name: 'Executor Stack — FC + ESC',  price: 149, isDigital: false },
+  'stack-fc':           { id: 'stack-fc',            sku: 'STK-FC',      name: 'Executor Flight Controller',      price: 59,  isDigital: false },
+  'stack-esc':          { id: 'stack-esc',           sku: 'STK-ESC',     name: 'Executor 50A ESC',                price: 99,  isDigital: false },
+  'motors-1960':        { id: 'motors-1960',         sku: 'MOT-1960',    name: 'BBV4 Motors — 1960KV',       price: 28,  isDigital: false },
+  'motors-2060':        { id: 'motors-2060',         sku: 'MOT-2060',    name: 'BBV4 Motors — 2060KV',       price: 28,  isDigital: false },
+  'props-black':        { id: 'props-black',         sku: 'PRP-BLK',     name: 'BB39 Props — Black',         price: 3,   isDigital: false },
+  'props-red':          { id: 'props-red',           sku: 'PRP-RED',     name: 'BB39 Props — Red',           price: 3,   isDigital: false },
+  'props-blue':         { id: 'props-blue',          sku: 'PRP-BLU',     name: 'BB39 Props — Blue',          price: 3,   isDigital: false },
+  'license':            { id: 'license',             sku: 'LIC-DIGITAL', name: 'TELEPATH License',                price: 15,  isDigital: true  }
+};
+function getProductById(id) { return STORE_CATALOG[id] || null; }
+</script>
+<script>
+const CART_KEY = 'telepath_cart_storage';
+function getCart() { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch(e) { return []; } }
+function saveCart(cart) { localStorage.setItem(CART_KEY, JSON.stringify(cart)); if (typeof syncCartFloat === 'function') syncCartFloat(); }
+function cartAdd(id, qty) { qty = qty || 1; var cart = getCart(); var idx = cart.findIndex(function(i){ return i.id === id; }); if (idx >= 0) { cart[idx].qty += qty; } else { cart.push({ id: id, qty: qty }); } saveCart(cart); }
+function cartUpdateQty(id, delta) { var cart = getCart(); var idx = cart.findIndex(function(i){ return i.id === id; }); if (idx < 0) return; cart[idx].qty += delta; if (cart[idx].qty <= 0) cart.splice(idx, 1); saveCart(cart); }
+function syncCartFloat() { var cart = getCart(); var count = 0; var total = 0; cart.forEach(function(item){ var p = getProductById(item.id); if (p) { count += item.qty; total += p.price * item.qty; } }); var countEl = document.getElementById('cartCount'); var totalEl = document.getElementById('cartTotal'); var floatEl = document.getElementById('cartFloat'); if (countEl) countEl.textContent = count; if (totalEl) totalEl.textContent = '€ ' + Math.round(total); if (floatEl) { if (count > 0) floatEl.classList.add('visible'); else floatEl.classList.remove('visible'); } }
+document.addEventListener('DOMContentLoaded', function(){ if (typeof syncCartFloat === 'function') syncCartFloat(); });
+</script>
+<script>
+  // Utility UI
   function selectPill(groupId, el) {
     var pills = document.getElementById(groupId).querySelectorAll('.pill');
-    for (var i = 0; i < pills.length; i++) pills[i].classList.remove('active');
+    pills.forEach(p => p.classList.remove('active'));
     el.classList.add('active');
   }
 
-  function updateLabel(id, val) {
-    document.getElementById(id).textContent = val;
+  function setThumb(el, idx) {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
   }
 
-  var bundleData = {
-    full: {
-      label:    '— Full Stack',
-      name:     'Stack',
-      note:     'Full Stack',
-      tagline:  'H7 dual gyro flight controller.<br>AM32 F4 50A ESC. The perfect match.',
-      desc:     'H7 FC + AM32 F4 50A ESC — complete ready-to-fly stack',
+  function toggleNav() {
+    document.getElementById('navLinks').classList.toggle('open');
+    document.getElementById('navHamburger').classList.toggle('open');
+  }
+
+  function switchTab(btn, contentId) {
+    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(contentId).classList.add('active');
+  }
+
+  // UI-specific data for the stack bundles
+  var stackUIData = {
+    'full': {
+      productId: 'stack-combo',
+      label: '— Full Stack',
+      note: 'Full Stack',
+      tagline: 'H7 dual gyro flight controller.<br>AM32 F4 50A ESC. The perfect match.',
       chip1v: 'FC+ESC', chip1l: 'Bundle',
-      chip2v: 'H7',     chip2l: 'Processor',
-      chip3v: '50A',    chip3l: 'ESC Rating',
+      chip2v: 'H7', chip2l: 'Processor',
+      chip3v: '50A', chip3l: 'ESC Rating',
       inbox: 'full'
     },
-    fc: {
-      label:    '— FC Only',
-      name:     'FC',
-      note:     'Flight Controller only',
-      tagline:  'H7 dual gyro flight controller.<br>The brain of your build — sold standalone.',
-      desc:     'H7 dual gyro FC — standalone flight controller',
-      chip1v: 'FC',   chip1l: 'Only',
-      chip2v: 'H7',   chip2l: 'Processor',
-      chip3v: '2×',   chip3l: 'Gyro',
+    'fc': {
+      productId: 'stack-fc',
+      label: '— FC Only',
+      note: 'Flight Controller only',
+      tagline: 'H7 dual gyro flight controller.<br>The brain of your build — sold standalone.',
+      chip1v: 'FC', chip1l: 'Only',
+      chip2v: 'H7', chip2l: 'Processor',
+      chip3v: '2×', chip3l: 'Gyro',
       inbox: 'fc'
     },
-    esc: {
-      label:    '— ESC Only',
-      name:     'ESC',
-      note:     'ESC only',
-      tagline:  'AM32 F4 50A 4-in-1 ESC.<br>Open firmware. Maximum compatibility.',
-      desc:     'AM32 F4 50A ESC — standalone speed controller',
-      chip1v: 'ESC',  chip1l: 'Only',
-      chip2v: 'F4',   chip2l: 'MCU',
-      chip3v: '50A',  chip3l: 'Continuous',
+    'esc': {
+      productId: 'stack-esc',
+      label: '— ESC Only',
+      note: 'ESC only',
+      tagline: 'AM32 F4 50A 4-in-1 ESC.<br>Open firmware. Maximum compatibility.',
+      chip1v: 'ESC', chip1l: 'Only',
+      chip2v: 'F4', chip2l: 'MCU',
+      chip3v: '50A', chip3l: 'Continuous',
       inbox: 'esc'
     }
   };
 
+  function getCurrentProductId() {
+    var activePill = document.querySelector('#stack-bundle .pill.active');
+    var key = activePill ? (activePill.dataset.value || 'full') : 'full';
+    return stackUIData[key].productId;
+  }
+
+  function renderStackVariant() {
+    var activePill = document.querySelector('#stack-bundle .pill.active');
+    var key = activePill ? (activePill.dataset.value || 'full') : 'full';
+    var uiData = stackUIData[key];
+    var product = getProductById(uiData.productId);
+    
+    if (!product) return;
+    
+    document.getElementById('bundleLabel').textContent = uiData.label;
+    document.getElementById('bundleDesc').textContent = product.name;
+    document.getElementById('prod-name').textContent = product.name.split(' — ')[1] || product.name;
+    document.getElementById('price-note').textContent = uiData.note;
+    document.getElementById('price-main').textContent = '€ ' + product.price;
+    document.getElementById('price-main').style.opacity = '1';
+    document.getElementById('prod-tagline').innerHTML = uiData.tagline;
+    document.getElementById('chip1-val').textContent = uiData.chip1v;
+    document.getElementById('chip1-lab').textContent = uiData.chip1l;
+    document.getElementById('chip2-val').textContent = uiData.chip2v;
+    document.getElementById('chip2-lab').textContent = uiData.chip2l;
+    document.getElementById('chip3-val').textContent = uiData.chip3v;
+    document.getElementById('chip3-lab').textContent = uiData.chip3l;
+    
+    ['full', 'fc', 'esc'].forEach(k => {
+      var inboxEl = document.getElementById('inbox-' + k);
+      if (inboxEl) inboxEl.style.display = k === uiData.inbox ? 'block' : 'none';
+    });
+    
+    refreshQtyWidget();
+  }
+
   function selectBundle(el, key) {
     selectPill('stack-bundle', el);
-    var d = bundleData[key];
-    document.getElementById('bundleLabel').textContent  = d.label;
-    document.getElementById('bundleDesc').textContent   = d.desc;
-    document.getElementById('prod-name').textContent    = d.name;
-    document.getElementById('price-note').textContent   = d.note;
-    document.getElementById('prod-tagline').innerHTML   = d.tagline;
-    document.getElementById('chip1-val').textContent    = d.chip1v;
-    document.getElementById('chip1-lab').textContent    = d.chip1l;
-    document.getElementById('chip2-val').textContent    = d.chip2v;
-    document.getElementById('chip2-lab').textContent    = d.chip2l;
-    document.getElementById('chip3-val').textContent    = d.chip3v;
-    document.getElementById('chip3-lab').textContent    = d.chip3l;
-    var keys = ['full','fc','esc'];
-    for (var k = 0; k < keys.length; k++) {
-      var inboxEl = document.getElementById('inbox-' + keys[k]);
-      if (inboxEl) inboxEl.style.display = keys[k] === d.inbox ? 'block' : 'none';
-    }
+    renderStackVariant();
   }
 
-  // ─── Thumbnails ───
-  function setThumb(el, idx) {
-    var thumbs = document.querySelectorAll('.thumb');
-    for (var i = 0; i < thumbs.length; i++) thumbs[i].classList.remove('active');
-    el.classList.add('active');
-  }
+  // --- LOGICA COLLEGATA AL "DATABASE" ---
 
-  // ─── Hamburger ───
-  function toggleNav() {
-    try {
-      var nl = document.getElementById('navLinks');
-      var nb = document.getElementById('navHamburger');
-      if (nl) nl.classList.toggle('open');
-      if (nb) nb.classList.toggle('open');
-    } catch(e) {}
-  }
-
-  // ─── Tab switching ───
-  function switchTab(btn, contentId) {
-    try {
-      var tabs = document.querySelectorAll('.tab-btn');
-      var contents = document.querySelectorAll('.tab-content');
-      for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
-      for (var j = 0; j < contents.length; j++) contents[j].classList.remove('active');
-      btn.classList.add('active');
-      var el = document.getElementById(contentId);
-      if (el) el.classList.add('active');
-    } catch(e) {}
-  }
-
-  // ─── Cart engine ───
-  var CART_KEY = 'telepath_cart';
-
-  function getCart() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
-    catch(e) { return []; }
-  }
-
-  function saveCart(cart) {
-    try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
-    catch(e) {}
-  }
-
-  function cartAdd(id, sku, name, price) {
-    var cart = getCart();
-    var idx = -1;
-    for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
-    if (idx >= 0) cart[idx].qty += 1;
-    else cart.push({ id: id, sku: sku, name: name, price: price, qty: 1 });
-    saveCart(cart);
-    return cart;
-  }
-
-  function cartTotal(cart) {
-    var s = 0;
-    for (var i = 0; i < cart.length; i++) s += cart[i].price * cart[i].qty;
-    return s;
-  }
-
-  function syncCartFloat() {
-    try {
-      var cart = getCart();
-      var count = 0;
-      for (var i = 0; i < cart.length; i++) count += cart[i].qty;
-      var total = cartTotal(cart);
-      var countEl = document.getElementById('cartCount');
-      var totalEl = document.getElementById('cartTotal');
-      if (countEl) countEl.textContent = count;
-      if (totalEl) totalEl.textContent = '\u20ac ' + Math.round(total);
-      var floatEl = document.getElementById('cartFloat');
-      if (floatEl) {
-        if (count > 0) floatEl.classList.add('visible');
-        else floatEl.classList.remove('visible');
-      }
-    } catch(e) {}
-  }
-
-  function getItemId() {
-    var activePill = document.querySelector('#stack-bundle .pill.active');
-    return activePill ? (activePill.dataset.value || 'stack-combo') : 'stack-combo';
-  }
-
-  function refreshQtyWidget() {
-    try {
-      var id = getItemId();
-      var cart = getCart();
-      var qty = 0;
-      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { qty = cart[i].qty; break; } }
-      var addBtn = document.getElementById('addBtn');
-      var stepper = document.getElementById('qtyWidget');
-      var qtyVal = document.getElementById('qtyVal');
-      if (!addBtn || !stepper) return;
-      if (qty > 0) {
-        addBtn.style.display = 'none';
-        stepper.classList.add('visible');
-        if (qtyVal) qtyVal.textContent = qty;
-      } else {
-        addBtn.style.display = '';
-        stepper.classList.remove('visible');
-      }
-    } catch(e) {}
+  function handleAdd(btn) {
+    var productId = getCurrentProductId();
+    var product = getProductById(productId);
+    
+    if (!product) return;
+    
+    cartAdd(productId, 1);
+    refreshQtyWidget();
+    triggerCartBounce();
   }
 
   function stepQty(delta, event) {
-    try {
-      if (event) event.stopPropagation();
-      var id = getItemId();
-      var cart = getCart();
-      var idx = -1;
-      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { idx = i; break; } }
-      if (idx < 0) return;
-      cart[idx].qty += delta;
-      if (cart[idx].qty <= 0) cart.splice(idx, 1);
-      saveCart(cart);
-      syncCartFloat();
-      refreshQtyWidget();
-    } catch(e) {}
+    if (event) event.stopPropagation();
+    var productId = getCurrentProductId();
+    cartUpdateQty(productId, delta);
+    refreshQtyWidget();
   }
 
-  function handleAdd(btn) {
-    try {
-      var activePanel = document.querySelector('.stack-panel.visible');
-      var panelId = activePanel ? activePanel.id : 'stack-combo';
-      var prices = { 'stack-combo': 149, 'stack-fc': 59, 'stack-esc': 99 };
-      var price = prices[panelId] || 149;
-      var activeTab = document.querySelector('.stack-tab.active');
-      var tabLabel = activeTab ? activeTab.textContent.trim() : 'FC + ESC';
-      var skuMap = { 'stack-combo': 'STACK-INTERO', 'stack-esc': 'STACK-ESC', 'stack-fc': 'STACK-FC' };
-      var sku = skuMap[panelId] || 'STACK-INTERO';
-      cartAdd(panelId, sku, 'Stack \u2014 ' + tabLabel, price);
-      syncCartFloat();
-      refreshQtyWidget();
-      var floatEl = document.getElementById('cartFloat');
-      if (floatEl) {
-        floatEl.style.transform = 'translateY(0) scale(1.05)';
-        setTimeout(function() { floatEl.style.transform = 'translateY(0) scale(1)'; }, 200);
-      }
-    } catch(e) {}
-  }
-
-  syncCartFloat();
-  refreshQtyWidget();
-
-  // ─── Close nav on link click ───
-  try {
-    var navLinks = document.getElementById('navLinks');
-    if (navLinks) {
-      var navAs = navLinks.querySelectorAll('a');
-      for (var ni = 0; ni < navAs.length; ni++) {
-        navAs[ni].addEventListener('click', function() {
-          document.getElementById('navLinks').classList.remove('open');
-          document.getElementById('navHamburger').classList.remove('open');
-        });
-      }
+  function refreshQtyWidget() {
+    var productId = getCurrentProductId();
+    var cart = getCart();
+    var item = cart.find(i => i.id === productId);
+    var qty = item ? item.qty : 0;
+    var addBtn = document.getElementById('addBtn');
+    var stepper = document.getElementById('qtyWidget');
+    var qtyVal = document.getElementById('qtyVal');
+    
+    if (!addBtn || !stepper) return;
+    
+    if (qty > 0) {
+      addBtn.style.display = 'none';
+      stepper.classList.add('visible');
+      if (qtyVal) qtyVal.textContent = qty;
+    } else {
+      addBtn.style.display = '';
+      stepper.classList.remove('visible');
     }
-  } catch(e) {}
+  }
 
-  // ─── Scroll reveal ───
-  try {
+  function triggerCartBounce() {
+    var floatEl = document.getElementById('cartFloat');
+    if (floatEl) {
+      floatEl.style.transform = 'translateY(0) scale(1.05)';
+      setTimeout(() => { floatEl.style.transform = 'translateY(0) scale(1)'; }, 200);
+    }
+  }
+
+  renderStackVariant();
+
+  document.addEventListener('DOMContentLoaded', () => {
     var reveals = document.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window) {
-      var revealObs = new IntersectionObserver(function(entries) {
-        for (var i = 0; i < entries.length; i++) {
-          if (entries[i].isIntersecting) entries[i].target.classList.add('in');
-        }
+      var obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
       }, { threshold: 0.08 });
-      for (var ri = 0; ri < reveals.length; ri++) revealObs.observe(reveals[ri]);
+      reveals.forEach(r => obs.observe(r));
     } else {
-      for (var ri2 = 0; ri2 < reveals.length; ri2++) reveals[ri2].classList.add('in');
+      reveals.forEach(r => r.classList.add('in'));
     }
-  } catch(e) {
-    // Fallback: show all
-    var rFall = document.querySelectorAll('.reveal');
-    for (var rf = 0; rf < rFall.length; rf++) rFall[rf].classList.add('in');
-  }
-
+  });
 </script>
 </body>
 </html>
